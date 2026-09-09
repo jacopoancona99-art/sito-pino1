@@ -138,6 +138,30 @@ textarea{resize:vertical;min-height:80px;line-height:1.6;}
 .foto-blocco{display:flex;gap:12px;align-items:flex-start;}
 .foto-blocco > div:last-child{flex:1;min-width:0;}
 
+/* ── RICHIESTE ── */
+.badge-tab{background:var(--rosso);color:#fff;font-size:.62rem;font-weight:700;padding:1px 6px;border-radius:9px;margin-left:5px;vertical-align:middle;}
+.rich-riga{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:8px;display:flex;gap:14px;align-items:flex-start;cursor:pointer;transition:.15s;}
+.rich-riga:hover{border-color:var(--verde-m);}
+.rich-riga.nuova{border-left:3px solid var(--rosso);}
+.rich-info{flex:1;min-width:0;}
+.rich-info .nome{font-weight:600;font-size:.92rem;}
+.rich-info .meta{font-size:.78rem;color:var(--muted);margin-top:2px;}
+.rich-dx{text-align:right;flex-shrink:0;display:flex;flex-direction:column;gap:5px;align-items:flex-end;}
+.rich-data{font-size:.72rem;color:var(--muted);}
+.st{display:inline-block;padding:2px 9px;border-radius:11px;font-size:.66rem;font-weight:700;letter-spacing:.03em;text-transform:uppercase;white-space:nowrap;}
+.st-nuova{background:#f8d7da;color:#721c24;}
+.st-contattata{background:#fff3cd;color:#856404;}
+.st-accolta{background:#d4edda;color:#155724;}
+.st-non-accolta{background:var(--avorio-s);color:var(--muted);}
+.dett{margin-bottom:12px;}
+.dett .et{font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:2px;}
+.dett .vl{font-size:.9rem;}
+.dett .vl a{color:var(--verde);}
+.privacy-nota{background:#fff8e1;border:1px solid #ffe082;border-radius:var(--radius);padding:12px 14px;font-size:.8rem;color:#5d4037;margin-bottom:1rem;display:flex;gap:10px;align-items:flex-start;line-height:1.55;}
+.filtri-st{display:flex;gap:6px;margin-bottom:1rem;flex-wrap:wrap;}
+.chip{padding:5px 12px;border-radius:16px;font-size:.75rem;font-weight:500;cursor:pointer;border:1px solid var(--border);background:#fff;color:var(--muted);}
+.chip:hover,.chip.on{background:var(--verde);color:#fff;border-color:var(--verde);}
+
 @media(max-width:640px){
   .riga.due{grid-template-columns:1fr;}
   .app{padding:1rem .9rem 3rem;}
@@ -186,6 +210,7 @@ textarea{resize:vertical;min-height:80px;line-height:1.6;}
     <button class="tab active" data-sez="capi">Capi</button>
     <button class="tab" data-sez="iscrizioni">Iscrizioni</button>
     <button class="tab" data-sez="avvisi">Avvisi</button>
+    <button class="tab" data-sez="richieste">Richieste<span class="badge-tab" id="badge-rich" hidden>0</span></button>
   </div>
 
   <!-- ─── CAPI ─── -->
@@ -251,6 +276,26 @@ textarea{resize:vertical;min-height:80px;line-height:1.6;}
     </div>
     <p class="aiuto" style="margin-bottom:1rem;">Gli avvisi attivi compaiono in evidenza sulla home. Spegnili invece di cancellarli se potrebbero tornare utili.</p>
     <div id="lista-avvisi"></div>
+  </div>
+
+  <!-- ─── RICHIESTE ─── -->
+  <div class="sezione" id="sez-richieste">
+    <div class="sez-head">
+      <h2>Richieste di pre-iscrizione</h2>
+      <button class="btn btn-outline" id="btn-csv-rich">⬇ Esporta CSV</button>
+    </div>
+    <div class="privacy-nota">
+      <span>🔒</span>
+      <div>Qui ci sono dati personali di minori. Non condividere schermate né esportazioni fuori dalla CoCa, e <strong>cancella le richieste non accolte entro tre mesi</strong> dalla chiusura delle iscrizioni, come dichiarato nell'informativa.</div>
+    </div>
+    <div class="filtri-st">
+      <div class="chip on" data-f="">Tutte</div>
+      <div class="chip" data-f="nuova">Nuove</div>
+      <div class="chip" data-f="contattata">Contattate</div>
+      <div class="chip" data-f="accolta">Accolte</div>
+      <div class="chip" data-f="non-accolta">Non accolte</div>
+    </div>
+    <div id="lista-richieste"></div>
   </div>
 
 </div>
@@ -338,6 +383,22 @@ textarea{resize:vertical;min-height:80px;line-height:1.6;}
 </div>
 
 
+<!-- ══════════ MODALE RICHIESTA ══════════ -->
+<div class="overlay" id="modale-rich">
+  <div class="modale">
+    <div class="modale-head">
+      <div><h3 id="rich-tit">Richiesta</h3><p id="rich-sub"></p></div>
+      <button class="chiudi" onclick="chiudiModale('modale-rich')">✕</button>
+    </div>
+    <div class="modale-body" id="rich-corpo"></div>
+    <div class="modale-foot">
+      <button class="btn btn-danger" id="btn-elimina-rich">Elimina</button>
+      <button class="btn btn-outline" onclick="chiudiModale('modale-rich')">Chiudi</button>
+      <button class="btn btn-verde" id="btn-salva-rich">Salva</button>
+    </div>
+  </div>
+</div>
+
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut }
@@ -356,11 +417,14 @@ const DATA = {
   capi:       {},   // { chiaveFirebase: {nome, ruolo, branca, foto, titolare, ordine} }
   iscrizioni: {},
   avvisi:     {},
+  richieste:  {},   // dati personali di minori — lettura protetta dalle regole
   pronto:     false
 };
 
 let capoInModifica   = null;   // chiave Firebase, oppure null se è nuovo
 let avvisoInModifica = null;
+let richInModifica   = null;
+let filtroStato      = '';
 
 const app  = initializeApp(FIREBASE_CONFIG);
 const auth = getAuth(app);
@@ -448,6 +512,14 @@ function avviaAscolto() {
       'Impossibile leggere i dati. Controlla la connessione o le regole del database.');
     segnalaStato('errore');
   });
+
+  // Ramo separato: regole invertite, leggibile solo da autenticati.
+  onValue(ref(db, 'richieste'), snap => {
+    DATA.richieste = snap.val() || {};
+    renderRichieste();
+  }, errore => {
+    console.error('[PT] lettura richieste fallita:', errore);
+  });
 }
 
 function segnalaStato(tipo) {
@@ -469,6 +541,7 @@ function render() {
   renderCapi();
   renderIscrizioni();
   renderAvvisi();
+  renderRichieste();
 }
 
 function renderCapi() {
@@ -780,6 +853,194 @@ document.getElementById('btn-elimina-avviso').addEventListener('click', async ()
     alert('Eliminazione non riuscita: ' + e.message);
   }
 });
+
+
+/* ═══════════════════════════════════════════════════════
+   RICHIESTE DI PRE-ISCRIZIONE
+
+   Contengono dati personali di minori. Il ramo /richieste
+   ha regole invertite rispetto a /contenuti: chiunque può
+   creare una richiesta dal modulo pubblico, ma solo un capo
+   autenticato può leggerla, modificarne lo stato o
+   cancellarla.
+   ═══════════════════════════════════════════════════════ */
+
+const ETICHETTE_STATO = {
+  'nuova':       'Nuova',
+  'contattata':  'Contattata',
+  'accolta':     'Accolta',
+  'non-accolta': 'Non accolta'
+};
+
+function elencoRichieste() {
+  return Object.entries(DATA.richieste)
+    .map(([id, r]) => ({ id, ...r }))
+    .sort((a, b) => (b.ricevutaIl ?? 0) - (a.ricevutaIl ?? 0));   // più recenti in cima
+}
+
+function renderRichieste() {
+  const tutte = elencoRichieste();
+  const nuove = tutte.filter(r => r.stato === 'nuova').length;
+
+  // Pallino sulla scheda: anche se le mail non arrivano,
+  // entrando nel pannello ci si accorge che c'è posta.
+  const badge = document.getElementById('badge-rich');
+  badge.textContent = nuove;
+  badge.hidden = nuove === 0;
+
+  const lista = filtroStato ? tutte.filter(r => r.stato === filtroStato) : tutte;
+  const cont  = document.getElementById('lista-richieste');
+
+  if (!lista.length) {
+    cont.innerHTML = `<div class="vuoto"><div class="ic">📭</div><p>${
+      tutte.length ? 'Nessuna richiesta con questo stato.'
+                   : 'Nessuna richiesta ricevuta.<br>Compariranno qui appena qualcuno compila il modulo.'
+    }</p></div>`;
+    return;
+  }
+
+  cont.innerHTML = lista.map(r => `
+    <div class="rich-riga ${r.stato === 'nuova' ? 'nuova' : ''}" data-rich="${r.id}">
+      <div class="rich-info">
+        <div class="nome">${esc(r.nomeRagazzo)} ${esc(r.cognomeRagazzo)}</div>
+        <div class="meta">${eta(r.dataNascita)} anni · ${esc(r.nomeGenitore)} · ${esc(r.email)}</div>
+      </div>
+      <div class="rich-dx">
+        <span class="st st-${r.stato}">${ETICHETTE_STATO[r.stato] || r.stato}</span>
+        <span class="rich-data">${dataIt(r.ricevutaIl)}</span>
+      </div>
+    </div>`).join('');
+
+  cont.querySelectorAll('[data-rich]').forEach(el =>
+    el.onclick = () => apriRichiesta(el.dataset.rich));
+}
+
+function apriRichiesta(id) {
+  richInModifica = id;
+  const r = DATA.richieste[id];
+
+  document.getElementById('rich-tit').textContent = `${r.nomeRagazzo} ${r.cognomeRagazzo}`;
+  document.getElementById('rich-sub').textContent =
+    `Ricevuta il ${dataIt(r.ricevutaIl, true)}`;
+
+  document.getElementById('rich-corpo').innerHTML = `
+    <div class="riga due">
+      <div class="dett"><div class="et">Data di nascita</div>
+        <div class="vl">${dataIt(new Date(r.dataNascita).getTime())} — ${eta(r.dataNascita)} anni</div></div>
+      <div class="dett"><div class="et">Branca suggerita</div>
+        <div class="vl">${brancaPerEta(eta(r.dataNascita))}</div></div>
+    </div>
+    <div class="dett"><div class="et">Genitore</div>
+      <div class="vl">${esc(r.nomeGenitore)}</div></div>
+    <div class="riga due">
+      <div class="dett"><div class="et">E-mail</div>
+        <div class="vl"><a href="mailto:${esc(r.email)}">${esc(r.email)}</a></div></div>
+      <div class="dett"><div class="et">Telefono</div>
+        <div class="vl">${r.telefono ? `<a href="tel:${esc(r.telefono)}">${esc(r.telefono)}</a>` : '—'}</div></div>
+    </div>
+    ${r.note ? `<div class="dett"><div class="et">Note della famiglia</div>
+      <div class="vl" style="white-space:pre-wrap;">${esc(r.note)}</div></div>` : ''}
+
+    <div class="riga due" style="margin-top:18px;padding-top:16px;border-top:1px solid var(--border);">
+      <div class="campo">
+        <label for="rich-stato">Stato</label>
+        <select id="rich-stato">
+          ${Object.entries(ETICHETTE_STATO).map(([v, t]) =>
+            `<option value="${v}"${r.stato === v ? ' selected' : ''}>${t}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+    <div class="campo">
+      <label for="rich-nota">Nota interna</label>
+      <textarea id="rich-nota" style="min-height:60px;" placeholder="Non visibile alla famiglia">${esc(r.notaInterna || '')}</textarea>
+    </div>`;
+
+  apriModale('modale-rich');
+}
+
+document.getElementById('btn-salva-rich').addEventListener('click', async () => {
+  if (!richInModifica) return;
+  segnalaStato('salvando');
+  try {
+    await update(ref(db, `richieste/${richInModifica}`), {
+      stato:       document.getElementById('rich-stato').value,
+      notaInterna: document.getElementById('rich-nota').value.trim()
+    });
+    chiudiModale('modale-rich');
+  } catch (e) {
+    segnalaStato('errore');
+    alert('Salvataggio non riuscito: ' + e.message);
+  }
+});
+
+document.getElementById('btn-elimina-rich').addEventListener('click', async () => {
+  const r = DATA.richieste[richInModifica];
+  if (!confirm(`Eliminare definitivamente la richiesta di ${r.nomeRagazzo} ${r.cognomeRagazzo}?\n\nI dati vengono cancellati dal database e non sono recuperabili.`)) return;
+
+  segnalaStato('salvando');
+  try {
+    await remove(ref(db, `richieste/${richInModifica}`));
+    chiudiModale('modale-rich');
+  } catch (e) {
+    segnalaStato('errore');
+    alert('Eliminazione non riuscita: ' + e.message);
+  }
+});
+
+document.querySelectorAll('.chip[data-f]').forEach(c => {
+  c.addEventListener('click', () => {
+    document.querySelectorAll('.chip[data-f]').forEach(x => x.classList.remove('on'));
+    c.classList.add('on');
+    filtroStato = c.dataset.f;
+    renderRichieste();
+  });
+});
+
+document.getElementById('btn-csv-rich').addEventListener('click', () => {
+  const lista = elencoRichieste();
+  if (!lista.length) return alert('Non ci sono richieste da esportare.');
+  if (!confirm('Il file conterrà dati personali di minori.\n\nSalvalo in un luogo sicuro ed eliminalo quando non serve più. Procedere?')) return;
+
+  const righe = [['Nome','Cognome','Data nascita','Età','Genitore','Email','Telefono','Note','Stato','Nota interna','Ricevuta il']];
+  lista.forEach(r => righe.push([
+    r.nomeRagazzo, r.cognomeRagazzo, r.dataNascita, eta(r.dataNascita),
+    r.nomeGenitore, r.email, r.telefono || '', r.note || '',
+    ETICHETTE_STATO[r.stato] || r.stato, r.notaInterna || '', dataIt(r.ricevutaIl, true)
+  ]));
+
+  // Il punto e virgola è il separatore che Excel italiano si aspetta.
+  const csv = righe.map(r => r.map(v => `"${String(v ?? '').replace(/"/g, '""')}"`).join(';')).join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,\uFEFF' + encodeURIComponent(csv);
+  a.download = `preiscrizioni-${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+});
+
+function eta(iso) {
+  if (!iso) return '—';
+  const n = new Date(iso), o = new Date();
+  let a = o.getFullYear() - n.getFullYear();
+  const m = o.getMonth() - n.getMonth();
+  if (m < 0 || (m === 0 && o.getDate() < n.getDate())) a--;
+  return a;
+}
+
+function brancaPerEta(a) {
+  if (a === '—' || isNaN(a)) return '—';
+  if (a < 7)  return 'Troppo piccolo per il Branco';
+  if (a <= 11) return 'Branco Mirfak';
+  if (a <= 16) return 'Reparto Everest';
+  if (a <= 17) return 'Noviziato Silmaril';
+  if (a <= 21) return 'Clan Zebrù';
+  return 'Fuori età — valutare';
+}
+
+function dataIt(ms, conOra = false) {
+  if (!ms) return '—';
+  const d = new Date(ms);
+  const data = d.toLocaleDateString('it-IT', { day:'2-digit', month:'2-digit', year:'numeric' });
+  return conOra ? `${data} alle ${d.toLocaleTimeString('it-IT', { hour:'2-digit', minute:'2-digit' })}` : data;
+}
 
 
 /* ═══════════════════════════════════════════════════════
