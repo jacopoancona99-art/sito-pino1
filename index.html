@@ -200,10 +200,64 @@ footer a:hover { color: var(--fuoco-chiaro); }
 .iscrizioni-banner.chiuse { background:var(--testo-muted); }
 .iscrizioni-banner .closed-badge { display:inline-block; background:rgba(255,255,255,0.2); color:#fff; font-size:0.7rem; letter-spacing:0.12em; text-transform:uppercase; font-weight:700; padding:5px 14px; border-radius:2px; margin-bottom:16px; }
 
+/* ── MODULO ISCRIZIONE ── */
+.modulo { background:#fff; border:1px solid var(--avorio-scuro); border-radius:12px; padding:28px; margin-top:2rem; }
+.modulo h3 { font-family:'Playfair Display',serif; font-size:1.25rem; color:var(--verde); margin-bottom:6px; }
+.modulo > p.intro { font-size:0.88rem; color:var(--testo-muted); margin-bottom:1.5rem; }
+.campo-form { display:flex; flex-direction:column; gap:5px; margin-bottom:16px; }
+.campo-form label { font-size:0.75rem; font-weight:600; color:var(--testo-muted); letter-spacing:0.04em; text-transform:uppercase; }
+.campo-form label .req { color:var(--fuoco); }
+.campo-form input, .campo-form textarea, .campo-form select {
+  padding:10px 12px; border:1px solid var(--avorio-scuro); border-radius:6px; font-size:0.92rem;
+  font-family:'Inter',sans-serif; color:var(--testo); background:#fff; outline:none; transition:border 0.15s; width:100%;
+}
+.campo-form input:focus, .campo-form textarea:focus, .campo-form select:focus {
+  border-color:var(--verde-medio); box-shadow:0 0 0 3px rgba(45,94,66,0.1);
+}
+.campo-form textarea { resize:vertical; min-height:80px; line-height:1.6; }
+.campo-form .aiuto-f { font-size:0.75rem; color:var(--testo-muted); }
+.campo-form.errore input, .campo-form.errore textarea { border-color:#c0392b; }
+.campo-form .msg-errore-f { font-size:0.75rem; color:#c0392b; font-weight:500; }
+.riga-form { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.consenso-box { background:var(--avorio); border:1px solid var(--avorio-scuro); border-radius:8px; padding:14px 16px; margin:1.25rem 0; }
+.consenso-box label { display:flex; gap:10px; align-items:flex-start; cursor:pointer; font-size:0.84rem; line-height:1.6; color:var(--testo); }
+.consenso-box input[type=checkbox] { width:auto; margin-top:3px; flex-shrink:0; }
+.consenso-box a { color:var(--fuoco); }
+.trappola { position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden; }
+.esito-invio { border-radius:8px; padding:16px 18px; font-size:0.9rem; line-height:1.6; }
+.esito-ok { background:#d4edda; border:1px solid #c3e6cb; color:#155724; }
+.esito-ko { background:#f8d7da; border:1px solid #f5c6cb; color:#721c24; }
+.esito-invio h4 { font-family:'Playfair Display',serif; font-size:1.05rem; margin-bottom:4px; }
+
+/* ── INFORMATIVA ── */
+.informativa { background:var(--avorio); border-left:3px solid var(--verde-medio); border-radius:6px; padding:16px 18px; margin-top:1.5rem; font-size:0.8rem; color:var(--testo-muted); line-height:1.7; }
+.informativa h4 { font-size:0.75rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--verde); font-weight:700; margin-bottom:8px; }
+.informativa p { margin-bottom:8px; }
+.informativa p:last-child { margin-bottom:0; }
+
+@media (max-width:640px){ .riga-form { grid-template-columns:1fr; } .modulo { padding:20px 18px; } }
+
+/* ── FASCIA "IN RISTRUTTURAZIONE" ──
+   Temporanea: per toglierla basta eliminare questo blocco,
+   il markup .fascia-lavori e la sua riga di script in fondo. */
+.fascia-lavori { background:#fff3cd; border-bottom:1px solid #ffe082; padding:9px 16px; display:flex; align-items:center; gap:10px; font-size:0.83rem; color:#6d4c41; }
+.fascia-lavori .testo { flex:1; line-height:1.5; }
+.fascia-lavori strong { color:#e65100; }
+.fascia-lavori button { background:none; border:none; cursor:pointer; color:#8d6e63; font-size:1rem; padding:2px 6px; border-radius:4px; flex-shrink:0; line-height:1; }
+.fascia-lavori button:hover { background:rgba(0,0,0,0.06); color:#5d4037; }
+@media (max-width:640px){ .fascia-lavori { font-size:0.78rem; padding:8px 12px; } }
+
 /* ── MOBILE ── */
 </style>
 </head>
 <body>
+
+<!-- Fascia temporanea: rimuovere quando il sito è a regime -->
+<div class="fascia-lavori" id="fascia-lavori">
+  <span aria-hidden="true">🚧</span>
+  <div class="testo"><strong>Sito in ristrutturazione.</strong> Stiamo rifacendo le pagine: alcune informazioni potrebbero essere incomplete o non aggiornate. Per qualsiasi cosa scrivi a <a href="mailto:pinotorinese1@piemonte.agesci.it" style="color:#e65100;">pinotorinese1@piemonte.agesci.it</a></div>
+  <button onclick="chiudiFascia()" title="Nascondi" aria-label="Nascondi avviso">✕</button>
+</div>
 
 <!-- FAZZOLETTONE ASSOCIATIVO RIBBON -->
 <div class="totem-ribbon" aria-hidden="true"><span class="t-verde"></span><span class="t-giallo"></span></div>
@@ -259,9 +313,9 @@ footer a:hover { color: var(--fuoco-chiaro); }
   <div class="container">
     <div class="section">
       <div class="img-strip">
-        <div class="img-strip-item"><img src="https://static.wixstatic.com/media/90ac93_fae6462c826f4737b011a58784348e48~mv2_d_1920_1280_s_2.jpg" alt="Scout in natura" onerror="this.style.display='none'"></div>
-        <div class="img-strip-item"><img src="https://static.wixstatic.com/media/90ac93_5fbd82aa60794e118c9a7696d95dc851~mv2_d_1920_1277_s_2.jpg" alt="Comunità capi" onerror="this.style.display='none'"></div>
-        <div class="img-strip-item"><img src="https://static.wixstatic.com/media/90ac93_3e33147b8a174cf8a81ed62619f8bd8a~mv2_d_2000_1331_s_2.jpg" alt="Clan" onerror="this.style.display='none'"></div>
+        <div class="img-strip-item"><img src="img/home-natura.jpg" alt="Scout in natura" onerror="this.style.display='none'"></div>
+        <div class="img-strip-item"><img src="img/home-coca.jpg" alt="Comunità capi" onerror="this.style.display='none'"></div>
+        <div class="img-strip-item"><img src="img/home-clan.jpg" alt="Clan" onerror="this.style.display='none'"></div>
       </div>
 
       <div id="blocco-avvisi"></div>
@@ -439,7 +493,7 @@ footer a:hover { color: var(--fuoco-chiaro); }
         </div>
         <div>
           <div style="background:var(--avorio-scuro); border-radius:10px; aspect-ratio:4/3; display:flex; align-items:center; justify-content:center; overflow:hidden;">
-            <img src="https://static.wixstatic.com/media/90ac93_7ee112d6be1c47e5b8334728a37a757e~mv2.jpg" alt="Branco" style="width:100%;height:100%;object-fit:cover;border-radius:10px;" onerror="this.parentElement.innerHTML='<span style=color:var(--testo-muted)>Foto del Branco</span>'">
+            <img src="img/branco.jpg" alt="Branco" style="width:100%;height:100%;object-fit:cover;border-radius:10px;" onerror="this.parentElement.innerHTML='<span style=color:var(--testo-muted)>Foto del Branco</span>'">
           </div>
         </div>
       </div>
@@ -463,7 +517,7 @@ footer a:hover { color: var(--fuoco-chiaro); }
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:3rem; align-items:center; margin-bottom:3rem;">
         <div>
           <div style="background:var(--avorio-scuro); border-radius:10px; aspect-ratio:4/3; display:flex; align-items:center; justify-content:center; overflow:hidden;">
-            <img src="https://static.wixstatic.com/media/90ac93_fdee98a1a0294d748ad2ef2011bb27a0~mv2.jpg" alt="Reparto" style="width:100%;height:100%;object-fit:cover;border-radius:10px;" onerror="this.parentElement.innerHTML='<span style=color:var(--testo-muted)>Foto del Reparto</span>'">
+            <img src="img/reparto.jpg" alt="Reparto" style="width:100%;height:100%;object-fit:cover;border-radius:10px;" onerror="this.parentElement.innerHTML='<span style=color:var(--testo-muted)>Foto del Reparto</span>'">
           </div>
         </div>
         <div class="section-text">
@@ -504,7 +558,7 @@ footer a:hover { color: var(--fuoco-chiaro); }
         </div>
         <div>
           <div style="background:var(--avorio-scuro); border-radius:10px; aspect-ratio:4/3; display:flex; align-items:center; justify-content:center; overflow:hidden;">
-            <img src="https://static.wixstatic.com/media/90ac93_3e33147b8a174cf8a81ed62619f8bd8a~mv2_d_2000_1331_s_2.jpg" alt="Clan" style="width:100%;height:100%;object-fit:cover;border-radius:10px;" onerror="this.parentElement.innerHTML='<span style=color:var(--testo-muted)>Foto del Clan</span>'">
+            <img src="img/clan.jpg" alt="Clan" style="width:100%;height:100%;object-fit:cover;border-radius:10px;" onerror="this.parentElement.innerHTML='<span style=color:var(--testo-muted)>Foto del Clan</span>'">
           </div>
         </div>
       </div>
@@ -533,7 +587,7 @@ footer a:hover { color: var(--fuoco-chiaro); }
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:3rem; align-items:center; margin-bottom:3rem;">
         <div>
           <div style="background:var(--avorio-scuro); border-radius:10px; aspect-ratio:4/3; display:flex; align-items:center; justify-content:center; overflow:hidden;">
-            <img src="https://static.wixstatic.com/media/90ac93_38553c6355b140b38d16d8acc4a70aa0~mv2.jpg" alt="Noviziato" style="width:100%;height:100%;object-fit:cover;border-radius:10px;" onerror="this.parentElement.innerHTML='<span style=color:var(--testo-muted)>Foto del Noviziato</span>'">
+            <img src="img/noviziato.jpg" alt="Noviziato" style="width:100%;height:100%;object-fit:cover;border-radius:10px;" onerror="this.parentElement.innerHTML='<span style=color:var(--testo-muted)>Foto del Noviziato</span>'">
           </div>
         </div>
         <div class="section-text">
@@ -691,6 +745,17 @@ function toggleMenu() {
   document.getElementById('nav-links').classList.toggle('open');
 }
 
+/* Fascia "in ristrutturazione": una volta chiusa resta nascosta
+   per la sessione, non per sempre. Chi torna domani la rivede,
+   ed è giusto finché il sito è davvero incompleto. */
+if (sessionStorage.getItem('pt-fascia-chiusa')) {
+  document.getElementById('fascia-lavori').style.display = 'none';
+}
+function chiudiFascia() {
+  sessionStorage.setItem('pt-fascia-chiusa', '1');
+  document.getElementById('fascia-lavori').style.display = 'none';
+}
+
 // init footer on home
 document.getElementById('page-home').appendChild(footer);
 </script>
@@ -833,9 +898,9 @@ function bannerAperte(i) {
 
   <div class="info-grid" style="margin-top:2rem;">
     <div class="info-box">
-      <h4>📋 Modulo online</h4>
-      <p>Il modulo di pre-iscrizione è disponibile online.</p>
-      <br><a href="${esc(i.linkModulo)}" target="_blank" rel="noopener" class="btn-primary" style="display:inline-block;font-size:0.82rem;padding:10px 20px;text-decoration:none;">Vai al modulo →</a>
+      <h4>📅 Riunione informativa</h4>
+      <p>${esc(i.dataRiunione)}</p>
+      <p style="margin-top:8px;">Vi contatteremo con i dettagli dopo la pre-iscrizione.</p>
     </div>
     <div class="info-box">
       <h4>❓ Hai domande?</h4>
@@ -848,6 +913,78 @@ function bannerAperte(i) {
       <p style="margin-bottom:6px;"><strong style="color:var(--verde)">Branco Mirfak</strong> — 7 / 11 anni</p>
       <p style="margin-bottom:6px;"><strong style="color:var(--verde)">Reparto Everest</strong> — 11 / 16 anni</p>
       <p><strong style="color:var(--verde)">Clan Zebrù</strong> — 16 / 21 anni</p>
+    </div>
+  </div>
+
+  <div class="section-label" style="margin-top:3rem;">
+    <h3>Modulo di pre-iscrizione</h3><div class="line"></div><div class="badge">Compila online</div>
+  </div>
+
+  <div class="modulo" id="modulo-box">
+    <h3>Pre-iscrizione anno ${esc(i.anno)}</h3>
+    <p class="intro">Chiediamo solo i dati necessari a ricontattarvi. Tutti i campi con <span style="color:var(--fuoco)">*</span> sono obbligatori.</p>
+
+    <div class="riga-form">
+      <div class="campo-form" id="c-nome">
+        <label for="f-nome">Nome del ragazzo/a <span class="req">*</span></label>
+        <input type="text" id="f-nome" autocomplete="off" maxlength="60">
+      </div>
+      <div class="campo-form" id="c-cognome">
+        <label for="f-cognome">Cognome <span class="req">*</span></label>
+        <input type="text" id="f-cognome" autocomplete="off" maxlength="60">
+      </div>
+    </div>
+
+    <div class="campo-form" id="c-nascita" style="max-width:260px;">
+      <label for="f-nascita">Data di nascita <span class="req">*</span></label>
+      <input type="date" id="f-nascita">
+      <span class="aiuto-f">Ci serve per capire in quale branca inserirlo.</span>
+    </div>
+
+    <div class="campo-form" id="c-genitore">
+      <label for="f-genitore">Nome e cognome del genitore <span class="req">*</span></label>
+      <input type="text" id="f-genitore" autocomplete="off" maxlength="80">
+    </div>
+
+    <div class="riga-form">
+      <div class="campo-form" id="c-email">
+        <label for="f-email">E-mail <span class="req">*</span></label>
+        <input type="email" id="f-email" autocomplete="off" maxlength="120">
+      </div>
+      <div class="campo-form" id="c-tel">
+        <label for="f-tel">Telefono</label>
+        <input type="tel" id="f-tel" autocomplete="off" maxlength="30">
+      </div>
+    </div>
+
+    <div class="campo-form">
+      <label for="f-note">C'è qualcosa che dovremmo sapere?</label>
+      <textarea id="f-note" maxlength="800" placeholder="Allergie, esigenze particolari, fratelli già nel gruppo, come ci avete conosciuti…"></textarea>
+    </div>
+
+    <!-- Campo trappola: invisibile agli umani, i robot lo compilano -->
+    <div class="trappola" aria-hidden="true">
+      <label for="f-sito">Non compilare questo campo</label>
+      <input type="text" id="f-sito" tabindex="-1" autocomplete="off">
+    </div>
+
+    <div class="consenso-box" id="c-consenso">
+      <label>
+        <input type="checkbox" id="f-consenso">
+        <span>Ho letto l'informativa qui sotto e acconsento al trattamento dei dati per la gestione della pre-iscrizione. <span style="color:var(--fuoco)">*</span></span>
+      </label>
+    </div>
+
+    <button class="btn-primary" id="f-invia" style="border:none;cursor:pointer;font-family:inherit;">Invia la pre-iscrizione</button>
+
+    <div class="informativa">
+      <h4>Informativa sul trattamento dei dati</h4>
+      <p><strong>Titolare:</strong> Gruppo Scout AGESCI Pino Torinese 1, Via Maria Cristina 13, Pino Torinese (TO) — C.F. 94082090013 — pinotorinese1@piemonte.agesci.it</p>
+      <p><strong>Finalità e base giuridica:</strong> i dati servono unicamente a gestire la richiesta di pre-iscrizione e a ricontattarvi. Il trattamento si fonda sul consenso che prestate spuntando la casella qui sopra.</p>
+      <p><strong>Chi vi accede:</strong> solo i capi del gruppo incaricati delle iscrizioni. I dati non vengono comunicati a terzi né usati per altri scopi.</p>
+      <p><strong>Dove stanno:</strong> su un database Google Firebase con server in Belgio, quindi all'interno dell'Unione Europea.</p>
+      <p><strong>Per quanto tempo:</strong> le richieste non accolte vengono cancellate entro tre mesi dalla chiusura delle iscrizioni. Quelle accolte confluiscono nella normale gestione dei soci.</p>
+      <p><strong>I vostri diritti:</strong> potete chiedere in qualsiasi momento di accedere ai dati, correggerli o cancellarli, e revocare il consenso, scrivendo all'indirizzo del gruppo.</p>
     </div>
   </div>`;
 }
@@ -895,6 +1032,187 @@ function renderAvvisi() {
     </div>`).join('');
 }
 
+/* ═══════════════════════════════════════════════════════════
+   MODULO DI PRE-ISCRIZIONE
+
+   Ordine delle operazioni, e conta:
+   1) salva su Firebase  → se fallisce, l'utente vede l'errore
+   2) prova a notificare via mail → se fallisce, NON dice nulla
+      all'utente: la richiesta è già al sicuro nel database e
+      i capi la vedranno comunque nel pannello.
+
+   La mail è una comodità, non il registro delle iscrizioni.
+   ═══════════════════════════════════════════════════════════ */
+
+/* Lasciare vuoto per disattivare la notifica via mail.
+   Si compila dopo aver pubblicato lo script (vedi NOTIFICHE-EMAIL.md). */
+const URL_NOTIFICA = '';
+
+const URL_RICHIESTE = `${FIREBASE_CONFIG.databaseURL}/richieste.json`;
+
+function collegaModulo() {
+  const bottone = document.getElementById('f-invia');
+  if (!bottone) return;           // iscrizioni chiuse: nessun modulo in pagina
+  bottone.addEventListener('click', inviaRichiesta);
+}
+
+/* Segna un campo come errato e restituisce false, così la
+   validazione si scrive come una catena di and. */
+function segnala(idCampo, messaggio) {
+  const box = document.getElementById(idCampo);
+  if (!box) return false;
+  box.classList.add('errore');
+  if (!box.querySelector('.msg-errore-f')) {
+    const s = document.createElement('span');
+    s.className = 'msg-errore-f';
+    s.textContent = messaggio;
+    box.appendChild(s);
+  }
+  return false;
+}
+
+function pulisciErrori() {
+  document.querySelectorAll('.campo-form.errore, .consenso-box.errore')
+    .forEach(b => {
+      b.classList.remove('errore');
+      b.querySelector('.msg-errore-f')?.remove();
+    });
+}
+
+async function inviaRichiesta() {
+  pulisciErrori();
+
+  const v = id => (document.getElementById(id)?.value || '').trim();
+
+  const dati = {
+    nomeRagazzo:    v('f-nome'),
+    cognomeRagazzo: v('f-cognome'),
+    dataNascita:    v('f-nascita'),
+    nomeGenitore:   v('f-genitore'),
+    email:          v('f-email'),
+    telefono:       v('f-tel'),
+    note:           v('f-note'),
+    consenso:       document.getElementById('f-consenso').checked,
+    stato:          'nuova',
+    ricevutaIl:     Date.now()
+  };
+
+  /* ─ Campo trappola: se è pieno è un robot.
+       Fingiamo che sia andato tutto bene e non salviamo niente,
+       così chi automatizza non capisce di essere stato scoperto. ─ */
+  if (v('f-sito')) {
+    mostraEsito(true);
+    return;
+  }
+
+  /* ─ Validazione ─ */
+  let ok = true;
+  if (!dati.nomeRagazzo)    ok = segnala('c-nome',     'Inserisci il nome.');
+  if (!dati.cognomeRagazzo) ok = segnala('c-cognome',  'Inserisci il cognome.');
+  if (!dati.nomeGenitore)   ok = segnala('c-genitore', 'Inserisci il nome di un genitore.');
+  if (!dati.email.includes('@') || dati.email.length < 5)
+                            ok = segnala('c-email',    'Controlla l\'indirizzo e-mail.');
+
+  if (!dati.dataNascita) {
+    ok = segnala('c-nascita', 'Inserisci la data di nascita.');
+  } else {
+    const anni = eta(dati.dataNascita);
+    if (anni < 5 || anni > 25) {
+      ok = segnala('c-nascita', 'La data non sembra corretta, ricontrollala.');
+    }
+  }
+
+  if (!dati.consenso) {
+    const box = document.getElementById('c-consenso');
+    box.classList.add('errore');
+    box.style.borderColor = '#c0392b';
+    if (!box.querySelector('.msg-errore-f')) {
+      const s = document.createElement('span');
+      s.className = 'msg-errore-f';
+      s.style.cssText = 'display:block;margin-top:8px;';
+      s.textContent = 'Senza il consenso non possiamo registrare la richiesta.';
+      box.appendChild(s);
+    }
+    ok = false;
+  }
+
+  if (!ok) {
+    document.querySelector('.campo-form.errore, .consenso-box.errore')
+      ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
+  /* ─ Invio ─ */
+  const bottone = document.getElementById('f-invia');
+  bottone.disabled = true;
+  bottone.textContent = 'Invio in corso…';
+
+  try {
+    const risposta = await fetch(URL_RICHIESTE, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(dati)
+    });
+
+    if (!risposta.ok) throw new Error('HTTP ' + risposta.status);
+
+    mostraEsito(true);
+    notifica(dati);          // volutamente non atteso: se fallisce, pazienza
+
+  } catch (errore) {
+    console.error('[PT] invio richiesta fallito:', errore);
+    bottone.disabled = false;
+    bottone.textContent = 'Invia la pre-iscrizione';
+    mostraEsito(false);
+  }
+}
+
+/* Notifica ai capi. Non blocca nulla e non segnala errori
+   all'utente: la richiesta è già salvata. */
+function notifica(dati) {
+  if (!URL_NOTIFICA) return;
+  fetch(URL_NOTIFICA, {
+    method: 'POST',
+    mode:   'no-cors',
+    headers:{ 'Content-Type': 'text/plain;charset=utf-8' },
+    body:   JSON.stringify(dati)
+  }).catch(e => console.warn('[PT] notifica non inviata:', e.message));
+}
+
+function eta(iso) {
+  const n = new Date(iso), o = new Date();
+  let a = o.getFullYear() - n.getFullYear();
+  const m = o.getMonth() - n.getMonth();
+  if (m < 0 || (m === 0 && o.getDate() < n.getDate())) a--;
+  return a;
+}
+
+function mostraEsito(riuscito) {
+  const box = document.getElementById('modulo-box');
+  if (!box) return;
+
+  if (riuscito) {
+    box.innerHTML = `<div class="esito-invio esito-ok">
+      <h4>✓ Richiesta ricevuta</h4>
+      <p>Grazie, abbiamo registrato la pre-iscrizione. Vi contatteremo via e-mail
+      con i dettagli della riunione informativa.</p>
+      <p style="margin-top:8px;">Se non ricevete nulla entro un paio di settimane,
+      scriveteci a <a href="mailto:pinotorinese1@piemonte.agesci.it" style="color:#155724;font-weight:600;">pinotorinese1@piemonte.agesci.it</a>.</p>
+    </div>`;
+    box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  } else {
+    const g = document.createElement('div');
+    g.className = 'esito-invio esito-ko';
+    g.style.marginTop = '1rem';
+    g.innerHTML = `<h4>Invio non riuscito</h4>
+      <p>Qualcosa è andato storto e la richiesta non è stata salvata.
+      Riprova tra poco, oppure scrivici direttamente a
+      <a href="mailto:pinotorinese1@piemonte.agesci.it" style="color:#721c24;font-weight:600;">pinotorinese1@piemonte.agesci.it</a>.</p>`;
+    box.querySelector('.esito-ko')?.remove();
+    box.insertBefore(g, box.querySelector('.informativa'));
+  }
+}
+
 /* ─── AVVIO ─── */
 async function avvia() {
   DATA.capi.length = 0;
@@ -903,6 +1221,10 @@ async function avvia() {
   renderCapi();
   renderIscrizioni();
   renderAvvisi();
+
+  // Il modulo esiste solo se le iscrizioni sono aperte:
+  // va collegato dopo il render, non prima.
+  collegaModulo();
 
   if (!DATA.online) {
     console.info('[PT] Pagina servita con i contenuti di riserva.');
