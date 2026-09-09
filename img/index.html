@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gruppo Scout Pino Torinese 1 | Anno 2026-27</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --verde: #1a3a2a;
+  --verde-medio: #2d5e42;
+  --verde-chiaro: #4a8c63;
+  --avorio: #f7f4ed;
+  --avorio-scuro: #ede9de;
+  --fuoco: #e8692a;
+  --fuoco-chiaro: #f28a50;
+  --testo: #1c2b20;
+  --testo-muted: #5a6e5f;
+  --bianco: #ffffff;
+  --giallo-scout: #f5c800;
+  --verde-scout: #2e7d32;
+  --tricolore-rosso: #ce2b37;
+}
+html { scroll-behavior: smooth; }
+body { font-family: 'Inter', sans-serif; background: var(--avorio); color: var(--testo); line-height: 1.7; }
+
+/* PAGE SYSTEM */
+.page { display: none; }
+.page.active { display: block; }
+
+/* NAV */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--verde); padding: 0 2rem;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 72px; border-bottom: 3px solid var(--fuoco);
+}
+.nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; cursor: pointer; }
+.nav-logo { height: 42px; width: auto; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.nav-logo img { height: 42px; width: auto; display: block; }
+  .logo-ripiego { background: var(--fuoco); color: #fff; font-weight: 700; font-size: 0.82rem; padding: 9px 10px; border-radius: 8px; letter-spacing: 0.04em; }
+.nav-title { color: white; font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; line-height: 1.2; }
+.nav-title span { display: block; font-size: 0.72rem; font-weight: 400; opacity: 0.75; font-family: 'Inter', sans-serif; letter-spacing: 0.08em; text-transform: uppercase; }
+.nav-links { display: flex; gap: 0; list-style: none; align-items: center; }
+.nav-links li { position: relative; }
+.nav-links > li > a, .nav-links > li > span {
+  color: rgba(255,255,255,0.75); text-decoration: none; font-size: 0.82rem;
+  letter-spacing: 0.04em; font-weight: 500; transition: color 0.2s;
+  padding: 0 14px; height: 72px; display: flex; align-items: center; cursor: pointer;
+}
+.nav-links > li > a:hover, .nav-links > li > span:hover { color: var(--fuoco-chiaro); }
+.nav-links > li > a.active, .nav-links > li > span.active { color: white; border-bottom: 3px solid var(--fuoco); }
+.dropdown { display: none; position: absolute; top: 72px; left: 0; background: var(--verde); min-width: 200px; border-top: 2px solid var(--fuoco); z-index: 200; }
+.nav-links li:hover .dropdown { display: block; }
+.dropdown a { display: block; padding: 10px 18px; color: rgba(255,255,255,0.75); text-decoration: none; font-size: 0.8rem; transition: all 0.15s; cursor: pointer; }
+.dropdown a:hover { background: var(--verde-medio); color: white; }
+.hamburger { display: none; background: none; border: none; cursor: pointer; padding: 8px; }
+.hamburger span { display: block; width: 24px; height: 2px; background: white; margin: 5px 0; transition: 0.3s; }
+
+/* FAZZOLETTONE separatore hero (verde | bianco | giallo scout) */
+.fazzolettone { width: 100%; height: 8px; background: linear-gradient(90deg, var(--verde-scout) 0%, var(--verde-scout) 50%, var(--giallo-scout) 50%, var(--giallo-scout) 100%); }
+
+/* HERO */
+.hero { background: var(--verde); position: relative; overflow: hidden; padding: 5rem 2rem 4rem; text-align: center; }
+.hero::before { content: ''; position: absolute; inset: 0; background-image: repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.015) 40px, rgba(255,255,255,0.015) 80px); }
+.hero-eyebrow { display: inline-block; background: var(--fuoco); color: white; font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600; padding: 6px 16px; border-radius: 2px; margin-bottom: 1.5rem; position: relative; }
+.hero h1 { font-family: 'Playfair Display', serif; color: white; font-size: clamp(2.2rem, 5vw, 3.8rem); font-weight: 900; line-height: 1.1; margin-bottom: 1.25rem; position: relative; }
+.hero p { color: rgba(255,255,255,0.65); font-size: 1.05rem; max-width: 560px; margin: 0 auto 2rem; line-height: 1.75; position: relative; }
+.hero-stats { display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; position: relative; margin-top: 1rem; }
+.stat-box { text-align: center; }
+.stat-num { font-family: 'Playfair Display', serif; font-size: 2.8rem; font-weight: 900; color: var(--fuoco); line-height: 1; }
+.stat-label { font-size: 0.75rem; color: rgba(255,255,255,0.55); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 4px; }
+.hero-cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 2rem; position: relative; }
+.btn-primary { background: var(--fuoco); color: white; padding: 12px 28px; border-radius: 4px; text-decoration: none; font-weight: 600; font-size: 0.9rem; letter-spacing: 0.03em; transition: background 0.2s; cursor: pointer; border: none; }
+.btn-primary:hover { background: var(--fuoco-chiaro); }
+.btn-secondary { background: transparent; color: white; padding: 12px 28px; border-radius: 4px; border: 1.5px solid rgba(255,255,255,0.4); text-decoration: none; font-weight: 500; font-size: 0.9rem; transition: all 0.2s; cursor: pointer; }
+.btn-secondary:hover { border-color: white; background: rgba(255,255,255,0.08); }
+
+/* CONTENT */
+.container { max-width: 960px; margin: 0 auto; padding: 0 2rem; }
+.section { padding: 4rem 0; }
+.section-label { display: flex; align-items: center; gap: 16px; margin-bottom: 1.5rem; }
+.section-label h3 { font-family: 'Playfair Display', serif; font-size: 1.35rem; color: var(--verde); font-weight: 700; white-space: nowrap; }
+.section-label .line { flex: 1; height: 1px; background: var(--avorio-scuro); }
+.section-label .badge { background: var(--verde); color: white; font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600; padding: 4px 12px; border-radius: 2px; }
+
+/* CARDS */
+.cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; margin-bottom: 2.5rem; }
+.card { background: var(--bianco); border-radius: 10px; overflow: hidden; border: 1px solid var(--avorio-scuro); transition: transform 0.2s, box-shadow 0.2s; }
+.card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(26,58,42,0.12); }
+.card.featured { border-color: var(--fuoco); border-width: 2px; }
+.card-photo { width: 100%; aspect-ratio: 3/2; background: var(--avorio-scuro); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.card-photo img { width: 100%; height: 100%; object-fit: cover; object-position: top; filter: grayscale(20%); }
+.card-photo .initials { width: 56px; height: 56px; border-radius: 50%; background: var(--verde-medio); color: white; font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+.card-body { padding: 12px 14px 14px; }
+.card-role { font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600; color: var(--verde); margin-bottom: 4px; }
+.card-name { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; color: var(--verde); line-height: 1.2; }
+
+/* BRANCHE CARDS (homepage + gruppo) */
+.branche-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+.branca-card { background: var(--bianco); border-radius: 12px; border: 1px solid var(--avorio-scuro); overflow: hidden; cursor: pointer; transition: all 0.2s; }
+.branca-card:hover { transform: translateY(-5px); box-shadow: 0 16px 40px rgba(26,58,42,0.13); }
+.branca-card-top { padding: 28px 24px 20px; }
+.branca-card-top .age-badge { display: inline-block; background: var(--avorio); color: var(--verde); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; padding: 4px 10px; border-radius: 2px; border: 1px solid var(--verde); margin-bottom: 14px; }
+.branca-card-top h3 { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700; color: var(--verde); line-height: 1.2; margin-bottom: 8px; }
+.branca-card-top p { font-size: 0.88rem; color: var(--testo-muted); line-height: 1.65; }
+.branca-card-bottom { padding: 14px 24px; background: var(--verde); display: flex; align-items: center; justify-content: space-between; }
+.branca-card-bottom span { color: white; font-size: 0.82rem; font-weight: 500; }
+.branca-card-bottom .arrow { color: var(--fuoco-chiaro); font-size: 1.1rem; }
+
+/* INFO BOXES */
+.info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+.info-box { background: var(--bianco); border-radius: 10px; border: 1px solid var(--avorio-scuro); padding: 28px; }
+.info-box h4 { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--verde); font-weight: 700; margin-bottom: 12px; }
+.info-box p, .info-box a { font-size: 0.9rem; color: var(--testo-muted); line-height: 1.8; text-decoration: none; display: block; }
+.info-box a:hover { color: var(--fuoco); }
+.info-box .highlight { color: var(--fuoco); font-weight: 600; font-size: 0.85rem; letter-spacing: 0.04em; }
+
+/* ISCRIZIONI PAGE */
+.iscrizioni-banner { background: var(--verde); color: white; border-radius: 12px; padding: 32px 36px; margin-bottom: 2rem; }
+.iscrizioni-banner .open-badge { display: inline-block; background: var(--fuoco); color: white; font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; padding: 5px 14px; border-radius: 2px; margin-bottom: 16px; }
+.iscrizioni-banner h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 700; margin-bottom: 12px; }
+.iscrizioni-banner p { color: rgba(255,255,255,0.75); font-size: 0.95rem; line-height: 1.75; max-width: 600px; }
+.steps { display: flex; flex-direction: column; gap: 16px; margin: 2rem 0; }
+.step { display: flex; gap: 20px; align-items: flex-start; background: var(--bianco); border-radius: 10px; padding: 20px 24px; border: 1px solid var(--avorio-scuro); }
+.step-num { width: 36px; height: 36px; background: var(--fuoco); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; flex-shrink: 0; margin-top: 2px; }
+.step h4 { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--verde); font-weight: 700; margin-bottom: 4px; }
+.step p { font-size: 0.88rem; color: var(--testo-muted); line-height: 1.6; }
+
+/* DOVE SIAMO */
+.map-placeholder { background: var(--verde-medio); border-radius: 10px; aspect-ratio: 16/7; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: rgba(255,255,255,0.6); font-size: 0.9rem; margin-bottom: 2rem; }
+.contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+.contact-item { background: var(--bianco); border-radius: 10px; padding: 20px 24px; border: 1px solid var(--avorio-scuro); }
+.contact-item .label { font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fuoco); font-weight: 600; margin-bottom: 6px; }
+.contact-item .value { font-size: 0.95rem; color: var(--testo); font-weight: 500; }
+.contact-item a { color: var(--verde); text-decoration: none; }
+.contact-item a:hover { color: var(--fuoco); }
+
+/* SECTION TEXT */
+.section-text { max-width: 680px; }
+.section-text h2 { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--verde); font-weight: 700; margin-bottom: 1rem; line-height: 1.25; }
+.section-text h2 em { color: var(--fuoco); font-style: normal; }
+.section-text p { color: var(--testo-muted); font-size: 0.95rem; margin-bottom: 1rem; line-height: 1.75; }
+.section-text .quote { border-left: 3px solid var(--fuoco); padding-left: 20px; margin: 1.5rem 0; font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.05rem; color: var(--verde); line-height: 1.6; }
+
+/* HOME HERO IMAGE STRIP */
+.img-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; height: 220px; overflow: hidden; border-radius: 10px; margin: 2rem 0; }
+.img-strip-item { background: var(--verde-medio); display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.3); font-size: 0.8rem; }
+.img-strip-item img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.85); }
+
+/* DIVIDER */
+.divider { height: 1px; background: var(--avorio-scuro); margin: 1rem 0; }
+
+/* FOOTER */
+footer { background: var(--verde); color: rgba(255,255,255,0.7); padding: 3rem 2rem; margin-top: 5rem; }
+.footer-inner { max-width: 960px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2rem; }
+footer h4 { color: white; font-family: 'Playfair Display', serif; font-weight: 700; margin-bottom: 1rem; font-size: 1rem; }
+footer p, footer a { font-size: 0.85rem; line-height: 1.8; color: rgba(255,255,255,0.6); text-decoration: none; }
+footer a:hover { color: var(--fuoco-chiaro); }
+.footer-bottom { max-width: 960px; margin: 2rem auto 0; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; color: rgba(255,255,255,0.4); flex-wrap: wrap; gap: 8px; }
+.social-links { display: flex; gap: 10px; }
+.social-links a { width: 32px; height: 32px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.6); font-size: 0.72rem; text-decoration: none; transition: all 0.2s; font-weight: 600; }
+.social-links a:hover { border-color: var(--fuoco); color: var(--fuoco); }
+
+/* TOTEM RIBBON top */
+.totem-ribbon { width: 100%; height: 4px; display: flex; position: relative; z-index: 200; }
+.totem-ribbon span { flex: 1; display: block; }
+.totem-ribbon .t-verde { background: var(--verde-scout); }
+.totem-ribbon .t-bianco { background: #ffffff; }
+.totem-ribbon .t-giallo { background: var(--giallo-scout); }
+
+/* TRICOLORE footer */
+.tricolore-bar { width: 100%; height: 3px; display: flex; }
+.tricolore-bar span { flex: 1; display: block; }
+.tricolore-bar .tr-verde { background: #009246; }
+.tricolore-bar .tr-bianco { background: #ffffff; }
+.tricolore-bar .tr-rosso { background: var(--tricolore-rosso); }
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .nav-links.open { display: flex; flex-direction: column; position: absolute; top: 72px; left: 0; right: 0; background: var(--verde); padding: 1rem 0; z-index: 300; gap: 0; }
+  .nav-links.open > li > a, .nav-links.open > li > span { height: auto; padding: 12px 24px; }
+  .nav-links.open .dropdown { display: block; position: static; border-top: none; border-left: 3px solid var(--fuoco); margin-left: 24px; }
+  .hamburger { display: block; }
+  .footer-inner { grid-template-columns: 1fr; }
+  .hero-stats { gap: 1.2rem; }
+  .img-strip { height: 140px; }
+}
+/* ── AVVISI (home) ── */
+.avviso { background:#fff8e1; border:1px solid #ffe082; border-left:4px solid var(--fuoco); border-radius:8px; padding:16px 20px; margin-bottom:12px; }
+.avviso h4 { font-family:'Playfair Display',serif; font-size:1rem; color:#5d4037; margin-bottom:4px; }
+.avviso p { font-size:0.88rem; color:#6d4c41; line-height:1.65; }
+
+/* ── STATO CARICAMENTO ── */
+.caricamento { text-align:center; padding:2rem 1rem; color:var(--testo-muted); font-size:0.88rem; }
+.offline-nota { background:var(--avorio-scuro); border-radius:6px; padding:8px 12px; font-size:0.76rem; color:var(--testo-muted); margin-bottom:1rem; text-align:center; }
+
+/* ── ISCRIZIONI CHIUSE ── */
+.iscrizioni-banner.chiuse { background:var(--testo-muted); }
+.iscrizioni-banner .closed-badge { display:inline-block; background:rgba(255,255,255,0.2); color:#fff; font-size:0.7rem; letter-spacing:0.12em; text-transform:uppercase; font-weight:700; padding:5px 14px; border-radius:2px; margin-bottom:16px; }
+
+/* ── MODULO ISCRIZIONE ── */
+.modulo { background:#fff; border:1px solid var(--avorio-scuro); border-radius:12px; padding:28px; margin-top:2rem; }
+.modulo h3 { font-family:'Playfair Display',serif; font-size:1.25rem; color:var(--verde); margin-bottom:6px; }
+.modulo > p.intro { font-size:0.88rem; color:var(--testo-muted); margin-bottom:1.5rem; }
+.campo-form { display:flex; flex-direction:column; gap:5px; margin-bottom:16px; }
+.campo-form label { font-size:0.75rem; font-weight:600; color:var(--testo-muted); letter-spacing:0.04em; text-transform:uppercase; }
+.campo-form label .req { color:var(--fuoco); }
+.campo-form input, .campo-form textarea, .campo-form select {
+  padding:10px 12px; border:1px solid var(--avorio-scuro); border-radius:6px; font-size:0.92rem;
+  font-family:'Inter',sans-serif; color:var(--testo); background:#fff; outline:none; transition:border 0.15s; width:100%;
+}
+.campo-form input:focus, .campo-form textarea:focus, .campo-form select:focus {
+  border-color:var(--verde-medio); box-shadow:0 0 0 3px rgba(45,94,66,0.1);
+}
+.campo-form textarea { resize:vertical; min-height:80px; line-height:1.6; }
+.campo-form .aiuto-f { font-size:0.75rem; color:var(--testo-muted); }
+.campo-form.errore input, .campo-form.errore textarea { border-color:#c0392b; }
+.campo-form .msg-errore-f { font-size:0.75rem; color:#c0392b; font-weight:500; }
+.riga-form { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.consenso-box { background:var(--avorio); border:1px solid var(--avorio-scuro); border-radius:8px; padding:14px 16px; margin:1.25rem 0; }
+.consenso-box label { display:flex; gap:10px; align-items:flex-start; cursor:pointer; font-size:0.84rem; line-height:1.6; color:var(--testo); }
+.consenso-box input[type=checkbox] { width:auto; margin-top:3px; flex-shrink:0; }
+.consenso-box a { color:var(--fuoco); }
+.trappola { position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden; }
+.esito-invio { border-radius:8px; padding:16px 18px; font-size:0.9rem; line-height:1.6; }
+.esito-ok { background:#d4edda; border:1px solid #c3e6cb; color:#155724; }
+.esito-ko { background:#f8d7da; border:1px solid #f5c6cb; color:#721c24; }
+.esito-invio h4 { font-family:'Playfair Display',serif; font-size:1.05rem; margin-bottom:4px; }
+
+/* ── INFORMATIVA ── */
+.informativa { background:var(--avorio); border-left:3px solid var(--verde-medio); border-radius:6px; padding:16px 18px; margin-top:1.5rem; font-size:0.8rem; color:var(--testo-muted); line-height:1.7; }
+.informativa h4 { font-size:0.75rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--verde); font-weight:700; margin-bottom:8px; }
+.informativa p { margin-bottom:8px; }
+.informativa p:last-child { margin-bottom:0; }
+
+@media (max-width:640px){ .riga-form { grid-template-columns:1fr; } .modulo { padding:20px 18px; } }
+
+/* ── FASCIA "IN RISTRUTTURAZIONE" ──
+   Temporanea: per toglierla basta eliminare questo blocco,
+   il markup .fascia-lavori e la sua riga di script in fondo. */
+.fascia-lavori { background:#fff3cd; border-bottom:1px solid #ffe082; padding:9px 16px; display:flex; align-items:center; gap:10px; font-size:0.83rem; color:#6d4c41; }
+.fascia-lavori .testo { flex:1; line-height:1.5; }
+.fascia-lavori strong { color:#e65100; }
+.fascia-lavori button { background:none; border:none; cursor:pointer; color:#8d6e63; font-size:1rem; padding:2px 6px; border-radius:4px; flex-shrink:0; line-height:1; }
+.fascia-lavori button:hover { background:rgba(0,0,0,0.06); color:#5d4037; }
+@media (max-width:640px){ .fascia-lavori { font-size:0.78rem; padding:8px 12px; } }
+
+/* ── MOBILE ── */
+</style>
+</head>
+<body>
+
+<!-- Fascia temporanea: rimuovere quando il sito è a regime -->
+<div class="fascia-lavori" id="fascia-lavori">
+  <span aria-hidden="true">🚧</span>
+  <div class="testo"><strong>Sito in ristrutturazione.</strong> Stiamo rifacendo le pagine: alcune informazioni potrebbero essere incomplete o non aggiornate. Per qualsiasi cosa scrivi a <a href="mailto:pinotorinese1@piemonte.agesci.it" style="color:#e65100;">pinotorinese1@piemonte.agesci.it</a></div>
+  <button onclick="chiudiFascia()" title="Nascondi" aria-label="Nascondi avviso">✕</button>
+</div>
+
+<!-- FAZZOLETTONE ASSOCIATIVO RIBBON -->
+<div class="totem-ribbon" aria-hidden="true"><span class="t-verde"></span><span class="t-giallo"></span></div>
+
+<!-- NAVIGATION -->
+<nav id="main-nav">
+  <a class="nav-brand" onclick="showPage('home')">
+    <div class="nav-logo">
+      <!-- Logo ufficiale AGESCI. Se ottieni la versione vettoriale
+           dai riferimenti di zona, sostituisci il file con img/agesci.svg -->
+      <img src="img/agesci.png" alt="AGESCI"
+           onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'PT1',className:'logo-ripiego'}))">
+    </div>
+    <div class="nav-title">Pino Torinese 1 <span>Gruppo Scout AGESCI</span></div>
+  </a>
+  <ul class="nav-links" id="nav-links">
+    <li><a onclick="showPage('home')" data-page="home">Home</a></li>
+    <li>
+      <span onclick="showPage('gruppo')" data-page="gruppo">Il Gruppo ▾</span>
+      <div class="dropdown">
+        <a onclick="showPage('coca')">Comunità Capi</a>
+        <a onclick="showPage('branco')">Branco Mirfak</a>
+        <a onclick="showPage('reparto')">Reparto Everest</a>
+        <a onclick="showPage('clan')">Clan Zebrù</a>
+        <a onclick="showPage('noviziato')">Noviziato Silmaril</a>
+      </div>
+    </li>
+    <li><a onclick="showPage('iscrizioni')" data-page="iscrizioni">Iscrizioni</a></li>
+    <li><a onclick="showPage('dove')" data-page="dove">Dove siamo</a></li>
+  </ul>
+  <button class="hamburger" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ===================== HOME ===================== -->
+<div id="page-home" class="page active">
+  <div class="fazzolettone"></div>
+  <div class="hero">
+    <div class="hero-eyebrow">Dal 1972 · Pino Torinese · AGESCI</div>
+    <h1>Gruppo Scout<br>Pino Torinese 1</h1>
+    <p>Avventura, crescita e servizio nel cuore delle colline torinesi. Bambini, ragazzi e giovani che imparano a guardare il mondo con occhi aperti.</p>
+    <div class="hero-stats">
+      <div class="stat-box"><div class="stat-num">109</div><div class="stat-label">Iscritti</div></div>
+      <div class="stat-box"><div class="stat-num">17</div><div class="stat-label">Capi</div></div>
+      <div class="stat-box"><div class="stat-num">3</div><div class="stat-label">Branche</div></div>
+      <div class="stat-box"><div class="stat-num">1972</div><div class="stat-label">Anno di fondazione</div></div>
+    </div>
+    <div class="hero-cta">
+      <button class="btn-primary" onclick="showPage('iscrizioni')">Iscriviti al gruppo</button>
+      <button class="btn-secondary" onclick="showPage('gruppo')">Scopri il gruppo</button>
+    </div>
+  </div>
+  <div class="fazzolettone"></div>
+
+  <div class="container">
+    <div class="section">
+      <div class="img-strip">
+        <div class="img-strip-item"><img src="img/home-natura.jpg" alt="Scout in natura" onerror="this.style.display='none'"></div>
+        <div class="img-strip-item"><img src="img/home-coca.jpg" alt="Comunità capi" onerror="this.style.display='none'"></div>
+        <div class="img-strip-item"><img src="img/home-clan.jpg" alt="Clan" onerror="this.style.display='none'"></div>
+      </div>
+
+      <div id="blocco-avvisi"></div>
+
+      <div class="section-text" style="margin-bottom:2.5rem;">
+        <h2>Lo scautismo a <em>Pino Torinese</em></h2>
+        <p>Il Gruppo Scout Pino Torinese 1 è attivo dal 1972 e fa parte dell'AGESCI, l'Associazione Guide e Scout Cattolici Italiani. Ogni anno accoglie bambini, ragazzi e giovani dai 7 ai 21 anni, accompagnandoli in un percorso educativo fatto di attività all'aperto, servizio, amicizia e valori.</p>
+        <div class="quote">"Lascia il mondo un po' migliore di come lo hai trovato." — Robert Baden-Powell</div>
+      </div>
+
+      <div class="section-label">
+        <h3>Le nostre branche</h3>
+        <div class="line"></div>
+        <div class="badge">Chi siamo</div>
+      </div>
+      <div class="branche-grid">
+        <div class="branca-card" onclick="showPage('branco')">
+          <div class="branca-card-top">
+            <div class="age-badge">7–11 anni</div>
+            <h3>Branco Mirfak</h3>
+            <p>Cuccioli e coccinelle che scoprono la natura e l'amicizia nel bosco della giungla, ispirati al Libro della Giungla.</p>
+          </div>
+          <div class="branca-card-bottom"><span>Scopri il Branco</span><span class="arrow">→</span></div>
+        </div>
+        <div class="branca-card" onclick="showPage('reparto')">
+          <div class="branca-card-top">
+            <div class="age-badge">11–16 anni</div>
+            <h3>Reparto Everest</h3>
+            <p>Esploratori e guide che si misurano con sfide reali, costruiscono la propria identità e imparano a lavorare in squadriglia.</p>
+          </div>
+          <div class="branca-card-bottom"><span>Scopri il Reparto</span><span class="arrow">→</span></div>
+        </div>
+        <div class="branca-card" onclick="showPage('noviziato')">
+          <div class="branca-card-top">
+            <div class="age-badge">16–17 anni</div>
+            <h3>Noviziato Silmaril</h3>
+            <p>Un anno di transizione e riflessione, in cui il giovane si prepara al cammino rover scoprendo la propria vocazione al servizio.</p>
+          </div>
+          <div class="branca-card-bottom"><span>Scopri il Noviziato</span><span class="arrow">→</span></div>
+        </div>
+        <div class="branca-card" onclick="showPage('clan')">
+          <div class="branca-card-top">
+            <div class="age-badge">17–21 anni</div>
+            <h3>Clan Zebrù</h3>
+            <p>Rover e scolte che mettono le proprie competenze al servizio della comunità, con autonomia e responsabilità crescenti.</p>
+          </div>
+          <div class="branca-card-bottom"><span>Scopri il Clan</span><span class="arrow">→</span></div>
+        </div>
+      </div>
+
+      <div class="divider" style="margin: 3rem 0;"></div>
+      <div class="info-grid">
+        <div class="info-box" id="home-iscrizioni"></div>
+        <div class="info-box">
+          <h4>📍 Dove ci troviamo</h4>
+          <p>Via Maria Cristina, 13<br>10025 Pino Torinese (TO)</p>
+          <br><button class="btn-secondary" style="font-size:0.82rem; padding:10px 20px; color:var(--verde); border-color:var(--verde);" onclick="showPage('dove')">Raggiungerci →</button>
+        </div>
+        <div class="info-box">
+          <h4>✉️ Contattaci</h4>
+          <a href="mailto:pinotorinese1@piemonte.agesci.it">pinotorinese1@piemonte.agesci.it</a>
+          <p style="margin-top:4px;">Tel: 347 – 6374358</p>
+          <div class="social-links" style="margin-top:14px;">
+            <a href="https://www.instagram.com/clanzebru/" target="_blank">IG</a>
+            <a href="https://www.facebook.com/Gruppo-Scout-Pino-Torinese-1-150108985095296/" target="_blank">FB</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="footer-home"></div>
+</div>
+
+<!-- ===================== IL GRUPPO ===================== -->
+<div id="page-gruppo" class="page">
+  <div class="fazzolettone"></div>
+  <div class="hero">
+    <div class="hero-eyebrow">Gruppo Scout · Pino Torinese 1</div>
+    <h1>Il Nostro Gruppo</h1>
+    <p>Un percorso educativo che accompagna i ragazzi dalla fanciullezza all'età adulta, attraverso quattro tappe di crescita progressiva.</p>
+  </div>
+  <div class="fazzolettone"></div>
+  <div class="container">
+    <div class="section">
+      <div class="section-text" style="margin-bottom: 3rem;">
+        <h2>Un cammino che <em>dura tutta la giovinezza</em></h2>
+        <p>Il metodo scout si articola in quattro branche, ciascuna pensata per le esigenze specifiche di una fascia d'età. Dal Branco dove i più piccoli vivono la fantasia della giungla, fino al Clan dove i giovani adulti si misurano con il servizio reale alla comunità.</p>
+        <p>Ogni fase del cammino è curata da capi formati e appassionati, che si ritrovano regolarmente nella Comunità Capi per progettare e riflettere insieme.</p>
+      </div>
+
+      <div class="section-label"><h3>Tutte le branche</h3><div class="line"></div><div class="badge">Struttura</div></div>
+      <div class="branche-grid" style="margin-bottom:3rem;">
+        <div class="branca-card" onclick="showPage('branco')">
+          <div class="branca-card-top">
+            <div class="age-badge">7–11 anni</div>
+            <h3>Branco Mirfak</h3>
+            <p>La branca Lupetti e Coccinelle vive l'ambiente del Bosco o della Giungla. I bambini si riuniscono in branco e cerchio, ispirati al Libro della Giungla di Kipling.</p>
+          </div>
+          <div class="branca-card-bottom"><span>Vai al Branco</span><span class="arrow">→</span></div>
+        </div>
+        <div class="branca-card" onclick="showPage('reparto')">
+          <div class="branca-card-top">
+            <div class="age-badge">11–16 anni</div>
+            <h3>Reparto Everest</h3>
+            <p>Esploratori e Guide costruiscono una identità solida e imparano a relazionarsi con gli altri. Si organizzano in squadriglie all'interno del reparto.</p>
+          </div>
+          <div class="branca-card-bottom"><span>Vai al Reparto</span><span class="arrow">→</span></div>
+        </div>
+        <div class="branca-card" onclick="showPage('noviziato')">
+          <div class="branca-card-top">
+            <div class="age-badge">16–17 anni</div>
+            <h3>Noviziato Silmaril</h3>
+            <p>Un anno di approfondimento e riflessione, in cui l'esploratore o guida scopre il diverso modo di vivere lo scautismo in un'età di scelte fondamentali.</p>
+          </div>
+          <div class="branca-card-bottom"><span>Vai al Noviziato</span><span class="arrow">→</span></div>
+        </div>
+        <div class="branca-card" onclick="showPage('clan')">
+          <div class="branca-card-top">
+            <div class="age-badge">17–21 anni</div>
+            <h3>Clan Zebrù</h3>
+            <p>La branca Rover/Scolte accompagna i giovani verso l'età adulta: autonomia, capacità di scelta, responsabilità e disponibilità al servizio del prossimo.</p>
+          </div>
+          <div class="branca-card-bottom"><span>Vai al Clan</span><span class="arrow">→</span></div>
+        </div>
+      </div>
+
+      <div class="section-label"><h3>Comunità Capi</h3><div class="line"></div><div class="badge">Chi guida il gruppo</div></div>
+      <div class="info-box" style="margin-bottom:1rem;">
+        <p>La Comunità Capi riunisce tutti i responsabili delle branche. Si incontrano regolarmente per programmare le attività, formarsi e garantire la qualità del percorso educativo proposto ai ragazzi.</p>
+        <br><button class="btn-primary" style="font-size:0.82rem; padding:10px 20px;" onclick="showPage('coca')">Conosci i capi →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== COMUNITÀ CAPI ===================== -->
+<div id="page-coca" class="page">
+  <div class="fazzolettone"></div>
+  <div class="hero">
+    <div class="hero-eyebrow">Gruppo Scout · Pino Torinese 1</div>
+    <h1>Comunità Capi</h1>
+    <p>Le persone che ogni giorno guidano, animano e si prendono cura del nostro gruppo scout. Capi formati, appassionati e dediti alla crescita dei ragazzi.</p>
+  </div>
+  <div class="fazzolettone"></div>
+  <div class="container">
+    <div class="section">
+      <div class="section-text" style="margin-bottom:2.5rem;">
+        <h2>Chi siamo e cosa <em>facciamo</em></h2>
+        <p>La Comunità Capi è il cuore organizzativo del gruppo. Riunisce tutti i capi che, a diverso titolo, animano le attività del Branco, del Reparto, del Clan e del Noviziato.</p>
+        <p>Ci incontriamo regolarmente per programmare, formarci e riflettere sul cammino educativo che proponiamo ai nostri ragazzi, nella cornice dei valori del metodo scout.</p>
+      </div>
+
+      <div id="capi-coca"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== BRANCO ===================== -->
+<div id="page-branco" class="page">
+  <div class="fazzolettone"></div>
+  <div class="hero">
+    <div class="hero-eyebrow">7–11 anni · Branca Lupetti e Coccinelle</div>
+    <h1>Branco Mirfak</h1>
+    <p>Nella giungla del Libro di Kipling, i cuccioli imparano a vivere in branco, a rispettare la legge della giungla e a scoprire la natura come casa grande e meravigliosa.</p>
+  </div>
+  <div class="fazzolettone"></div>
+  <div class="container">
+    <div class="section">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:3rem; align-items:center; margin-bottom:3rem;">
+        <div class="section-text">
+          <h2>La <em>Giungla</em> di Mirfak</h2>
+          <p>La branca Lupetti e Coccinelle si rivolge ai bambini e alle bambine compresi tra gli 8 e gli 11/12 anni e si propone di far vivere loro pienamente la fanciullezza come ricchezza in sé e come fondamento di una autentica vita adulta.</p>
+          <p>In funzione dell'Ambiente fantastico della Giungla, adottato dal nostro gruppo, i bambini si riuniscono in branco. I personaggi del Libro della Giungla di Kipling — Mowgli, Akela, Bagheera, Baloo — fanno da guida al cammino educativo.</p>
+          <div class="quote">"La forza del branco è il lupo, e la forza del lupo è il branco." — Kipling</div>
+        </div>
+        <div>
+          <div style="background:var(--avorio-scuro); border-radius:10px; aspect-ratio:4/3; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+            <img src="img/branco.jpg" alt="Branco" style="width:100%;height:100%;object-fit:cover;border-radius:10px;" onerror="this.parentElement.innerHTML='<span style=color:var(--testo-muted)>Foto del Branco</span>'">
+          </div>
+        </div>
+      </div>
+
+      <div id="capi-branco"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== REPARTO ===================== -->
+<div id="page-reparto" class="page">
+  <div class="fazzolettone"></div>
+  <div class="hero">
+    <div class="hero-eyebrow">11–16 anni · Branca Esploratori e Guide</div>
+    <h1>Reparto Everest</h1>
+    <p>Ragazze e ragazzi che si misurano con sfide reali, costruiscono la propria identità e imparano il valore della squadriglia come cellula viva del gruppo.</p>
+  </div>
+  <div class="fazzolettone"></div>
+  <div class="container">
+    <div class="section">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:3rem; align-items:center; margin-bottom:3rem;">
+        <div>
+          <div style="background:var(--avorio-scuro); border-radius:10px; aspect-ratio:4/3; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+            <img src="img/reparto.jpg" alt="Reparto" style="width:100%;height:100%;object-fit:cover;border-radius:10px;" onerror="this.parentElement.innerHTML='<span style=color:var(--testo-muted)>Foto del Reparto</span>'">
+          </div>
+        </div>
+        <div class="section-text">
+          <h2>Scalare l'<em>Everest</em> insieme</h2>
+          <p>La branca Esploratori e Guide si rivolge ai ragazzi e alle ragazze di età compresa tra gli 11/12 ed i 16 anni e si propone di favorire la realizzazione di una identità solida capace di entrare in relazione con gli altri.</p>
+          <p>I ragazzi e le ragazze si riuniscono in squadriglie — piccoli gruppi autonomi con un caposquadriglia eletto dai pari. Più squadriglie formano il reparto. È nella squadriglia che si impara a decidere, a cooperare e a prendersi cura degli altri.</p>
+          <div class="quote">"Siate preparati." — Motto scout</div>
+        </div>
+      </div>
+
+      <div id="capi-reparto"></div>
+      <div class="info-box" style="margin-top:1rem;">
+        <h4>📸 Gallery foto</h4>
+        <p>Guarda le foto delle attività, delle uscite e dei campi del Reparto Everest.</p>
+        <br><a href="https://pinotorinese1.wixsite.com/scoutpino/foto-gallery" target="_blank" class="btn-primary" style="display:inline-block; font-size:0.82rem; padding:10px 20px; text-decoration:none;">Vai alla gallery →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== CLAN ===================== -->
+<div id="page-clan" class="page">
+  <div class="fazzolettone"></div>
+  <div class="hero">
+    <div class="hero-eyebrow">17–21 anni · Branca Rover e Scolte</div>
+    <h1>Clan Zebrù</h1>
+    <p>Giovani che scelgono di mettersi al servizio della comunità con autonomia, maturità e responsabilità. Lo scautismo vissuto come stile di vita adulto.</p>
+  </div>
+  <div class="fazzolettone"></div>
+  <div class="container">
+    <div class="section">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:3rem; align-items:center; margin-bottom:3rem;">
+        <div class="section-text">
+          <h2>Servire con <em>libertà</em></h2>
+          <p>La Branca Rover/Scolte si rivolge ai giovani e alle giovani di età compresa tra i 16 ed i 20/21 anni e si propone di accompagnarli, nell'impegno dell'autoeducazione, verso una vita adulta caratterizzata da autonomia, maturazione della capacità di scegliere, responsabilità verso se stessi e gli altri, disponibilità al servizio del prossimo.</p>
+          <p>I giovani e le giovani si uniscono in comunità di rover e scolte, articolate in un primo momento chiamato Noviziato e in un secondo chiamato Clan se maschile, Fuoco se femminile, Clan/Fuoco se misto. Il Clan Zebrù è misto.</p>
+          <div class="quote">"Rover: pronto a partire, pronto a servire."</div>
+        </div>
+        <div>
+          <div style="background:var(--avorio-scuro); border-radius:10px; aspect-ratio:4/3; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+            <img src="img/clan.jpg" alt="Clan" style="width:100%;height:100%;object-fit:cover;border-radius:10px;" onerror="this.parentElement.innerHTML='<span style=color:var(--testo-muted)>Foto del Clan</span>'">
+          </div>
+        </div>
+      </div>
+
+      <div id="capi-clan"></div>
+      <div class="info-box" style="margin-top:1rem;">
+        <h4>📸 Gallery Clan</h4>
+        <p>Guarda le foto delle attività e dei campi del Clan Zebrù.</p>
+        <br><a href="https://pinotorinese1.wixsite.com/scoutpino/foto-gallery-clan" target="_blank" class="btn-primary" style="display:inline-block; font-size:0.82rem; padding:10px 20px; text-decoration:none;">Vai alla gallery →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== NOVIZIATO ===================== -->
+<div id="page-noviziato" class="page">
+  <div class="fazzolettone"></div>
+  <div class="hero">
+    <div class="hero-eyebrow">16–17 anni · Transizione al Rover</div>
+    <h1>Noviziato Silmaril</h1>
+    <p>Un anno di soglia, in cui l'esploratore o la guida scopre il diverso modo di vivere lo scautismo e si prepara alle scelte fondamentali dell'età adulta.</p>
+  </div>
+  <div class="fazzolettone"></div>
+  <div class="container">
+    <div class="section">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:3rem; align-items:center; margin-bottom:3rem;">
+        <div>
+          <div style="background:var(--avorio-scuro); border-radius:10px; aspect-ratio:4/3; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+            <img src="img/noviziato.jpg" alt="Noviziato" style="width:100%;height:100%;object-fit:cover;border-radius:10px;" onerror="this.parentElement.innerHTML='<span style=color:var(--testo-muted)>Foto del Noviziato</span>'">
+          </div>
+        </div>
+        <div class="section-text">
+          <h2>La <em>soglia</em> della scelta</h2>
+          <p>Il Noviziato è un periodo, generalmente di un anno, in cui un esploratore o una guida, terminato il suo cammino nel reparto (all'età di circa 16 anni), desidera entrare nella branca dei Rover o delle Scolte.</p>
+          <p>In questo periodo il novizio approfondisce il differente modo di vivere lo scautismo in un'età in cui le scelte divengono fondamentali per la vita dell'adulto. È un anno di ricerca, di domande, di incontro con se stessi e con il senso del servizio.</p>
+          <div class="quote">"Il noviziato non è una prova, è un'apertura."</div>
+        </div>
+      </div>
+
+      <div id="capi-noviziato"></div>
+
+      <div class="info-grid" style="margin-top:2rem;">
+        <div class="info-box">
+          <h4>🔗 Collegamento al Clan</h4>
+          <p>Il Noviziato Silmaril è strettamente collegato al Clan Zebrù. Al termine del noviziato, i giovani vengono accolti nella comunità rover.</p>
+          <br><button class="btn-secondary" style="font-size:0.82rem; padding:10px 20px; color:var(--verde); border-color:var(--verde);" onclick="showPage('clan')">Scopri il Clan →</button>
+        </div>
+        <div class="info-box">
+          <h4>📋 Vuoi unirti?</h4>
+          <p>Se stai per terminare il Reparto e vuoi continuare il cammino scout, contattaci per sapere come iniziare il Noviziato.</p>
+          <br><button class="btn-primary" style="font-size:0.82rem; padding:10px 20px;" onclick="showPage('dove')">Contattaci →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== ISCRIZIONI ===================== -->
+<div id="page-iscrizioni" class="page">
+  <div class="fazzolettone"></div>
+  <div class="hero">
+    <div class="hero-eyebrow">Anno Scout 2026–2027</div>
+    <h1>Iscrizioni</h1>
+    <p>Vuoi far parte del Gruppo Scout Pino Torinese 1? Le pre-iscrizioni per il nuovo anno sono aperte. Scopri come unirti a noi.</p>
+  </div>
+  <div class="fazzolettone"></div>
+  <div class="container">
+    <div class="section">
+      <div id="blocco-iscrizioni"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== DOVE SIAMO ===================== -->
+<div id="page-dove" class="page">
+  <div class="fazzolettone"></div>
+  <div class="hero">
+    <div class="hero-eyebrow">Pino Torinese · Torino Est</div>
+    <h1>Dove siamo</h1>
+    <p>La nostra sede si trova nel cuore di Pino Torinese, sulle colline a est di Torino. Vieni a trovarci!</p>
+  </div>
+  <div class="fazzolettone"></div>
+  <div class="container">
+    <div class="section">
+      <div class="map-placeholder">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span>Via Maria Cristina 13, Pino Torinese</span>
+        <a href="https://maps.google.com/?q=Via+Maria+Cristina+13+Pino+Torinese" target="_blank" style="color:var(--fuoco-chiaro); font-size:0.85rem; text-decoration:none; border:1px solid rgba(255,255,255,0.3); padding:6px 16px; border-radius:4px; margin-top:8px;">Apri in Google Maps →</a>
+      </div>
+
+      <div class="contact-grid">
+        <div class="contact-item">
+          <div class="label">Indirizzo</div>
+          <div class="value">Via Maria Cristina, 13<br>10025 Pino Torinese (TO)</div>
+        </div>
+        <div class="contact-item">
+          <div class="label">E-mail</div>
+          <div class="value"><a href="mailto:pinotorinese1@piemonte.agesci.it">pinotorinese1@piemonte.agesci.it</a></div>
+        </div>
+        <div class="contact-item">
+          <div class="label">Telefono</div>
+          <div class="value"><a href="tel:+393476374358">347 – 6374358</a></div>
+        </div>
+        <div class="contact-item">
+          <div class="label">Codice Fiscale</div>
+          <div class="value">94082090013</div>
+        </div>
+        <div class="contact-item">
+          <div class="label">IBAN</div>
+          <div class="value" style="font-size:0.82rem;">IT88X0359901899<br>050188555956</div>
+        </div>
+        <div class="contact-item">
+          <div class="label">Social</div>
+          <div class="value">
+            <a href="https://www.instagram.com/clanzebru/" target="_blank">Instagram @clanzebru</a><br>
+            <a href="https://www.facebook.com/Gruppo-Scout-Pino-Torinese-1-150108985095296/" target="_blank">Facebook</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER (shared) -->
+<footer id="shared-footer">
+  <div class="footer-inner">
+    <div>
+      <h4>Gruppo Scout Pino Torinese 1</h4>
+      <p>Associato AGESCI<br>Zona Torino Est · Piemonte</p>
+      <p style="margin-top:12px;">Cod. Fiscale: 94082090013</p>
+      <p>IBAN: IT88X0359901899050188555956</p>
+    </div>
+    <div>
+      <h4>Sezioni</h4>
+      <a href="#" onclick="showPage('branco');return false;" style="display:block">Branco Mirfak</a>
+      <a href="#" onclick="showPage('reparto');return false;" style="display:block">Reparto Everest</a>
+      <a href="#" onclick="showPage('noviziato');return false;" style="display:block">Noviziato Silmaril</a>
+      <a href="#" onclick="showPage('clan');return false;" style="display:block">Clan Zebrù</a>
+      <a href="#" onclick="showPage('coca');return false;" style="display:block">Comunità Capi</a>
+    </div>
+    <div>
+      <h4>Contatti</h4>
+      <a href="mailto:pinotorinese1@piemonte.agesci.it">pinotorinese1@piemonte.agesci.it</a>
+      <p style="margin-top:4px;">Tel: 347 – 6374358</p>
+      <p style="margin-top:12px;">Seguici sui social</p>
+      <div class="social-links" style="margin-top:8px;">
+        <a href="https://www.instagram.com/clanzebru/" target="_blank" title="Instagram">IG</a>
+        <a href="https://www.facebook.com/Gruppo-Scout-Pino-Torinese-1-150108985095296/" target="_blank" title="Facebook">FB</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Gruppo Scout Pino Torinese 1 · AGESCI</span>
+    <span>Costruito con ♥ per lo scautismo piemontese</span>
+  </div>
+  <div class="tricolore-bar" aria-hidden="true" style="margin-top:2rem;opacity:0.45;"><span class="tr-verde"></span><span class="tr-bianco"></span><span class="tr-rosso"></span></div>
+</footer>
+
+<script>
+const pages = ['home','gruppo','coca','branco','reparto','clan','noviziato','iscrizioni','dove'];
+const footer = document.getElementById('shared-footer');
+
+function showPage(id) {
+  pages.forEach(p => {
+    const el = document.getElementById('page-' + p);
+    if (el) el.classList.remove('active');
+  });
+  const target = document.getElementById('page-' + id);
+  if (target) {
+    target.classList.add('active');
+    target.appendChild(footer);
+    window.scrollTo(0, 0);
+  }
+  // update nav active
+  document.querySelectorAll('.nav-links a, .nav-links span').forEach(a => {
+    a.classList.remove('active');
+    if (a.dataset && a.dataset.page === id) a.classList.add('active');
+  });
+  // close menu
+  document.getElementById('nav-links').classList.remove('open');
+}
+
+function toggleMenu() {
+  document.getElementById('nav-links').classList.toggle('open');
+}
+
+/* Fascia "in ristrutturazione": una volta chiusa resta nascosta
+   per la sessione, non per sempre. Chi torna domani la rivede,
+   ed è giusto finché il sito è davvero incompleto. */
+if (sessionStorage.getItem('pt-fascia-chiusa')) {
+  document.getElementById('fascia-lavori').style.display = 'none';
+}
+function chiudiFascia() {
+  sessionStorage.setItem('pt-fascia-chiusa', '1');
+  document.getElementById('fascia-lavori').style.display = 'none';
+}
+
+// init footer on home
+document.getElementById('page-home').appendChild(footer);
+</script>
+<script type="module">
+/* ═══════════════════════════════════════════════════════════
+   Contenuti dinamici — Gruppo Scout Pino Torinese 1
+
+   Legge capi, iscrizioni e avvisi da Firebase via API REST.
+   Se il database non risponde entro 5 secondi usa i contenuti
+   di riserva definiti in pt-config.js: il sito resta leggibile
+   invece di mostrare sezioni vuote.
+   ═══════════════════════════════════════════════════════════ */
+import { caricaContenuti, BRANCHE, iniziali, FIREBASE_CONFIG } from './pt-config.js';
+
+/* Fonte unica di verità per la parte dinamica della pagina. */
+const DATA = { capi: [], iscrizioni: {}, avvisi: [], online: false, pronto: false };
+
+/* Quali branche finiscono in quale contenitore.
+   La pagina Comunità Capi le mostra tutte; le pagine di branca
+   mostrano solo la propria. */
+const CONTENITORI = {
+  'capi-coca':      ['gruppo', 'branco', 'reparto', 'noviziato', 'clan'],
+  'capi-branco':    ['branco'],
+  'capi-reparto':   ['reparto'],
+  'capi-clan':      ['clan'],
+  'capi-noviziato': ['noviziato']
+};
+
+/* Neutralizza i caratteri speciali: un cognome con l'apostrofo
+   non deve poter rompere il markup. */
+function esc(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c =>
+    ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+}
+
+/* ─── RENDER CAPI ─── */
+function schedaCapo(c) {
+  const foto = c.foto
+    ? `<img src="${esc(c.foto)}" alt="${esc(c.nome)}" loading="lazy"
+         onerror="this.replaceWith(Object.assign(document.createElement('div'),
+                  {className:'initials',textContent:'${esc(iniziali(c.nome))}'}))">`
+    : `<div class="initials">${esc(iniziali(c.nome))}</div>`;
+
+  return `<div class="card${c.titolare ? ' featured' : ''}">
+    <div class="card-photo">${foto}</div>
+    <div class="card-body">
+      <div class="card-role">${esc(c.ruolo)}</div>
+      <div class="card-name">${esc(c.nome)}</div>
+    </div>
+  </div>`;
+}
+
+function renderCapi() {
+  for (const [idContenitore, branche] of Object.entries(CONTENITORI)) {
+    const box = document.getElementById(idContenitore);
+    if (!box) continue;
+
+    const sezioni = branche.map(idBranca => {
+      const branca = BRANCHE.find(b => b.id === idBranca);
+      const suoi   = DATA.capi.filter(c => c.branca === idBranca);
+      if (!suoi.length) return '';
+
+      // I titolari per primi, poi l'ordine deciso nel pannello.
+      suoi.sort((a, b) =>
+        (b.titolare === true) - (a.titolare === true) ||
+        (a.ordine ?? 99) - (b.ordine ?? 99));
+
+      // Sulle pagine di branca il titolo della sezione è già
+      // nell'intestazione: lo ripetiamo solo dove servono più branche.
+      const titolo = branche.length > 1
+        ? `<div class="section-label">
+             <h3>${esc(branca.nome)}</h3>
+             <div class="line"></div>
+             <div class="badge">${esc(branca.eta)}</div>
+           </div>`
+        : '';
+
+      return titolo + `<div class="cards-grid">${suoi.map(schedaCapo).join('')}</div>`;
+    }).join('');
+
+    box.innerHTML = sezioni || `<div class="caricamento">
+      Elenco capi in aggiornamento.</div>`;
+  }
+}
+
+/* ─── RENDER ISCRIZIONI ─── */
+function renderIscrizioni() {
+  const i = DATA.iscrizioni;
+
+  const box = document.getElementById('blocco-iscrizioni');
+  if (box) {
+    box.innerHTML = i.aperte ? bannerAperte(i) : bannerChiuse(i);
+  }
+
+  // Riquadro riassuntivo in home
+  const home = document.getElementById('home-iscrizioni');
+  if (home) {
+    home.innerHTML = i.aperte
+      ? `<h4>📋 Iscrizioni ${esc(i.anno)}</h4>
+         <p>Le pre-iscrizioni per il nuovo anno scout sono aperte. Compila il modulo online e partecipa alla riunione informativa.</p>
+         <br><button class="btn-primary" style="font-size:0.82rem;padding:10px 20px;" onclick="showPage('iscrizioni')">Vai alle iscrizioni →</button>`
+      : `<h4>📋 Iscrizioni ${esc(i.anno)}</h4>
+         <p>Le pre-iscrizioni sono attualmente chiuse. Scrivici per sapere quando riapriranno.</p>
+         <br><button class="btn-primary" style="font-size:0.82rem;padding:10px 20px;" onclick="showPage('iscrizioni')">Maggiori informazioni →</button>`;
+  }
+}
+
+function bannerAperte(i) {
+  return `
+  <div class="iscrizioni-banner">
+    <div class="open-badge">🟢 Pre-iscrizioni aperte</div>
+    <h2>Anno scout ${esc(i.anno)}</h2>
+    <p>${esc(i.testo)}</p>
+  </div>
+
+  <div class="section-label"><h3>Come iscriversi</h3><div class="line"></div><div class="badge">Procedura</div></div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div>
+        <h4>Compila la pre-iscrizione online</h4>
+        <p>Vai al modulo su <a href="${esc(i.linkModulo)}" target="_blank" rel="noopener" style="color:var(--fuoco);font-weight:500">${esc(etichettaLink(i.linkModulo))}</a> e inserisci i dati del ragazzo o della ragazza. Verifica con cura i dati inseriti.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div>
+        <h4>Partecipa alla riunione informativa</h4>
+        <p>I genitori degli interessati vengono convocati per una riunione di presentazione (${esc(i.dataRiunione)}). È un'occasione per conoscere il gruppo, i capi e le attività.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div>
+        <h4>Conferma e attesa risposta</h4>
+        <p>${esc(i.notaEsito)}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-grid" style="margin-top:2rem;">
+    <div class="info-box">
+      <h4>📅 Riunione informativa</h4>
+      <p>${esc(i.dataRiunione)}</p>
+      <p style="margin-top:8px;">Vi contatteremo con i dettagli dopo la pre-iscrizione.</p>
+    </div>
+    <div class="info-box">
+      <h4>❓ Hai domande?</h4>
+      <p>Scrivici all'indirizzo e-mail del gruppo o telefonaci. Saremo felici di risponderti.</p>
+      <a href="mailto:pinotorinese1@piemonte.agesci.it" style="color:var(--fuoco);font-weight:500;font-size:0.9rem;">pinotorinese1@piemonte.agesci.it</a>
+      <p style="margin-top:4px;">Tel: 347 – 6374358</p>
+    </div>
+    <div class="info-box">
+      <h4>🏕️ Per quale branca?</h4>
+      <p style="margin-bottom:6px;"><strong style="color:var(--verde)">Branco Mirfak</strong> — 7 / 11 anni</p>
+      <p style="margin-bottom:6px;"><strong style="color:var(--verde)">Reparto Everest</strong> — 11 / 16 anni</p>
+      <p><strong style="color:var(--verde)">Clan Zebrù</strong> — 16 / 21 anni</p>
+    </div>
+  </div>
+
+  <div class="section-label" style="margin-top:3rem;">
+    <h3>Modulo di pre-iscrizione</h3><div class="line"></div><div class="badge">Compila online</div>
+  </div>
+
+  <div class="modulo" id="modulo-box">
+    <h3>Pre-iscrizione anno ${esc(i.anno)}</h3>
+    <p class="intro">Chiediamo solo i dati necessari a ricontattarvi. Tutti i campi con <span style="color:var(--fuoco)">*</span> sono obbligatori.</p>
+
+    <div class="riga-form">
+      <div class="campo-form" id="c-nome">
+        <label for="f-nome">Nome del ragazzo/a <span class="req">*</span></label>
+        <input type="text" id="f-nome" autocomplete="off" maxlength="60">
+      </div>
+      <div class="campo-form" id="c-cognome">
+        <label for="f-cognome">Cognome <span class="req">*</span></label>
+        <input type="text" id="f-cognome" autocomplete="off" maxlength="60">
+      </div>
+    </div>
+
+    <div class="campo-form" id="c-nascita" style="max-width:260px;">
+      <label for="f-nascita">Data di nascita <span class="req">*</span></label>
+      <input type="date" id="f-nascita">
+      <span class="aiuto-f">Ci serve per capire in quale branca inserirlo.</span>
+    </div>
+
+    <div class="campo-form" id="c-genitore">
+      <label for="f-genitore">Nome e cognome del genitore <span class="req">*</span></label>
+      <input type="text" id="f-genitore" autocomplete="off" maxlength="80">
+    </div>
+
+    <div class="riga-form">
+      <div class="campo-form" id="c-email">
+        <label for="f-email">E-mail <span class="req">*</span></label>
+        <input type="email" id="f-email" autocomplete="off" maxlength="120">
+      </div>
+      <div class="campo-form" id="c-tel">
+        <label for="f-tel">Telefono</label>
+        <input type="tel" id="f-tel" autocomplete="off" maxlength="30">
+      </div>
+    </div>
+
+    <div class="campo-form">
+      <label for="f-note">C'è qualcosa che dovremmo sapere?</label>
+      <textarea id="f-note" maxlength="800" placeholder="Allergie, esigenze particolari, fratelli già nel gruppo, come ci avete conosciuti…"></textarea>
+    </div>
+
+    <!-- Campo trappola: invisibile agli umani, i robot lo compilano -->
+    <div class="trappola" aria-hidden="true">
+      <label for="f-sito">Non compilare questo campo</label>
+      <input type="text" id="f-sito" tabindex="-1" autocomplete="off">
+    </div>
+
+    <div class="consenso-box" id="c-consenso">
+      <label>
+        <input type="checkbox" id="f-consenso">
+        <span>Ho letto l'informativa qui sotto e acconsento al trattamento dei dati per la gestione della pre-iscrizione. <span style="color:var(--fuoco)">*</span></span>
+      </label>
+    </div>
+
+    <button class="btn-primary" id="f-invia" style="border:none;cursor:pointer;font-family:inherit;">Invia la pre-iscrizione</button>
+
+    <div class="informativa">
+      <h4>Informativa sul trattamento dei dati</h4>
+      <p><strong>Titolare:</strong> Gruppo Scout AGESCI Pino Torinese 1, Via Maria Cristina 13, Pino Torinese (TO) — C.F. 94082090013 — pinotorinese1@piemonte.agesci.it</p>
+      <p><strong>Finalità e base giuridica:</strong> i dati servono unicamente a gestire la richiesta di pre-iscrizione e a ricontattarvi. Il trattamento si fonda sul consenso che prestate spuntando la casella qui sopra.</p>
+      <p><strong>Chi vi accede:</strong> solo i capi del gruppo incaricati delle iscrizioni. I dati non vengono comunicati a terzi né usati per altri scopi.</p>
+      <p><strong>Dove stanno:</strong> su un database Google Firebase con server in Belgio, quindi all'interno dell'Unione Europea.</p>
+      <p><strong>Per quanto tempo:</strong> le richieste non accolte vengono cancellate entro tre mesi dalla chiusura delle iscrizioni. Quelle accolte confluiscono nella normale gestione dei soci.</p>
+      <p><strong>I vostri diritti:</strong> potete chiedere in qualsiasi momento di accedere ai dati, correggerli o cancellarli, e revocare il consenso, scrivendo all'indirizzo del gruppo.</p>
+    </div>
+  </div>`;
+}
+
+function bannerChiuse(i) {
+  return `
+  <div class="iscrizioni-banner chiuse">
+    <div class="closed-badge">Pre-iscrizioni chiuse</div>
+    <h2>Anno scout ${esc(i.anno)}</h2>
+    <p>Al momento non raccogliamo nuove pre-iscrizioni. Scrivici comunque: ti avvisiamo appena riaprono.</p>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-box">
+      <h4>✉️ Restiamo in contatto</h4>
+      <p>Mandaci una mail e ti ricontattiamo quando le iscrizioni riaprono.</p>
+      <a href="mailto:pinotorinese1@piemonte.agesci.it" style="color:var(--fuoco);font-weight:500;font-size:0.9rem;">pinotorinese1@piemonte.agesci.it</a>
+      <p style="margin-top:4px;">Tel: 347 – 6374358</p>
+    </div>
+    <div class="info-box">
+      <h4>🏕️ Le nostre branche</h4>
+      <p style="margin-bottom:6px;"><strong style="color:var(--verde)">Branco Mirfak</strong> — 7 / 11 anni</p>
+      <p style="margin-bottom:6px;"><strong style="color:var(--verde)">Reparto Everest</strong> — 11 / 16 anni</p>
+      <p><strong style="color:var(--verde)">Clan Zebrù</strong> — 16 / 21 anni</p>
+    </div>
+  </div>`;
+}
+
+/* Accorcia l'indirizzo per la visualizzazione, tenendo
+   l'href completo. */
+function etichettaLink(url) {
+  try { const u = new URL(url); return u.host + u.pathname; }
+  catch { return url; }
+}
+
+/* ─── RENDER AVVISI ─── */
+function renderAvvisi() {
+  const box = document.getElementById('blocco-avvisi');
+  if (!box) return;
+
+  box.innerHTML = DATA.avvisi.map(a => `
+    <div class="avviso">
+      <h4>${esc(a.titolo)}</h4>
+      <p>${esc(a.testo)}</p>
+    </div>`).join('');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MODULO DI PRE-ISCRIZIONE
+
+   Ordine delle operazioni, e conta:
+   1) salva su Firebase  → se fallisce, l'utente vede l'errore
+   2) prova a notificare via mail → se fallisce, NON dice nulla
+      all'utente: la richiesta è già al sicuro nel database e
+      i capi la vedranno comunque nel pannello.
+
+   La mail è una comodità, non il registro delle iscrizioni.
+   ═══════════════════════════════════════════════════════════ */
+
+/* Lasciare vuoto per disattivare la notifica via mail.
+   Si compila dopo aver pubblicato lo script (vedi NOTIFICHE-EMAIL.md). */
+const URL_NOTIFICA = '';
+
+const URL_RICHIESTE = `${FIREBASE_CONFIG.databaseURL}/richieste.json`;
+
+function collegaModulo() {
+  const bottone = document.getElementById('f-invia');
+  if (!bottone) return;           // iscrizioni chiuse: nessun modulo in pagina
+  bottone.addEventListener('click', inviaRichiesta);
+}
+
+/* Segna un campo come errato e restituisce false, così la
+   validazione si scrive come una catena di and. */
+function segnala(idCampo, messaggio) {
+  const box = document.getElementById(idCampo);
+  if (!box) return false;
+  box.classList.add('errore');
+  if (!box.querySelector('.msg-errore-f')) {
+    const s = document.createElement('span');
+    s.className = 'msg-errore-f';
+    s.textContent = messaggio;
+    box.appendChild(s);
+  }
+  return false;
+}
+
+function pulisciErrori() {
+  document.querySelectorAll('.campo-form.errore, .consenso-box.errore')
+    .forEach(b => {
+      b.classList.remove('errore');
+      b.querySelector('.msg-errore-f')?.remove();
+    });
+}
+
+async function inviaRichiesta() {
+  pulisciErrori();
+
+  const v = id => (document.getElementById(id)?.value || '').trim();
+
+  const dati = {
+    nomeRagazzo:    v('f-nome'),
+    cognomeRagazzo: v('f-cognome'),
+    dataNascita:    v('f-nascita'),
+    nomeGenitore:   v('f-genitore'),
+    email:          v('f-email'),
+    telefono:       v('f-tel'),
+    note:           v('f-note'),
+    consenso:       document.getElementById('f-consenso').checked,
+    stato:          'nuova',
+    ricevutaIl:     Date.now()
+  };
+
+  /* ─ Campo trappola: se è pieno è un robot.
+       Fingiamo che sia andato tutto bene e non salviamo niente,
+       così chi automatizza non capisce di essere stato scoperto. ─ */
+  if (v('f-sito')) {
+    mostraEsito(true);
+    return;
+  }
+
+  /* ─ Validazione ─ */
+  let ok = true;
+  if (!dati.nomeRagazzo)    ok = segnala('c-nome',     'Inserisci il nome.');
+  if (!dati.cognomeRagazzo) ok = segnala('c-cognome',  'Inserisci il cognome.');
+  if (!dati.nomeGenitore)   ok = segnala('c-genitore', 'Inserisci il nome di un genitore.');
+  if (!dati.email.includes('@') || dati.email.length < 5)
+                            ok = segnala('c-email',    'Controlla l\'indirizzo e-mail.');
+
+  if (!dati.dataNascita) {
+    ok = segnala('c-nascita', 'Inserisci la data di nascita.');
+  } else {
+    const anni = eta(dati.dataNascita);
+    if (anni < 5 || anni > 25) {
+      ok = segnala('c-nascita', 'La data non sembra corretta, ricontrollala.');
+    }
+  }
+
+  if (!dati.consenso) {
+    const box = document.getElementById('c-consenso');
+    box.classList.add('errore');
+    box.style.borderColor = '#c0392b';
+    if (!box.querySelector('.msg-errore-f')) {
+      const s = document.createElement('span');
+      s.className = 'msg-errore-f';
+      s.style.cssText = 'display:block;margin-top:8px;';
+      s.textContent = 'Senza il consenso non possiamo registrare la richiesta.';
+      box.appendChild(s);
+    }
+    ok = false;
+  }
+
+  if (!ok) {
+    document.querySelector('.campo-form.errore, .consenso-box.errore')
+      ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
+  /* ─ Invio ─ */
+  const bottone = document.getElementById('f-invia');
+  bottone.disabled = true;
+  bottone.textContent = 'Invio in corso…';
+
+  try {
+    const risposta = await fetch(URL_RICHIESTE, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(dati)
+    });
+
+    if (!risposta.ok) throw new Error('HTTP ' + risposta.status);
+
+    mostraEsito(true);
+    notifica(dati);          // volutamente non atteso: se fallisce, pazienza
+
+  } catch (errore) {
+    console.error('[PT] invio richiesta fallito:', errore);
+    bottone.disabled = false;
+    bottone.textContent = 'Invia la pre-iscrizione';
+    mostraEsito(false);
+  }
+}
+
+/* Notifica ai capi. Non blocca nulla e non segnala errori
+   all'utente: la richiesta è già salvata. */
+function notifica(dati) {
+  if (!URL_NOTIFICA) return;
+  fetch(URL_NOTIFICA, {
+    method: 'POST',
+    mode:   'no-cors',
+    headers:{ 'Content-Type': 'text/plain;charset=utf-8' },
+    body:   JSON.stringify(dati)
+  }).catch(e => console.warn('[PT] notifica non inviata:', e.message));
+}
+
+function eta(iso) {
+  const n = new Date(iso), o = new Date();
+  let a = o.getFullYear() - n.getFullYear();
+  const m = o.getMonth() - n.getMonth();
+  if (m < 0 || (m === 0 && o.getDate() < n.getDate())) a--;
+  return a;
+}
+
+function mostraEsito(riuscito) {
+  const box = document.getElementById('modulo-box');
+  if (!box) return;
+
+  if (riuscito) {
+    box.innerHTML = `<div class="esito-invio esito-ok">
+      <h4>✓ Richiesta ricevuta</h4>
+      <p>Grazie, abbiamo registrato la pre-iscrizione. Vi contatteremo via e-mail
+      con i dettagli della riunione informativa.</p>
+      <p style="margin-top:8px;">Se non ricevete nulla entro un paio di settimane,
+      scriveteci a <a href="mailto:pinotorinese1@piemonte.agesci.it" style="color:#155724;font-weight:600;">pinotorinese1@piemonte.agesci.it</a>.</p>
+    </div>`;
+    box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  } else {
+    const g = document.createElement('div');
+    g.className = 'esito-invio esito-ko';
+    g.style.marginTop = '1rem';
+    g.innerHTML = `<h4>Invio non riuscito</h4>
+      <p>Qualcosa è andato storto e la richiesta non è stata salvata.
+      Riprova tra poco, oppure scrivici direttamente a
+      <a href="mailto:pinotorinese1@piemonte.agesci.it" style="color:#721c24;font-weight:600;">pinotorinese1@piemonte.agesci.it</a>.</p>`;
+    box.querySelector('.esito-ko')?.remove();
+    box.insertBefore(g, box.querySelector('.informativa'));
+  }
+}
+
+/* ─── AVVIO ─── */
+async function avvia() {
+  DATA.capi.length = 0;
+  Object.assign(DATA, await caricaContenuti(), { pronto: true });
+
+  renderCapi();
+  renderIscrizioni();
+  renderAvvisi();
+
+  // Il modulo esiste solo se le iscrizioni sono aperte:
+  // va collegato dopo il render, non prima.
+  collegaModulo();
+
+  if (!DATA.online) {
+    console.info('[PT] Pagina servita con i contenuti di riserva.');
+  }
+}
+
+avvia();
+</script>
+</body>
+</html>

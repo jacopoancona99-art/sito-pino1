@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Gestione contenuti · Pino Torinese 1</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --verde:#1a3a2a; --verde-m:#2d5e42; --verde-s:#2e7d32; --giallo:#f5c800;
+  --fuoco:#e8692a; --avorio:#f7f4ed; --avorio-s:#ede9de;
+  --testo:#1c2b20; --muted:#5a6e5f; --border:#dde5d8;
+  --rosso:#c0392b; --radius:8px;
+}
+body{font-family:'Inter',sans-serif;background:var(--avorio);color:var(--testo);line-height:1.6;}
+
+/* L'attributo hidden deve vincere su qualsiasi display dichiarato
+   più sotto (.login-wrap è flex, .stato è flex, .hint è flex):
+   senza questa riga gli elementi nascosti restano visibili. */
+[hidden]{display:none !important;}
+
+/* ── RIBBON + TOPBAR ── */
+.ribbon{height:4px;background:linear-gradient(90deg,var(--verde-s) 50%,var(--giallo) 50%);}
+.topbar{height:56px;background:var(--verde);display:flex;align-items:center;padding:0 1.25rem;gap:1rem;position:sticky;top:0;z-index:100;}
+.topbar h1{font-family:'Playfair Display',serif;color:#fff;font-size:1rem;font-weight:700;}
+.topbar h1 span{display:block;font-family:'Inter',sans-serif;font-size:.68rem;font-weight:400;opacity:.6;text-transform:uppercase;letter-spacing:.08em;}
+.topbar .right{margin-left:auto;display:flex;align-items:center;gap:12px;}
+.utente{color:rgba(255,255,255,.7);font-size:.8rem;}
+.stato{display:flex;align-items:center;gap:6px;font-size:.72rem;color:rgba(255,255,255,.6);}
+.stato .pallino{width:8px;height:8px;border-radius:50%;background:#4caf50;}
+.stato.salvando .pallino{background:var(--giallo);animation:pulse 1s infinite;}
+.stato.errore .pallino{background:var(--rosso);}
+@keyframes pulse{50%{opacity:.3}}
+
+/* ── LOGIN ── */
+.login-wrap{min-height:calc(100vh - 60px);display:flex;align-items:center;justify-content:center;padding:1.5rem;}
+.login-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:2rem;max-width:380px;width:100%;box-shadow:0 4px 24px rgba(26,58,42,.08);}
+.login-card h2{font-family:'Playfair Display',serif;color:var(--verde);font-size:1.3rem;margin-bottom:.4rem;}
+.login-card p.sub{font-size:.85rem;color:var(--muted);margin-bottom:1.5rem;}
+
+/* ── LAYOUT ── */
+.app{max-width:920px;margin:0 auto;padding:1.5rem 1.25rem 4rem;}
+.tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:1.5rem;overflow-x:auto;}
+.tab{padding:10px 18px;font-size:.85rem;font-weight:500;color:var(--muted);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap;font-family:inherit;}
+.tab:hover{color:var(--testo);}
+.tab.active{color:var(--verde);border-bottom-color:var(--verde);font-weight:600;}
+
+/* ── SEZIONI ── */
+.sezione{display:none;}
+.sezione.active{display:block;}
+.sez-head{display:flex;align-items:center;gap:12px;margin-bottom:1rem;flex-wrap:wrap;}
+.sez-head h2{font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--verde);margin-right:auto;}
+.hint{background:#fff8e1;border:1px solid #ffe082;border-radius:var(--radius);padding:12px 14px;font-size:.82rem;color:#5d4037;margin-bottom:1rem;display:flex;gap:10px;align-items:flex-start;}
+.hint button{margin-left:auto;background:none;border:none;cursor:pointer;color:#8d6e63;font-size:1rem;flex-shrink:0;}
+
+/* ── BOTTONI ── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:6px;font-size:.83rem;font-weight:600;cursor:pointer;border:none;font-family:inherit;transition:.15s;}
+.btn:disabled{opacity:.5;cursor:not-allowed;}
+.btn-primary{background:var(--fuoco);color:#fff;}
+.btn-primary:hover:not(:disabled){background:#d4581f;}
+.btn-verde{background:var(--verde);color:#fff;}
+.btn-verde:hover:not(:disabled){background:var(--verde-m);}
+.btn-outline{background:#fff;color:var(--testo);border:1px solid var(--border);}
+.btn-outline:hover:not(:disabled){border-color:var(--verde);color:var(--verde);}
+.btn-danger{background:#fff;color:var(--rosso);border:1px solid #f5c6cb;}
+.btn-danger:hover:not(:disabled){background:var(--rosso);color:#fff;}
+.btn-sm{padding:5px 10px;font-size:.75rem;}
+.btn-full{width:100%;justify-content:center;}
+
+/* ── FORM ── */
+.campo{display:flex;flex-direction:column;gap:4px;margin-bottom:14px;}
+.campo label{font-size:.72rem;font-weight:600;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;}
+input,select,textarea{padding:9px 12px;border:1px solid var(--border);border-radius:6px;font-size:.88rem;font-family:inherit;color:var(--testo);background:#fff;outline:none;transition:border .15s;width:100%;}
+input:focus,select:focus,textarea:focus{border-color:var(--verde-m);box-shadow:0 0 0 3px rgba(45,94,66,.1);}
+textarea{resize:vertical;min-height:80px;line-height:1.6;}
+.riga{display:grid;gap:14px;}
+.riga.due{grid-template-columns:1fr 1fr;}
+.aiuto{font-size:.72rem;color:var(--muted);}
+.check{display:flex;align-items:center;gap:8px;padding:10px 12px;background:#fff;border:1px solid var(--border);border-radius:6px;cursor:pointer;}
+.check input{width:auto;margin:0;}
+.check span{font-size:.85rem;font-weight:500;}
+
+/* ── LISTA CAPI ── */
+.branca-gruppo{margin-bottom:1.5rem;}
+.branca-titolo{display:flex;align-items:center;gap:12px;margin-bottom:.6rem;}
+.branca-titolo h3{font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--verde);white-space:nowrap;}
+.branca-titolo .linea{flex:1;height:1px;background:var(--border);}
+.branca-titolo .conta{font-size:.72rem;color:var(--muted);}
+
+.capo-riga{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px;display:flex;align-items:center;gap:12px;margin-bottom:6px;}
+.capo-riga.titolare{border-left:3px solid var(--fuoco);}
+.avatar{width:40px;height:40px;border-radius:50%;background:var(--verde-m);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.82rem;flex-shrink:0;overflow:hidden;}
+.avatar img{width:100%;height:100%;object-fit:cover;}
+.capo-info{min-width:0;flex:1;}
+.capo-info .nome{font-weight:600;font-size:.9rem;}
+.capo-info .ruolo{font-size:.76rem;color:var(--muted);}
+.capo-azioni{display:flex;gap:4px;flex-shrink:0;}
+.icona{background:none;border:none;cursor:pointer;color:var(--muted);padding:5px 7px;border-radius:4px;font-size:.9rem;line-height:1;}
+.icona:hover{background:var(--avorio);color:var(--fuoco);}
+.icona:disabled{opacity:.25;cursor:not-allowed;}
+
+/* ── AVVISI ── */
+.avviso-riga{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin-bottom:8px;display:flex;gap:12px;align-items:flex-start;}
+.avviso-riga.spento{opacity:.5;}
+.avviso-info{flex:1;min-width:0;}
+.avviso-info .tit{font-weight:600;font-size:.88rem;}
+.avviso-info .txt{font-size:.8rem;color:var(--muted);margin-top:2px;}
+.tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.66rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;}
+.tag-on{background:#d4edda;color:#155724;}
+.tag-off{background:var(--avorio-s);color:var(--muted);}
+
+/* ── VUOTO ── */
+.vuoto{text-align:center;padding:2.5rem 1rem;color:var(--muted);background:#fff;border:1px dashed var(--border);border-radius:var(--radius);}
+.vuoto .ic{font-size:2rem;margin-bottom:.5rem;}
+.vuoto p{font-size:.86rem;}
+
+/* ── MODALE ── */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;display:none;align-items:flex-start;justify-content:center;padding:1.5rem 1rem;overflow-y:auto;}
+.overlay.open{display:flex;}
+.modale{background:#fff;border-radius:12px;width:100%;max-width:520px;box-shadow:0 20px 60px rgba(0,0,0,.2);margin:auto;}
+.modale-head{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.modale-head h3{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--verde);}
+.modale-body{padding:20px 22px;}
+.modale-foot{padding:14px 22px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;}
+.chiudi{background:none;border:none;cursor:pointer;font-size:1.1rem;color:var(--muted);padding:4px;}
+
+/* ── MESSAGGI ── */
+.msg{padding:10px 14px;border-radius:6px;font-size:.83rem;margin-bottom:1rem;display:none;}
+.msg.show{display:block;}
+.msg-errore{background:#f8d7da;color:#721c24;border:1px solid #f5c6cb;}
+.msg-ok{background:#d4edda;color:#155724;border:1px solid #c3e6cb;}
+
+/* ── ANTEPRIMA FOTO ── */
+.foto-prova{width:64px;height:64px;border-radius:8px;background:var(--avorio-s);display:flex;align-items:center;justify-content:center;overflow:hidden;font-size:.7rem;color:var(--muted);flex-shrink:0;}
+.foto-prova img{width:100%;height:100%;object-fit:cover;}
+.foto-blocco{display:flex;gap:12px;align-items:flex-start;}
+.foto-blocco > div:last-child{flex:1;min-width:0;}
+
+/* ── RICHIESTE ── */
+.badge-tab{background:var(--rosso);color:#fff;font-size:.62rem;font-weight:700;padding:1px 6px;border-radius:9px;margin-left:5px;vertical-align:middle;}
+.rich-riga{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:8px;display:flex;gap:14px;align-items:flex-start;cursor:pointer;transition:.15s;}
+.rich-riga:hover{border-color:var(--verde-m);}
+.rich-riga.nuova{border-left:3px solid var(--rosso);}
+.rich-info{flex:1;min-width:0;}
+.rich-info .nome{font-weight:600;font-size:.92rem;}
+.rich-info .meta{font-size:.78rem;color:var(--muted);margin-top:2px;}
+.rich-dx{text-align:right;flex-shrink:0;display:flex;flex-direction:column;gap:5px;align-items:flex-end;}
+.rich-data{font-size:.72rem;color:var(--muted);}
+.st{display:inline-block;padding:2px 9px;border-radius:11px;font-size:.66rem;font-weight:700;letter-spacing:.03em;text-transform:uppercase;white-space:nowrap;}
+.st-nuova{background:#f8d7da;color:#721c24;}
+.st-contattata{background:#fff3cd;color:#856404;}
+.st-accolta{background:#d4edda;color:#155724;}
+.st-non-accolta{background:var(--avorio-s);color:var(--muted);}
+.dett{margin-bottom:12px;}
+.dett .et{font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:2px;}
+.dett .vl{font-size:.9rem;}
+.dett .vl a{color:var(--verde);}
+.privacy-nota{background:#fff8e1;border:1px solid #ffe082;border-radius:var(--radius);padding:12px 14px;font-size:.8rem;color:#5d4037;margin-bottom:1rem;display:flex;gap:10px;align-items:flex-start;line-height:1.55;}
+.filtri-st{display:flex;gap:6px;margin-bottom:1rem;flex-wrap:wrap;}
+.chip{padding:5px 12px;border-radius:16px;font-size:.75rem;font-weight:500;cursor:pointer;border:1px solid var(--border);background:#fff;color:var(--muted);}
+.chip:hover,.chip.on{background:var(--verde);color:#fff;border-color:var(--verde);}
+
+@media(max-width:640px){
+  .riga.due{grid-template-columns:1fr;}
+  .app{padding:1rem .9rem 3rem;}
+  .capo-info .ruolo{display:none;}
+}
+</style>
+</head>
+<body>
+
+<div class="ribbon"></div>
+
+<!-- ══════════ TOPBAR ══════════ -->
+<div class="topbar">
+  <img src="img/agesci.png" alt="AGESCI" style="height:34px;width:auto;display:block;flex-shrink:0;"
+       onerror="this.style.display='none'">
+  <h1>Gestione contenuti<span>Pino Torinese 1</span></h1>
+  <div class="right">
+    <div class="stato" id="stato" hidden><span class="pallino"></span><span id="stato-testo">Salvato</span></div>
+    <span class="utente" id="utente"></span>
+    <button class="btn btn-outline btn-sm" id="btn-esci" hidden>Esci</button>
+  </div>
+</div>
+
+<!-- ══════════ LOGIN ══════════ -->
+<div class="login-wrap" id="vista-login">
+  <div class="login-card">
+    <h2>Accesso riservato</h2>
+    <p class="sub">Solo i capi autorizzati possono modificare i contenuti del sito.</p>
+    <div class="msg msg-errore" id="login-errore"></div>
+    <div class="campo">
+      <label for="email">E-mail</label>
+      <input type="email" id="email" autocomplete="username" placeholder="nome@piemonte.agesci.it">
+    </div>
+    <div class="campo">
+      <label for="password">Password</label>
+      <input type="password" id="password" autocomplete="current-password" placeholder="••••••••">
+    </div>
+    <button class="btn btn-verde btn-full" id="btn-entra">Entra</button>
+  </div>
+</div>
+
+<!-- ══════════ APP ══════════ -->
+<div class="app" id="vista-app" hidden>
+
+  <div class="msg msg-errore" id="app-errore"></div>
+
+  <div class="tabs">
+    <button class="tab active" data-sez="capi">Capi</button>
+    <button class="tab" data-sez="iscrizioni">Iscrizioni</button>
+    <button class="tab" data-sez="avvisi">Avvisi</button>
+    <button class="tab" data-sez="richieste">Richieste<span class="badge-tab" id="badge-rich" hidden>0</span></button>
+  </div>
+
+  <!-- ─── CAPI ─── -->
+  <div class="sezione active" id="sez-capi">
+    <div class="sez-head">
+      <h2>Comunità Capi</h2>
+      <button class="btn btn-primary" id="btn-nuovo-capo">＋ Aggiungi capo</button>
+    </div>
+    <div class="hint" id="hint-capi" hidden>
+      <span>💡</span>
+      <div>Le frecce ▲▼ cambiano l'ordine dentro la stessa branca. Il capo con il bordo arancione è il titolare e appare per primo sul sito.</div>
+      <button onclick="chiudiHint('capi')" title="Nascondi">✕</button>
+    </div>
+    <div id="lista-capi"></div>
+  </div>
+
+  <!-- ─── ISCRIZIONI ─── -->
+  <div class="sezione" id="sez-iscrizioni">
+    <div class="sez-head"><h2>Iscrizioni</h2></div>
+    <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:20px;">
+      <label class="check" style="margin-bottom:16px;">
+        <input type="checkbox" id="isc-aperte">
+        <span>Le pre-iscrizioni sono aperte</span>
+      </label>
+      <p class="aiuto" style="margin:-8px 0 16px;">Se togli la spunta, sul sito compare "iscrizioni chiuse" al posto del modulo.</p>
+
+      <div class="riga due">
+        <div class="campo">
+          <label for="isc-anno">Anno scout</label>
+          <input type="text" id="isc-anno" placeholder="2026–2027">
+        </div>
+        <div class="campo">
+          <label for="isc-riunione">Data riunione informativa</label>
+          <input type="text" id="isc-riunione" placeholder="mercoledì 20 maggio">
+          <span class="aiuto">Testo libero. Se non c'è ancora una data, scrivi "da definire".</span>
+        </div>
+      </div>
+
+      <div class="campo">
+        <label for="isc-link">Link al modulo di pre-iscrizione</label>
+        <input type="url" id="isc-link" placeholder="https://forms.pino1.it/preiscrizioni-2026">
+      </div>
+
+      <div class="campo">
+        <label for="isc-testo">Testo introduttivo</label>
+        <textarea id="isc-testo"></textarea>
+      </div>
+
+      <div class="campo">
+        <label for="isc-esito">Nota sui tempi di risposta</label>
+        <textarea id="isc-esito" style="min-height:60px;"></textarea>
+      </div>
+
+      <button class="btn btn-verde" id="btn-salva-iscrizioni">Salva iscrizioni</button>
+    </div>
+  </div>
+
+  <!-- ─── AVVISI ─── -->
+  <div class="sezione" id="sez-avvisi">
+    <div class="sez-head">
+      <h2>Avvisi in home</h2>
+      <button class="btn btn-primary" id="btn-nuovo-avviso">＋ Nuovo avviso</button>
+    </div>
+    <p class="aiuto" style="margin-bottom:1rem;">Gli avvisi attivi compaiono in evidenza sulla home. Spegnili invece di cancellarli se potrebbero tornare utili.</p>
+    <div id="lista-avvisi"></div>
+  </div>
+
+  <!-- ─── RICHIESTE ─── -->
+  <div class="sezione" id="sez-richieste">
+    <div class="sez-head">
+      <h2>Richieste di pre-iscrizione</h2>
+      <button class="btn btn-outline" id="btn-csv-rich">⬇ Esporta CSV</button>
+    </div>
+    <div class="privacy-nota">
+      <span>🔒</span>
+      <div>Qui ci sono dati personali di minori. Non condividere schermate né esportazioni fuori dalla CoCa, e <strong>cancella le richieste non accolte entro tre mesi</strong> dalla chiusura delle iscrizioni, come dichiarato nell'informativa.</div>
+    </div>
+    <div class="filtri-st">
+      <div class="chip on" data-f="">Tutte</div>
+      <div class="chip" data-f="nuova">Nuove</div>
+      <div class="chip" data-f="contattata">Contattate</div>
+      <div class="chip" data-f="accolta">Accolte</div>
+      <div class="chip" data-f="non-accolta">Non accolte</div>
+    </div>
+    <div id="lista-richieste"></div>
+  </div>
+
+</div>
+
+<!-- ══════════ MODALE CAPO ══════════ -->
+<div class="overlay" id="modale-capo">
+  <div class="modale">
+    <div class="modale-head">
+      <h3 id="capo-titolo">Nuovo capo</h3>
+      <button class="chiudi" onclick="chiudiModale('modale-capo')">✕</button>
+    </div>
+    <div class="modale-body">
+      <div class="riga due">
+        <div class="campo">
+          <label for="capo-nome">Nome o totem *</label>
+          <input type="text" id="capo-nome" placeholder="es. Aquila">
+        </div>
+        <div class="campo">
+          <label for="capo-branca">Branca *</label>
+          <select id="capo-branca"></select>
+        </div>
+      </div>
+      <div class="campo">
+        <label for="capo-ruolo">Ruolo *</label>
+        <input type="text" id="capo-ruolo" placeholder="es. Capo Reparto" list="ruoli-comuni">
+        <datalist id="ruoli-comuni">
+          <option>Capo Gruppo</option><option>Aiuto Capo Gruppo</option>
+          <option>Assistente Spirituale</option>
+          <option>Capo Branco</option><option>Aiuto Capo Branco</option>
+          <option>Capo Reparto</option><option>Aiuto Capo Reparto</option>
+          <option>Maestro dei Novizi</option>
+          <option>Capo Clan</option><option>Capo Fuoco</option>
+        </datalist>
+      </div>
+      <div class="campo">
+        <label>Foto</label>
+        <div class="foto-blocco">
+          <div class="foto-prova" id="capo-anteprima">nessuna</div>
+          <div>
+            <input type="url" id="capo-foto" placeholder="https://...">
+            <span class="aiuto">Indirizzo di un'immagine già online. Lascia vuoto per mostrare le iniziali.</span>
+          </div>
+        </div>
+      </div>
+      <label class="check">
+        <input type="checkbox" id="capo-titolare">
+        <span>È il capo titolare della branca</span>
+      </label>
+    </div>
+    <div class="modale-foot">
+      <button class="btn btn-danger" id="btn-elimina-capo" hidden>Elimina</button>
+      <button class="btn btn-outline" onclick="chiudiModale('modale-capo')">Annulla</button>
+      <button class="btn btn-verde" id="btn-salva-capo">Salva</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ MODALE AVVISO ══════════ -->
+<div class="overlay" id="modale-avviso">
+  <div class="modale">
+    <div class="modale-head">
+      <h3 id="avviso-titolo">Nuovo avviso</h3>
+      <button class="chiudi" onclick="chiudiModale('modale-avviso')">✕</button>
+    </div>
+    <div class="modale-body">
+      <div class="campo">
+        <label for="avv-tit">Titolo *</label>
+        <input type="text" id="avv-tit" placeholder="es. Uscita di apertura rimandata">
+      </div>
+      <div class="campo">
+        <label for="avv-txt">Testo *</label>
+        <textarea id="avv-txt" placeholder="Poche righe, chiare."></textarea>
+      </div>
+      <label class="check">
+        <input type="checkbox" id="avv-attivo" checked>
+        <span>Mostra questo avviso sul sito</span>
+      </label>
+    </div>
+    <div class="modale-foot">
+      <button class="btn btn-danger" id="btn-elimina-avviso" hidden>Elimina</button>
+      <button class="btn btn-outline" onclick="chiudiModale('modale-avviso')">Annulla</button>
+      <button class="btn btn-verde" id="btn-salva-avviso">Salva</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════ MODALE RICHIESTA ══════════ -->
+<div class="overlay" id="modale-rich">
+  <div class="modale">
+    <div class="modale-head">
+      <div><h3 id="rich-tit">Richiesta</h3><p id="rich-sub"></p></div>
+      <button class="chiudi" onclick="chiudiModale('modale-rich')">✕</button>
+    </div>
+    <div class="modale-body" id="rich-corpo"></div>
+    <div class="modale-foot">
+      <button class="btn btn-danger" id="btn-elimina-rich">Elimina</button>
+      <button class="btn btn-outline" onclick="chiudiModale('modale-rich')">Chiudi</button>
+      <button class="btn btn-verde" id="btn-salva-rich">Salva</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut }
+  from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { getDatabase, ref, onValue, set, update, remove, push, child }
+  from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+import { FIREBASE_CONFIG, BRANCHE, FALLBACK, iniziali } from './pt-config.js';
+
+/* ═══════════════════════════════════════════════════════
+   STATO — fonte unica di verità.
+   Firebase è solo il livello di sincronizzazione: ogni
+   modifica passa da qui, poi viene scritta sul database,
+   e il listener rimanda indietro la conferma.
+   ═══════════════════════════════════════════════════════ */
+const DATA = {
+  capi:       {},   // { chiaveFirebase: {nome, ruolo, branca, foto, titolare, ordine} }
+  iscrizioni: {},
+  avvisi:     {},
+  richieste:  {},   // dati personali di minori — lettura protetta dalle regole
+  pronto:     false
+};
+
+let capoInModifica   = null;   // chiave Firebase, oppure null se è nuovo
+let avvisoInModifica = null;
+let richInModifica   = null;
+let filtroStato      = '';
+
+const app  = initializeApp(FIREBASE_CONFIG);
+const auth = getAuth(app);
+const db   = getDatabase(app);
+
+
+/* ═══════════════════════════════════════════════════════
+   AUTENTICAZIONE
+   ═══════════════════════════════════════════════════════ */
+onAuthStateChanged(auth, utente => {
+  if (utente) {
+    document.getElementById('vista-login').hidden = true;
+    document.getElementById('vista-app').hidden   = false;
+    document.getElementById('btn-esci').hidden    = false;
+    document.getElementById('stato').hidden       = false;
+    document.getElementById('utente').textContent = utente.email;
+    avviaAscolto();
+    mostraHintSeNuovo();
+  } else {
+    document.getElementById('vista-login').hidden = false;
+    document.getElementById('vista-app').hidden   = true;
+    document.getElementById('btn-esci').hidden    = true;
+    document.getElementById('stato').hidden       = true;
+    document.getElementById('utente').textContent = '';
+  }
+});
+
+document.getElementById('btn-entra').addEventListener('click', entra);
+document.getElementById('password').addEventListener('keydown', e => {
+  if (e.key === 'Enter') entra();
+});
+
+async function entra() {
+  const email = document.getElementById('email').value.trim();
+  const pass  = document.getElementById('password').value;
+  const box   = document.getElementById('login-errore');
+  const btn   = document.getElementById('btn-entra');
+
+  if (!email || !pass) {
+    return mostraMsg(box, 'Inserisci e-mail e password.');
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Accesso in corso…';
+  box.classList.remove('show');
+
+  try {
+    await signInWithEmailAndPassword(auth, email, pass);
+    document.getElementById('password').value = '';
+  } catch (e) {
+    const messaggi = {
+      'auth/invalid-credential': 'E-mail o password non corretti.',
+      'auth/invalid-email':      'L\'indirizzo e-mail non è valido.',
+      'auth/user-disabled':      'Questo account è stato disattivato.',
+      'auth/too-many-requests':  'Troppi tentativi. Riprova tra qualche minuto.',
+      'auth/network-request-failed': 'Connessione assente. Controlla la rete.'
+    };
+    mostraMsg(box, messaggi[e.code] || 'Accesso non riuscito. Riprova.');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Entra';
+  }
+}
+
+document.getElementById('btn-esci').addEventListener('click', () => signOut(auth));
+
+
+/* ═══════════════════════════════════════════════════════
+   SINCRONIZZAZIONE
+   Un solo listener su /contenuti. Ogni variazione aggiorna
+   DATA e fa ripartire il render.
+   ═══════════════════════════════════════════════════════ */
+function avviaAscolto() {
+  onValue(ref(db, 'contenuti'), snap => {
+    const v = snap.val() || {};
+    DATA.capi       = v.capi       || {};
+    DATA.iscrizioni = { ...FALLBACK.iscrizioni, ...(v.iscrizioni || {}) };
+    DATA.avvisi     = v.avvisi     || {};
+    DATA.pronto     = true;
+    render();
+    segnalaStato('ok');
+  }, errore => {
+    console.error('[PT] lettura fallita:', errore);
+    mostraMsg(document.getElementById('app-errore'),
+      'Impossibile leggere i dati. Controlla la connessione o le regole del database.');
+    segnalaStato('errore');
+  });
+
+  // Ramo separato: regole invertite, leggibile solo da autenticati.
+  onValue(ref(db, 'richieste'), snap => {
+    DATA.richieste = snap.val() || {};
+    renderRichieste();
+  }, errore => {
+    console.error('[PT] lettura richieste fallita:', errore);
+  });
+}
+
+function segnalaStato(tipo) {
+  const el = document.getElementById('stato');
+  const tx = document.getElementById('stato-testo');
+  el.className = 'stato' + (tipo === 'ok' ? '' : ' ' + tipo);
+  tx.textContent = { ok: 'Salvato', salvando: 'Salvataggio…', errore: 'Errore' }[tipo];
+}
+
+
+/* ═══════════════════════════════════════════════════════
+   RENDER — idempotente.
+   Ricostruisce le liste, mai i campi di input aperti:
+   la modifica avviene dentro una modale, quindi il
+   rebuild non ruba mai il focus a chi sta scrivendo.
+   ═══════════════════════════════════════════════════════ */
+function render() {
+  if (!DATA.pronto) return;
+  renderCapi();
+  renderIscrizioni();
+  renderAvvisi();
+  renderRichieste();
+}
+
+function renderCapi() {
+  const cont = document.getElementById('lista-capi');
+  const capi = Object.entries(DATA.capi).map(([id, c]) => ({ id, ...c }));
+
+  if (!capi.length) {
+    cont.innerHTML = `<div class="vuoto"><div class="ic">👥</div>
+      <p>Nessun capo inserito.<br>Usa "Aggiungi capo" per cominciare.</p></div>`;
+    return;
+  }
+
+  cont.innerHTML = BRANCHE.map(branca => {
+    const dellaBranca = capi
+      .filter(c => c.branca === branca.id)
+      .sort((a, b) => (a.ordine ?? 99) - (b.ordine ?? 99));
+
+    if (!dellaBranca.length) return '';
+
+    const righe = dellaBranca.map((c, i) => `
+      <div class="capo-riga ${c.titolare ? 'titolare' : ''}">
+        <div class="avatar">${c.foto
+          ? `<img src="${esc(c.foto)}" alt="" onerror="this.replaceWith(document.createTextNode('${esc(iniziali(c.nome))}'))">`
+          : esc(iniziali(c.nome))}</div>
+        <div class="capo-info">
+          <div class="nome">${esc(c.nome)}</div>
+          <div class="ruolo">${esc(c.ruolo || '')}</div>
+        </div>
+        <div class="capo-azioni">
+          <button class="icona" title="Sposta su"  data-su="${c.id}"  ${i === 0 ? 'disabled' : ''}>▲</button>
+          <button class="icona" title="Sposta giù" data-giu="${c.id}" ${i === dellaBranca.length - 1 ? 'disabled' : ''}>▼</button>
+          <button class="icona" title="Modifica"   data-mod="${c.id}">✏️</button>
+        </div>
+      </div>`).join('');
+
+    return `<div class="branca-gruppo">
+      <div class="branca-titolo">
+        <h3>${esc(branca.nome)}</h3>
+        <div class="linea"></div>
+        <span class="conta">${dellaBranca.length}</span>
+      </div>${righe}
+    </div>`;
+  }).join('');
+
+  // Deleghe: ricollegate a ogni render, nessun listener orfano.
+  cont.querySelectorAll('[data-mod]').forEach(b =>
+    b.onclick = () => apriCapo(b.dataset.mod));
+  cont.querySelectorAll('[data-su]').forEach(b =>
+    b.onclick = () => spostaCapo(b.dataset.su, -1));
+  cont.querySelectorAll('[data-giu]').forEach(b =>
+    b.onclick = () => spostaCapo(b.dataset.giu, +1));
+}
+
+function renderIscrizioni() {
+  const i = DATA.iscrizioni;
+  // Aggiorna i campi solo se l'utente non ci sta scrivendo dentro:
+  // evita che una sincronizzazione cancelli quello che sta digitando.
+  imposta('isc-anno',     i.anno);
+  imposta('isc-link',     i.linkModulo);
+  imposta('isc-riunione', i.dataRiunione);
+  imposta('isc-testo',    i.testo);
+  imposta('isc-esito',    i.notaEsito);
+  const spunta = document.getElementById('isc-aperte');
+  if (document.activeElement !== spunta) spunta.checked = !!i.aperte;
+}
+
+function imposta(id, valore) {
+  const el = document.getElementById(id);
+  if (el && document.activeElement !== el) el.value = valore ?? '';
+}
+
+function renderAvvisi() {
+  const cont = document.getElementById('lista-avvisi');
+  const avvisi = Object.entries(DATA.avvisi)
+    .map(([id, a]) => ({ id, ...a }))
+    .sort((a, b) => (a.ordine ?? 99) - (b.ordine ?? 99));
+
+  if (!avvisi.length) {
+    cont.innerHTML = `<div class="vuoto"><div class="ic">📢</div>
+      <p>Nessun avviso.<br>La home mostrerà solo i contenuti fissi.</p></div>`;
+    return;
+  }
+
+  cont.innerHTML = avvisi.map(a => `
+    <div class="avviso-riga ${a.attivo ? '' : 'spento'}">
+      <div class="avviso-info">
+        <div class="tit">${esc(a.titolo)}</div>
+        <div class="txt">${esc((a.testo || '').slice(0, 110))}${(a.testo || '').length > 110 ? '…' : ''}</div>
+      </div>
+      <span class="tag ${a.attivo ? 'tag-on' : 'tag-off'}">${a.attivo ? 'attivo' : 'spento'}</span>
+      <button class="icona" data-mod-avv="${a.id}" title="Modifica">✏️</button>
+    </div>`).join('');
+
+  cont.querySelectorAll('[data-mod-avv]').forEach(b =>
+    b.onclick = () => apriAvviso(b.dataset.modAvv));
+}
+
+
+/* ═══════════════════════════════════════════════════════
+   CAPI — creazione, modifica, eliminazione, ordinamento
+   ═══════════════════════════════════════════════════════ */
+BRANCHE.forEach(b => {
+  const o = document.createElement('option');
+  o.value = b.id;
+  o.textContent = `${b.nome} · ${b.eta}`;
+  document.getElementById('capo-branca').appendChild(o);
+});
+
+document.getElementById('btn-nuovo-capo').addEventListener('click', () => apriCapo(null));
+
+function apriCapo(id) {
+  capoInModifica = id;
+  const c = id ? DATA.capi[id] : null;
+
+  document.getElementById('capo-titolo').textContent = id ? 'Modifica capo' : 'Nuovo capo';
+  document.getElementById('capo-nome').value     = c?.nome   || '';
+  document.getElementById('capo-ruolo').value    = c?.ruolo  || '';
+  document.getElementById('capo-branca').value   = c?.branca || BRANCHE[0].id;
+  document.getElementById('capo-foto').value     = c?.foto   || '';
+  document.getElementById('capo-titolare').checked = !!c?.titolare;
+  document.getElementById('btn-elimina-capo').hidden = !id;
+  aggiornaAnteprima();
+
+  apriModale('modale-capo');
+  setTimeout(() => document.getElementById('capo-nome').focus(), 50);
+}
+
+document.getElementById('capo-foto').addEventListener('input', aggiornaAnteprima);
+
+function aggiornaAnteprima() {
+  const url  = document.getElementById('capo-foto').value.trim();
+  const nome = document.getElementById('capo-nome').value.trim();
+  const box  = document.getElementById('capo-anteprima');
+  box.innerHTML = url
+    ? `<img src="${esc(url)}" alt="" onerror="this.parentElement.textContent='non valida'">`
+    : (nome ? esc(iniziali(nome)) : 'nessuna');
+}
+
+document.getElementById('btn-salva-capo').addEventListener('click', async () => {
+  const nome   = document.getElementById('capo-nome').value.trim();
+  const ruolo  = document.getElementById('capo-ruolo').value.trim();
+  const branca = document.getElementById('capo-branca').value;
+
+  if (!nome || !ruolo) {
+    return alert('Nome e ruolo sono obbligatori.');
+  }
+
+  const dati = {
+    nome, ruolo, branca,
+    foto:     document.getElementById('capo-foto').value.trim(),
+    titolare: document.getElementById('capo-titolare').checked,
+    ordine:   capoInModifica
+                ? (DATA.capi[capoInModifica].ordine ?? prossimoOrdine(branca))
+                : prossimoOrdine(branca)
+  };
+
+  segnalaStato('salvando');
+  try {
+    if (capoInModifica) {
+      await update(ref(db, `contenuti/capi/${capoInModifica}`), dati);
+    } else {
+      await push(ref(db, 'contenuti/capi'), dati);
+    }
+    chiudiModale('modale-capo');
+  } catch (e) {
+    segnalaStato('errore');
+    alert('Salvataggio non riuscito: ' + e.message);
+  }
+});
+
+document.getElementById('btn-elimina-capo').addEventListener('click', async () => {
+  const c = DATA.capi[capoInModifica];
+  // Conferma solo qui: è l'unico punto in cui si perde davvero un dato.
+  if (!confirm(`Eliminare ${c.nome} dall'elenco dei capi?\n\nL'operazione non è reversibile.`)) return;
+
+  segnalaStato('salvando');
+  try {
+    await remove(ref(db, `contenuti/capi/${capoInModifica}`));
+    chiudiModale('modale-capo');
+  } catch (e) {
+    segnalaStato('errore');
+    alert('Eliminazione non riuscita: ' + e.message);
+  }
+});
+
+function prossimoOrdine(branca) {
+  const ordini = Object.values(DATA.capi)
+    .filter(c => c.branca === branca)
+    .map(c => c.ordine ?? 0);
+  return ordini.length ? Math.max(...ordini) + 1 : 1;
+}
+
+async function spostaCapo(id, direzione) {
+  const capo = DATA.capi[id];
+  const fratelli = Object.entries(DATA.capi)
+    .map(([k, c]) => ({ k, ...c }))
+    .filter(c => c.branca === capo.branca)
+    .sort((a, b) => (a.ordine ?? 99) - (b.ordine ?? 99));
+
+  const pos = fratelli.findIndex(c => c.k === id);
+  const nuovaPos = pos + direzione;
+  if (nuovaPos < 0 || nuovaPos >= fratelli.length) return;
+
+  // Scambio delle posizioni, poi riscrittura di tutti gli ordini
+  // della branca: così restano sempre contigui (1,2,3…) anche
+  // dopo cancellazioni.
+  [fratelli[pos], fratelli[nuovaPos]] = [fratelli[nuovaPos], fratelli[pos]];
+
+  const modifiche = {};
+  fratelli.forEach((c, i) => { modifiche[`contenuti/capi/${c.k}/ordine`] = i + 1; });
+
+  segnalaStato('salvando');
+  try {
+    await update(ref(db), modifiche);
+  } catch (e) {
+    segnalaStato('errore');
+    alert('Riordino non riuscito: ' + e.message);
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════
+   ISCRIZIONI
+   ═══════════════════════════════════════════════════════ */
+document.getElementById('btn-salva-iscrizioni').addEventListener('click', async () => {
+  const dati = {
+    anno:         document.getElementById('isc-anno').value.trim(),
+    aperte:       document.getElementById('isc-aperte').checked,
+    linkModulo:   document.getElementById('isc-link').value.trim(),
+    dataRiunione: document.getElementById('isc-riunione').value.trim(),
+    testo:        document.getElementById('isc-testo').value.trim(),
+    notaEsito:    document.getElementById('isc-esito').value.trim()
+  };
+
+  const btn = document.getElementById('btn-salva-iscrizioni');
+  btn.disabled = true;
+  segnalaStato('salvando');
+  try {
+    await set(ref(db, 'contenuti/iscrizioni'), dati);
+    btn.textContent = '✓ Salvato';
+    setTimeout(() => { btn.textContent = 'Salva iscrizioni'; }, 1800);
+  } catch (e) {
+    segnalaStato('errore');
+    alert('Salvataggio non riuscito: ' + e.message);
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+
+/* ═══════════════════════════════════════════════════════
+   AVVISI
+   ═══════════════════════════════════════════════════════ */
+document.getElementById('btn-nuovo-avviso').addEventListener('click', () => apriAvviso(null));
+
+function apriAvviso(id) {
+  avvisoInModifica = id;
+  const a = id ? DATA.avvisi[id] : null;
+
+  document.getElementById('avviso-titolo').textContent = id ? 'Modifica avviso' : 'Nuovo avviso';
+  document.getElementById('avv-tit').value      = a?.titolo || '';
+  document.getElementById('avv-txt').value      = a?.testo  || '';
+  document.getElementById('avv-attivo').checked = id ? !!a.attivo : true;
+  document.getElementById('btn-elimina-avviso').hidden = !id;
+
+  apriModale('modale-avviso');
+  setTimeout(() => document.getElementById('avv-tit').focus(), 50);
+}
+
+document.getElementById('btn-salva-avviso').addEventListener('click', async () => {
+  const titolo = document.getElementById('avv-tit').value.trim();
+  const testo  = document.getElementById('avv-txt').value.trim();
+
+  if (!titolo || !testo) return alert('Titolo e testo sono obbligatori.');
+
+  const dati = {
+    titolo, testo,
+    attivo: document.getElementById('avv-attivo').checked,
+    ordine: avvisoInModifica
+              ? (DATA.avvisi[avvisoInModifica].ordine ?? 1)
+              : Object.keys(DATA.avvisi).length + 1,
+    data:   avvisoInModifica ? DATA.avvisi[avvisoInModifica].data : new Date().toISOString().slice(0, 10)
+  };
+
+  segnalaStato('salvando');
+  try {
+    if (avvisoInModifica) {
+      await update(ref(db, `contenuti/avvisi/${avvisoInModifica}`), dati);
+    } else {
+      await push(ref(db, 'contenuti/avvisi'), dati);
+    }
+    chiudiModale('modale-avviso');
+  } catch (e) {
+    segnalaStato('errore');
+    alert('Salvataggio non riuscito: ' + e.message);
+  }
+});
+
+document.getElementById('btn-elimina-avviso').addEventListener('click', async () => {
+  const a = DATA.avvisi[avvisoInModifica];
+  if (!confirm(`Eliminare l'avviso "${a.titolo}"?\n\nSe pensi che possa servire ancora, conviene spegnerlo invece di cancellarlo.`)) return;
+
+  segnalaStato('salvando');
+  try {
+    await remove(ref(db, `contenuti/avvisi/${avvisoInModifica}`));
+    chiudiModale('modale-avviso');
+  } catch (e) {
+    segnalaStato('errore');
+    alert('Eliminazione non riuscita: ' + e.message);
+  }
+});
+
+
+/* ═══════════════════════════════════════════════════════
+   RICHIESTE DI PRE-ISCRIZIONE
+
+   Contengono dati personali di minori. Il ramo /richieste
+   ha regole invertite rispetto a /contenuti: chiunque può
+   creare una richiesta dal modulo pubblico, ma solo un capo
+   autenticato può leggerla, modificarne lo stato o
+   cancellarla.
+   ═══════════════════════════════════════════════════════ */
+
+const ETICHETTE_STATO = {
+  'nuova':       'Nuova',
+  'contattata':  'Contattata',
+  'accolta':     'Accolta',
+  'non-accolta': 'Non accolta'
+};
+
+function elencoRichieste() {
+  return Object.entries(DATA.richieste)
+    .map(([id, r]) => ({ id, ...r }))
+    .sort((a, b) => (b.ricevutaIl ?? 0) - (a.ricevutaIl ?? 0));   // più recenti in cima
+}
+
+function renderRichieste() {
+  const tutte = elencoRichieste();
+  const nuove = tutte.filter(r => r.stato === 'nuova').length;
+
+  // Pallino sulla scheda: anche se le mail non arrivano,
+  // entrando nel pannello ci si accorge che c'è posta.
+  const badge = document.getElementById('badge-rich');
+  badge.textContent = nuove;
+  badge.hidden = nuove === 0;
+
+  const lista = filtroStato ? tutte.filter(r => r.stato === filtroStato) : tutte;
+  const cont  = document.getElementById('lista-richieste');
+
+  if (!lista.length) {
+    cont.innerHTML = `<div class="vuoto"><div class="ic">📭</div><p>${
+      tutte.length ? 'Nessuna richiesta con questo stato.'
+                   : 'Nessuna richiesta ricevuta.<br>Compariranno qui appena qualcuno compila il modulo.'
+    }</p></div>`;
+    return;
+  }
+
+  cont.innerHTML = lista.map(r => `
+    <div class="rich-riga ${r.stato === 'nuova' ? 'nuova' : ''}" data-rich="${r.id}">
+      <div class="rich-info">
+        <div class="nome">${esc(r.nomeRagazzo)} ${esc(r.cognomeRagazzo)}</div>
+        <div class="meta">${eta(r.dataNascita)} anni · ${esc(r.nomeGenitore)} · ${esc(r.email)}</div>
+      </div>
+      <div class="rich-dx">
+        <span class="st st-${r.stato}">${ETICHETTE_STATO[r.stato] || r.stato}</span>
+        <span class="rich-data">${dataIt(r.ricevutaIl)}</span>
+      </div>
+    </div>`).join('');
+
+  cont.querySelectorAll('[data-rich]').forEach(el =>
+    el.onclick = () => apriRichiesta(el.dataset.rich));
+}
+
+function apriRichiesta(id) {
+  richInModifica = id;
+  const r = DATA.richieste[id];
+
+  document.getElementById('rich-tit').textContent = `${r.nomeRagazzo} ${r.cognomeRagazzo}`;
+  document.getElementById('rich-sub').textContent =
+    `Ricevuta il ${dataIt(r.ricevutaIl, true)}`;
+
+  document.getElementById('rich-corpo').innerHTML = `
+    <div class="riga due">
+      <div class="dett"><div class="et">Data di nascita</div>
+        <div class="vl">${dataIt(new Date(r.dataNascita).getTime())} — ${eta(r.dataNascita)} anni</div></div>
+      <div class="dett"><div class="et">Branca suggerita</div>
+        <div class="vl">${brancaPerEta(eta(r.dataNascita))}</div></div>
+    </div>
+    <div class="dett"><div class="et">Genitore</div>
+      <div class="vl">${esc(r.nomeGenitore)}</div></div>
+    <div class="riga due">
+      <div class="dett"><div class="et">E-mail</div>
+        <div class="vl"><a href="mailto:${esc(r.email)}">${esc(r.email)}</a></div></div>
+      <div class="dett"><div class="et">Telefono</div>
+        <div class="vl">${r.telefono ? `<a href="tel:${esc(r.telefono)}">${esc(r.telefono)}</a>` : '—'}</div></div>
+    </div>
+    ${r.note ? `<div class="dett"><div class="et">Note della famiglia</div>
+      <div class="vl" style="white-space:pre-wrap;">${esc(r.note)}</div></div>` : ''}
+
+    <div class="riga due" style="margin-top:18px;padding-top:16px;border-top:1px solid var(--border);">
+      <div class="campo">
+        <label for="rich-stato">Stato</label>
+        <select id="rich-stato">
+          ${Object.entries(ETICHETTE_STATO).map(([v, t]) =>
+            `<option value="${v}"${r.stato === v ? ' selected' : ''}>${t}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+    <div class="campo">
+      <label for="rich-nota">Nota interna</label>
+      <textarea id="rich-nota" style="min-height:60px;" placeholder="Non visibile alla famiglia">${esc(r.notaInterna || '')}</textarea>
+    </div>`;
+
+  apriModale('modale-rich');
+}
+
+document.getElementById('btn-salva-rich').addEventListener('click', async () => {
+  if (!richInModifica) return;
+  segnalaStato('salvando');
+  try {
+    await update(ref(db, `richieste/${richInModifica}`), {
+      stato:       document.getElementById('rich-stato').value,
+      notaInterna: document.getElementById('rich-nota').value.trim()
+    });
+    chiudiModale('modale-rich');
+  } catch (e) {
+    segnalaStato('errore');
+    alert('Salvataggio non riuscito: ' + e.message);
+  }
+});
+
+document.getElementById('btn-elimina-rich').addEventListener('click', async () => {
+  const r = DATA.richieste[richInModifica];
+  if (!confirm(`Eliminare definitivamente la richiesta di ${r.nomeRagazzo} ${r.cognomeRagazzo}?\n\nI dati vengono cancellati dal database e non sono recuperabili.`)) return;
+
+  segnalaStato('salvando');
+  try {
+    await remove(ref(db, `richieste/${richInModifica}`));
+    chiudiModale('modale-rich');
+  } catch (e) {
+    segnalaStato('errore');
+    alert('Eliminazione non riuscita: ' + e.message);
+  }
+});
+
+document.querySelectorAll('.chip[data-f]').forEach(c => {
+  c.addEventListener('click', () => {
+    document.querySelectorAll('.chip[data-f]').forEach(x => x.classList.remove('on'));
+    c.classList.add('on');
+    filtroStato = c.dataset.f;
+    renderRichieste();
+  });
+});
+
+document.getElementById('btn-csv-rich').addEventListener('click', () => {
+  const lista = elencoRichieste();
+  if (!lista.length) return alert('Non ci sono richieste da esportare.');
+  if (!confirm('Il file conterrà dati personali di minori.\n\nSalvalo in un luogo sicuro ed eliminalo quando non serve più. Procedere?')) return;
+
+  const righe = [['Nome','Cognome','Data nascita','Età','Genitore','Email','Telefono','Note','Stato','Nota interna','Ricevuta il']];
+  lista.forEach(r => righe.push([
+    r.nomeRagazzo, r.cognomeRagazzo, r.dataNascita, eta(r.dataNascita),
+    r.nomeGenitore, r.email, r.telefono || '', r.note || '',
+    ETICHETTE_STATO[r.stato] || r.stato, r.notaInterna || '', dataIt(r.ricevutaIl, true)
+  ]));
+
+  // Il punto e virgola è il separatore che Excel italiano si aspetta.
+  const csv = righe.map(r => r.map(v => `"${String(v ?? '').replace(/"/g, '""')}"`).join(';')).join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,\uFEFF' + encodeURIComponent(csv);
+  a.download = `preiscrizioni-${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+});
+
+function eta(iso) {
+  if (!iso) return '—';
+  const n = new Date(iso), o = new Date();
+  let a = o.getFullYear() - n.getFullYear();
+  const m = o.getMonth() - n.getMonth();
+  if (m < 0 || (m === 0 && o.getDate() < n.getDate())) a--;
+  return a;
+}
+
+function brancaPerEta(a) {
+  if (a === '—' || isNaN(a)) return '—';
+  if (a < 7)  return 'Troppo piccolo per il Branco';
+  if (a <= 11) return 'Branco Mirfak';
+  if (a <= 16) return 'Reparto Everest';
+  if (a <= 17) return 'Noviziato Silmaril';
+  if (a <= 21) return 'Clan Zebrù';
+  return 'Fuori età — valutare';
+}
+
+function dataIt(ms, conOra = false) {
+  if (!ms) return '—';
+  const d = new Date(ms);
+  const data = d.toLocaleDateString('it-IT', { day:'2-digit', month:'2-digit', year:'numeric' });
+  return conOra ? `${data} alle ${d.toLocaleTimeString('it-IT', { hour:'2-digit', minute:'2-digit' })}` : data;
+}
+
+
+/* ═══════════════════════════════════════════════════════
+   INTERFACCIA
+   ═══════════════════════════════════════════════════════ */
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.sezione').forEach(s => s.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('sez-' + tab.dataset.sez).classList.add('active');
+  });
+});
+
+function apriModale(id)   { document.getElementById(id).classList.add('open'); }
+window.chiudiModale = id  => document.getElementById(id).classList.remove('open');
+
+document.querySelectorAll('.overlay').forEach(o => {
+  o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); });
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.overlay.open').forEach(o => o.classList.remove('open'));
+  }
+});
+
+/* Suggerimenti: nascosti per la sessione, non per sempre.
+   Chi torna dopo un anno se li ritrova, ed è giusto così. */
+function mostraHintSeNuovo() {
+  if (!sessionStorage.getItem('pt-hint-capi')) {
+    document.getElementById('hint-capi').hidden = false;
+  }
+}
+window.chiudiHint = nome => {
+  sessionStorage.setItem('pt-hint-' + nome, '1');
+  document.getElementById('hint-' + nome).hidden = true;
+};
+
+function mostraMsg(el, testo) {
+  el.textContent = testo;
+  el.classList.add('show');
+}
+
+/* Neutralizza le virgolette e i tag negli inserimenti,
+   così un nome con un apostrofo non rompe il markup. */
+function esc(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c =>
+    ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+}
+</script>
+</body>
+</html>
