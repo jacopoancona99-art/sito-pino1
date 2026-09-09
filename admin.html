@@ -137,6 +137,13 @@ textarea{resize:vertical;min-height:80px;line-height:1.6;}
 .foto-prova img{width:100%;height:100%;object-fit:cover;}
 .foto-blocco{display:flex;gap:12px;align-items:flex-start;}
 .foto-blocco > div:last-child{flex:1;min-width:0;}
+.foto-area{display:flex;gap:14px;align-items:flex-start;}
+.foto-prova{width:90px;height:60px;border-radius:8px;background:var(--avorio-s);display:flex;align-items:center;justify-content:center;overflow:hidden;font-size:.7rem;color:var(--muted);flex-shrink:0;border:1px solid var(--border);}
+.foto-prova img{width:100%;height:100%;object-fit:cover;object-position:top;}
+.foto-cmd{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px;}
+.foto-btns{display:flex;gap:6px;flex-wrap:wrap;}
+.file-nascosto{display:none;}
+.foto-peso{font-size:.72rem;color:var(--muted);}
 
 /* ── RICHIESTE ── */
 .badge-tab{background:var(--rosso);color:#fff;font-size:.62rem;font-weight:700;padding:1px 6px;border-radius:9px;margin-left:5px;vertical-align:middle;}
@@ -334,11 +341,16 @@ textarea{resize:vertical;min-height:80px;line-height:1.6;}
       </div>
       <div class="campo">
         <label>Foto</label>
-        <div class="foto-blocco">
+        <div class="foto-area">
           <div class="foto-prova" id="capo-anteprima">nessuna</div>
-          <div>
-            <input type="url" id="capo-foto" placeholder="https://...">
-            <span class="aiuto">Indirizzo di un'immagine già online. Lascia vuoto per mostrare le iniziali.</span>
+          <div class="foto-cmd">
+            <div class="foto-btns">
+              <button type="button" class="btn btn-outline btn-sm" id="btn-scegli-foto">Scegli una foto…</button>
+              <button type="button" class="btn btn-danger btn-sm" id="btn-togli-foto" hidden>Togli</button>
+            </div>
+            <input type="file" id="capo-file" class="file-nascosto" accept="image/*">
+            <span class="aiuto">Viene rimpicciolita e compressa qui nel browser prima del salvataggio. Senza foto compaiono le iniziali.</span>
+            <span class="foto-peso" id="capo-peso"></span>
           </div>
         </div>
       </div>
@@ -419,6 +431,7 @@ const DATA = {
   capi:       {},   // { chiaveFirebase: {nome, ruolo, branca, foto, titolare, ordine} }
   iscrizioni: {},
   avvisi:     {},
+  foto:       {},   // { idCapo: 'data:image/jpeg;base64,...' } — ramo separato
   richieste:  {},   // dati personali di minori — lettura protetta dalle regole
   pronto:     false
 };
@@ -427,6 +440,7 @@ let capoInModifica   = null;   // chiave Firebase, oppure null se è nuovo
 let avvisoInModifica = null;
 let richInModifica   = null;
 let filtroStato      = '';
+let fotoInAttesa     = undefined;   // undefined = invariata, null = da togliere, stringa = nuova
 
 const app  = initializeApp(FIREBASE_CONFIG);
 const auth = getAuth(app);
@@ -515,6 +529,11 @@ function avviaAscolto() {
     segnalaStato('errore');
   });
 
+  onValue(ref(db, 'foto'), snap => {
+    DATA.foto = snap.val() || {};
+    renderCapi();
+  }, e => console.error('[PT] lettura foto fallita:', e));
+
   // Ramo separato: regole invertite, leggibile solo da autenticati.
   onValue(ref(db, 'richieste'), snap => {
     DATA.richieste = snap.val() || {};
@@ -565,8 +584,8 @@ function renderCapi() {
 
     const righe = dellaBranca.map((c, i) => `
       <div class="capo-riga ${c.titolare ? 'titolare' : ''}">
-        <div class="avatar">${c.foto
-          ? `<img src="${esc(c.foto)}" alt="" onerror="this.replaceWith(document.createTextNode('${esc(iniziali(c.nome))}'))">`
+        <div class="avatar">${(DATA.foto[c.id] || c.foto)
+          ? `<img src="${esc(DATA.foto[c.id] || c.foto)}" alt="" onerror="this.replaceWith(document.createTextNode('${esc(iniziali(c.nome))}'))">`
           : esc(iniziali(c.nome))}</div>
         <div class="capo-info">
           <div class="nome">${esc(c.nome)}</div>
@@ -662,23 +681,107 @@ function apriCapo(id) {
   document.getElementById('capo-nome').value     = c?.nome   || '';
   document.getElementById('capo-ruolo').value    = c?.ruolo  || '';
   document.getElementById('capo-branca').value   = c?.branca || BRANCHE[0].id;
-  document.getElementById('capo-foto').value     = c?.foto   || '';
   document.getElementById('capo-titolare').checked = !!c?.titolare;
   document.getElementById('btn-elimina-capo').hidden = !id;
-  aggiornaAnteprima();
+
+  fotoInAttesa = undefined;                       // nessuna modifica in sospeso
+  document.getElementById('capo-file').value = '';
+  document.getElementById('capo-peso').textContent = '';
+  mostraAnteprima(id ? (DATA.foto[id] || c?.foto || '') : '');
 
   apriModale('modale-capo');
   setTimeout(() => document.getElementById('capo-nome').focus(), 50);
 }
 
-document.getElementById('capo-foto').addEventListener('input', aggiornaAnteprima);
+/* ─── FOTO: ridimensionamento nel browser ───
+   Firebase Storage richiederebbe il piano Blaze, quindi l'immagine
+   viene rimpicciolita e compressa qui e salvata come stringa nel
+   ramo /foto. Comprimere prima è ciò che rende praticabile la cosa:
+   una foto da 4 MB scesa a ~15 KB non pesa su nessuna quota. */
 
-function aggiornaAnteprima() {
-  const url  = document.getElementById('capo-foto').value.trim();
+const LATO_MAX  = 400;    // pixel sul lato lungo
+const QUALITA   = 0.72;   // compressione JPEG
+const PESO_MAX  = 60000;  // caratteri, deve stare sotto il limite delle regole
+
+document.getElementById('btn-scegli-foto').addEventListener('click',
+  () => document.getElementById('capo-file').click());
+
+document.getElementById('btn-togli-foto').addEventListener('click', () => {
+  fotoInAttesa = null;
+  document.getElementById('capo-file').value = '';
+  document.getElementById('capo-peso').textContent = 'La foto verrà tolta al salvataggio.';
+  mostraAnteprima('');
+});
+
+document.getElementById('capo-file').addEventListener('change', async e => {
+  const file = e.target.files?.[0];
+  if (!file) return;
+
+  if (!file.type.startsWith('image/')) {
+    alert('Serve un file immagine (JPG, PNG, HEIC…).');
+    return;
+  }
+
+  const peso = document.getElementById('capo-peso');
+  peso.textContent = 'Elaborazione…';
+
+  try {
+    const dataUri = await comprimi(file);
+
+    if (dataUri.length > PESO_MAX) {
+      peso.textContent = '';
+      alert('Non riesco a comprimere abbastanza questa immagine.\n\nProva con una foto meno grande o ritagliala prima.');
+      return;
+    }
+
+    fotoInAttesa = dataUri;
+    mostraAnteprima(dataUri);
+    peso.textContent = `${(file.size/1024).toFixed(0)} KB → ${(dataUri.length/1024).toFixed(0)} KB`;
+
+  } catch (err) {
+    peso.textContent = '';
+    alert('Non sono riuscito a leggere questa immagine: ' + err.message);
+  }
+});
+
+/* Disegna l'immagine su un canvas ridotto e la riesporta in JPEG.
+   Restituisce una stringa data:image/jpeg;base64,… */
+function comprimi(file) {
+  return new Promise((risolvi, rifiuta) => {
+    const lettore = new FileReader();
+    lettore.onerror = () => rifiuta(new Error('lettura fallita'));
+    lettore.onload = () => {
+      const img = new Image();
+      img.onerror = () => rifiuta(new Error('formato non supportato dal browser'));
+      img.onload = () => {
+        let { width: w, height: h } = img;
+        if (w > LATO_MAX || h > LATO_MAX) {
+          if (w >= h) { h = Math.round(h * LATO_MAX / w); w = LATO_MAX; }
+          else        { w = Math.round(w * LATO_MAX / h); h = LATO_MAX; }
+        }
+        const c = document.createElement('canvas');
+        c.width = w; c.height = h;
+        const ctx = c.getContext('2d');
+        ctx.imageSmoothingQuality = 'high';
+        // Sfondo bianco: i PNG trasparenti in JPEG diventerebbero neri.
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, w, h);
+        ctx.drawImage(img, 0, 0, w, h);
+        risolvi(c.toDataURL('image/jpeg', QUALITA));
+      };
+      img.src = lettore.result;
+    };
+    lettore.readAsDataURL(file);
+  });
+}
+
+function mostraAnteprima(sorgente) {
   const nome = document.getElementById('capo-nome').value.trim();
   const box  = document.getElementById('capo-anteprima');
-  box.innerHTML = url
-    ? `<img src="${esc(url)}" alt="" onerror="this.parentElement.textContent='non valida'">`
+  document.getElementById('btn-togli-foto').hidden = !sorgente;
+
+  box.innerHTML = sorgente
+    ? `<img src="${esc(sorgente)}" alt="">`
     : (nome ? esc(iniziali(nome)) : 'nessuna');
 }
 
@@ -693,20 +796,37 @@ document.getElementById('btn-salva-capo').addEventListener('click', async () => 
 
   const dati = {
     nome, ruolo, branca,
-    foto:     document.getElementById('capo-foto').value.trim(),
     titolare: document.getElementById('capo-titolare').checked,
     ordine:   capoInModifica
                 ? (DATA.capi[capoInModifica].ordine ?? prossimoOrdine(branca))
                 : prossimoOrdine(branca)
   };
 
+  // Un eventuale vecchio indirizzo resta dov'è finché non si carica
+  // una foto nuova: non buttiamo via un dato che sta funzionando.
+  if (capoInModifica && DATA.capi[capoInModifica].foto) {
+    dati.foto = DATA.capi[capoInModifica].foto;
+  }
+
   segnalaStato('salvando');
   try {
-    if (capoInModifica) {
-      await update(ref(db, `contenuti/capi/${capoInModifica}`), dati);
+    // Il capo prima, perché senza la sua chiave non so dove mettere la foto.
+    let chiave = capoInModifica;
+    if (chiave) {
+      await update(ref(db, `contenuti/capi/${chiave}`), dati);
     } else {
-      await push(ref(db, 'contenuti/capi'), dati);
+      chiave = (await push(ref(db, 'contenuti/capi'), dati)).key;
     }
+
+    // undefined = nessuna modifica, null = togliere, stringa = nuova foto
+    if (fotoInAttesa === null) {
+      await remove(ref(db, `foto/${chiave}`));
+      if (dati.foto) await remove(ref(db, `contenuti/capi/${chiave}/foto`));
+    } else if (typeof fotoInAttesa === 'string') {
+      await set(ref(db, `foto/${chiave}`), fotoInAttesa);
+      if (dati.foto) await remove(ref(db, `contenuti/capi/${chiave}/foto`));
+    }
+
     chiudiModale('modale-capo');
   } catch (e) {
     segnalaStato('errore');
@@ -722,6 +842,7 @@ document.getElementById('btn-elimina-capo').addEventListener('click', async () =
   segnalaStato('salvando');
   try {
     await remove(ref(db, `contenuti/capi/${capoInModifica}`));
+    await remove(ref(db, `foto/${capoInModifica}`));   // niente foto orfane
     chiudiModale('modale-capo');
   } catch (e) {
     segnalaStato('errore');
