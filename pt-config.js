@@ -82,6 +82,7 @@ export const FALLBACK = {
    ═══════════════════════════════════════════════════════════ */
 
 const URL_CONTENUTI = `${FIREBASE_CONFIG.databaseURL}/contenuti.json`;
+const URL_FOTO      = `${FIREBASE_CONFIG.databaseURL}/foto.json`;
 
 export async function caricaContenuti() {
   try {
@@ -90,15 +91,26 @@ export async function caricaContenuti() {
     const stop = new AbortController();
     const timer = setTimeout(() => stop.abort(), 5000);
 
-    const risposta = await fetch(URL_CONTENUTI, { signal: stop.signal });
+    // Le foto stanno in un ramo a parte perché pesano: chiedendole
+    // separatamente, una pagina che non mostra capi non le scarica.
+    // Le due richieste partono insieme, non una dopo l'altra.
+    const [rContenuti, rFoto] = await Promise.all([
+      fetch(URL_CONTENUTI, { signal: stop.signal }),
+      fetch(URL_FOTO,      { signal: stop.signal }).catch(() => null)
+    ]);
     clearTimeout(timer);
 
-    if (!risposta.ok) throw new Error('HTTP ' + risposta.status);
+    if (!rContenuti.ok) throw new Error('HTTP ' + rContenuti.status);
 
-    const dati = (await risposta.json()) || {};
+    const dati = (await rContenuti.json()) || {};
+    const foto = rFoto?.ok ? ((await rFoto.json()) || {}) : {};
+
+    // La foto caricata dal pannello vince su un eventuale vecchio indirizzo.
+    const capi = normalizzaCapi(dati.capi)
+      .map(c => ({ ...c, foto: foto[c.id] || c.foto || '' }));
 
     return {
-      capi:       normalizzaCapi(dati.capi),
+      capi,
       iscrizioni: { ...FALLBACK.iscrizioni, ...(dati.iscrizioni || {}) },
       avvisi:     normalizzaAvvisi(dati.avvisi),
       online:     true
