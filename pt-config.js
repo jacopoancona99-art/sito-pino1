@@ -103,7 +103,22 @@ export async function caricaContenuti() {
     if (!rContenuti.ok) throw new Error('HTTP ' + rContenuti.status);
 
     const dati = (await rContenuti.json()) || {};
-    const foto = rFoto?.ok ? ((await rFoto.json()) || {}) : {};
+
+    // Le foto non sono critiche: se il ramo non risponde il sito mostra
+    // le iniziali. Ma il silenzio confonde chi ci sta lavorando, quindi
+    // lo diciamo in console invece di lasciarlo indovinare.
+    let foto = {};
+    if (!rFoto) {
+      console.warn('[PT] Ramo /foto irraggiungibile: mostro le iniziali.');
+    } else if (!rFoto.ok) {
+      console.warn(`[PT] Ramo /foto ha risposto ${rFoto.status}. ` +
+        'Se è 401 o 403, controlla che le regole del database siano state pubblicate.');
+    } else {
+      foto = (await rFoto.json()) || {};
+      if (!Object.keys(foto).length) {
+        console.info('[PT] Nessuna foto caricata dal pannello: mostro le iniziali.');
+      }
+    }
 
     // La foto caricata dal pannello vince su un eventuale vecchio indirizzo.
     const capi = normalizzaCapi(dati.capi)
