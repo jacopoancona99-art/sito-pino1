@@ -121,8 +121,8 @@ function normalizzaCapi(oggetto) {
     .sort((a, b) => {
       // Prima per branca (nell'ordine definito in BRANCHE),
       // poi per il campo ordine, poi alfabetico come ultima spiaggia.
-      const ia = BRANCHE.findIndex(b => b.id === a.branca);
-      const ib = BRANCHE.findIndex(b => b.id === b.branca);
+      const ia = BRANCHE.findIndex(x => x.id === a.branca);
+      const ib = BRANCHE.findIndex(x => x.id === b.branca);
       if (ia !== ib) return ia - ib;
       if ((a.ordine ?? 99) !== (b.ordine ?? 99)) return (a.ordine ?? 99) - (b.ordine ?? 99);
       return (a.nome || '').localeCompare(b.nome || '');
