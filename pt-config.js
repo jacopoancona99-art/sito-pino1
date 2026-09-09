@@ -69,33 +69,33 @@ export const FALLBACK = {
 
 
 /* ═══════════════════════════════════════════════════════════
-   CARICAMENTO CONTENUTI
-   
-   Legge da Firebase in sola lettura. Non richiede login:
-   le regole del database permettono la lettura a tutti e la
-   scrittura solo agli utenti autenticati.
-   
+   CARICAMENTO CONTENUTI (pagine pubbliche)
+
+   Usa l'API REST di Firebase invece dell'SDK:
+   - non apre un WebSocket, quindi non consuma nessuna delle
+     100 connessioni simultanee del piano gratuito
+   - non scarica i ~200 KB del pacchetto SDK
+   - è una fetch() normale, cacheabile dal browser
+
    Restituisce sempre un oggetto valido, anche in caso di
-   errore — chi chiama non deve gestire il caso "dati assenti".
+   errore: chi chiama non deve gestire il caso "dati assenti".
    ═══════════════════════════════════════════════════════════ */
+
+const URL_CONTENUTI = `${FIREBASE_CONFIG.databaseURL}/contenuti.json`;
 
 export async function caricaContenuti() {
   try {
-    const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
-    const { getDatabase, ref, get } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js');
-
-    const app = initializeApp(FIREBASE_CONFIG);
-    const db  = getDatabase(app);
-
     // Timeout esplicito: se Firebase non risponde entro 5 secondi
     // usiamo il fallback invece di lasciare la pagina in attesa.
-    const lettura = get(ref(db, 'contenuti'));
-    const timeout = new Promise((_, rifiuta) =>
-      setTimeout(() => rifiuta(new Error('timeout')), 5000)
-    );
+    const stop = new AbortController();
+    const timer = setTimeout(() => stop.abort(), 5000);
 
-    const snap = await Promise.race([lettura, timeout]);
-    const dati = snap.exists() ? snap.val() : {};
+    const risposta = await fetch(URL_CONTENUTI, { signal: stop.signal });
+    clearTimeout(timer);
+
+    if (!risposta.ok) throw new Error('HTTP ' + risposta.status);
+
+    const dati = (await risposta.json()) || {};
 
     return {
       capi:       normalizzaCapi(dati.capi),
@@ -105,7 +105,7 @@ export async function caricaContenuti() {
     };
 
   } catch (errore) {
-    console.warn('[PT] Firebase non raggiungibile, uso i contenuti di fallback:', errore.message);
+    console.warn('[PT] Firebase non raggiungibile, uso i contenuti di riserva:', errore.message);
     return { ...structuredClone(FALLBACK), online: false };
   }
 }
