@@ -2,48 +2,172 @@
   "rules": {
     "contenuti": {
       ".read": true,
-
       "capi": {
         ".write": "auth != null",
         "$capo": {
           ".validate": "newData.hasChildren(['nome', 'ruolo', 'branca'])",
-          "nome":     { ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 60" },
-          "ruolo":    { ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 60" },
-          "branca":   { ".validate": "newData.val().matches(/^(gruppo|branco|reparto|noviziato|clan)$/)" },
-          "foto":     { ".validate": "newData.isString() && newData.val().length <= 500" },
-          "titolare": { ".validate": "newData.isBoolean()" },
-          "ordine":   { ".validate": "newData.isNumber() && newData.val() >= 0" },
-          "$altro":   { ".validate": false }
+          "nome": {
+            ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 60"
+          },
+          "ruolo": {
+            ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 60"
+          },
+          "branca": {
+            ".validate": "newData.val().matches(/^(gruppo|branco|reparto|noviziato|clan)$/)"
+          },
+          "foto": {
+            ".validate": "newData.isString() && newData.val().length <= 500"
+          },
+          "titolare": {
+            ".validate": "newData.isBoolean()"
+          },
+          "ordine": {
+            ".validate": "newData.isNumber() && newData.val() >= 0"
+          },
+          "$altro": {
+            ".validate": false
+          }
         }
       },
-
       "iscrizioni": {
         ".write": "auth != null",
-        "anno":         { ".validate": "newData.isString() && newData.val().length <= 30" },
-        "aperte":       { ".validate": "newData.isBoolean()" },
-        "linkModulo":   { ".validate": "newData.isString() && newData.val().length <= 300" },
-        "dataRiunione": { ".validate": "newData.isString() && newData.val().length <= 120" },
-        "testo":        { ".validate": "newData.isString() && newData.val().length <= 1500" },
-        "notaEsito":    { ".validate": "newData.isString() && newData.val().length <= 1000" },
-        "$altro":       { ".validate": false }
+        "anno": {
+          ".validate": "newData.isString() && newData.val().length <= 30"
+        },
+        "aperte": {
+          ".validate": "newData.isBoolean()"
+        },
+        "linkModulo": {
+          ".validate": "newData.isString() && newData.val().length <= 300"
+        },
+        "dataRiunione": {
+          ".validate": "newData.isString() && newData.val().length <= 120"
+        },
+        "testo": {
+          ".validate": "newData.isString() && newData.val().length <= 1500"
+        },
+        "notaEsito": {
+          ".validate": "newData.isString() && newData.val().length <= 1000"
+        },
+        "$altro": {
+          ".validate": false
+        }
       },
-
       "avvisi": {
         ".write": "auth != null",
         "$avviso": {
           ".validate": "newData.hasChildren(['titolo', 'testo'])",
-          "titolo": { ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 120" },
-          "testo":  { ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 2000" },
-          "attivo": { ".validate": "newData.isBoolean()" },
-          "ordine": { ".validate": "newData.isNumber() && newData.val() >= 0" },
-          "data":   { ".validate": "newData.isString() && newData.val().length <= 20" },
-          "$altro": { ".validate": false }
+          "titolo": {
+            ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 120"
+          },
+          "testo": {
+            ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 2000"
+          },
+          "attivo": {
+            ".validate": "newData.isBoolean()"
+          },
+          "ordine": {
+            ".validate": "newData.isNumber() && newData.val() >= 0"
+          },
+          "data": {
+            ".validate": "newData.isString() && newData.val().length <= 20"
+          },
+          "$altro": {
+            ".validate": false
+          }
         }
       },
-
-      "$altro": { ".validate": false }
+      "$altro": {
+        ".validate": false
+      }
     },
-
+    "foto": {
+      ".read": true,
+      ".write": "auth != null",
+      "$capo": {
+        ".validate": "newData.isString() && newData.val().length <= 90000 && newData.val().beginsWith('data:image/')"
+      }
+    },
+    "richieste": {
+      ".read": "auth != null",
+      ".indexOn": [
+        "ricevutaIl"
+      ],
+      "$richiesta": {
+        ".write": "(!data.exists() && newData.exists() && root.child('contenuti/iscrizioni/aperte').val() === true) || auth != null",
+        ".validate": "newData.hasChildren(['nomeRagazzo','cognomeRagazzo','dataNascita','nomeGenitore','email','consenso','stato','ricevutaIl'])",
+        "nomeRagazzo": {
+          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 60"
+        },
+        "cognomeRagazzo": {
+          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 60"
+        },
+        "dataNascita": {
+          ".validate": "newData.isString() && newData.val().matches(/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/)"
+        },
+        "nomeGenitore": {
+          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 80"
+        },
+        "email": {
+          ".validate": "newData.isString() && newData.val().contains('@') && newData.val().length >= 5 && newData.val().length <= 120"
+        },
+        "telefono": {
+          ".validate": "newData.isString() && newData.val().length <= 30"
+        },
+        "note": {
+          ".validate": "newData.isString() && newData.val().length <= 800"
+        },
+        "consenso": {
+          ".validate": "newData.isBoolean() && newData.val() === true"
+        },
+        "stato": {
+          ".validate": "auth != null ? newData.val().matches(/^(nuova|contattata|accolta|non-accolta)$/) : newData.val() === 'nuova'"
+        },
+        "ricevutaIl": {
+          ".validate": "newData.isNumber() && newData.val() <= now + 60000 && newData.val() >= now - 60000"
+        },
+        "notaInterna": {
+          ".validate": "auth != null && newData.isString() && newData.val().length <= 500"
+        },
+        "$altro": {
+          ".validate": false
+        }
+      }
+    },
+    "messaggi": {
+      ".read": "auth != null",
+      ".indexOn": [
+        "ricevutoIl"
+      ],
+      "$messaggio": {
+        ".write": "(!data.exists() && newData.exists()) || auth != null",
+        ".validate": "newData.hasChildren(['oggetto','nome','email','testo','stato','ricevutoIl'])",
+        "oggetto": {
+          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 80"
+        },
+        "nome": {
+          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 80"
+        },
+        "email": {
+          ".validate": "newData.isString() && newData.val().contains('@') && newData.val().length >= 5 && newData.val().length <= 120"
+        },
+        "telefono": {
+          ".validate": "newData.isString() && newData.val().length <= 30"
+        },
+        "testo": {
+          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 3000"
+        },
+        "stato": {
+          ".validate": "auth != null ? newData.val().matches(/^(nuovo|letto|risposto)$/) : newData.val() === 'nuovo'"
+        },
+        "ricevutoIl": {
+          ".validate": "newData.isNumber() && newData.val() <= now + 60000 && newData.val() >= now - 60000"
+        },
+        "$altro": {
+          ".validate": false
+        }
+      }
+    },
     "$resto": {
       ".read": false,
       ".write": false

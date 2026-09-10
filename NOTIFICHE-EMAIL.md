@@ -1,11 +1,18 @@
-# Notifiche via e-mail delle pre-iscrizioni
+# Notifiche via e-mail
 
-Il modulo funziona anche senza questo passaggio: le richieste si vedono
-comunque nel pannello, con il pallino rosso sulla scheda "Richieste" che
-conta quelle non ancora lette.
+Un solo script gestisce due cose:
 
-Questa guida aggiunge una **notifica via mail** quando arriva una nuova
-richiesta, così non serve controllare il pannello ogni giorno.
+- le **pre-iscrizioni**, che arrivano alla casella del gruppo
+- i **messaggi dal modulo contatti**, inoltrati al gruppo e alla branca
+  competente in base all'argomento scelto
+
+I moduli funzionano anche senza questo passaggio: tutto si vede comunque
+nel pannello, con il pallino rosso sulle schede "Richieste" e "Messaggi".
+Le notifiche servono a non doverlo controllare ogni giorno.
+
+**Gli indirizzi delle branche vivono solo dentro questo script.** Non
+sono nel codice del sito apposta: nel sorgente di una pagina pubblica
+verrebbero raccolti dai robot dello spam in poco tempo.
 
 > **Perché non usiamo Firebase per mandare le mail:** servirebbero le
 > Cloud Functions, che richiedono il piano Blaze e quindi l'inserimento
@@ -39,57 +46,123 @@ Cancella tutto quello che c'è nell'editor e incolla:
 
 ```javascript
 /**
- * Notifica via e-mail delle nuove pre-iscrizioni.
- * Gruppo Scout AGESCI Pino Torinese 1
+ * Notifiche via e-mail — Gruppo Scout AGESCI Pino Torinese 1
+ *
+ * Gestisce due cose:
+ *   • pre-iscrizioni  → sempre alla casella del gruppo
+ *   • messaggi dal modulo contatti → gruppo + branca competente
+ *
+ * ⚠ GLI INDIRIZZI DELLE BRANCHE STANNO SOLO QUI.
+ *   Non vanno messi nel codice del sito: sarebbero visibili nel
+ *   sorgente della pagina e i raccoglitori di indirizzi per lo
+ *   spam li troverebbero in poco tempo. Questo script gira sui
+ *   server Google e non è leggibile dall'esterno.
  */
 
-// Chi riceve la notifica. Più indirizzi separati da virgola.
-const DESTINATARI = 'pinotorinese1@piemonte.agesci.it';
+// Casella principale: riceve tutto.
+const GRUPPO = 'pinotorinese1@piemonte.agesci.it';
+
+// ✏️ DA COMPILARE con gli indirizzi reali delle branche.
+//    Lascia la stringa vuota per far arrivare tutto solo al gruppo.
+const BRANCHE = {
+  branco:  '',   // es. 'branco.pino1@gmail.com'
+  reparto: '',
+  clan:    '',
+  coca:    ''
+};
+
+// Quale branca riceve, oltre al gruppo, in base all'oggetto scelto.
+const INOLTRO = {
+  informazioni:   [],
+  iscrizioni:     [],
+  ospitalita:     [],
+  branco:         ['branco'],
+  reparto:        ['reparto'],
+  clan:           ['clan'],
+  coca:           ['coca'],
+  collaborazione: ['coca'],
+  altro:          []
+};
+
 
 function doPost(e) {
   try {
     const d = JSON.parse(e.postData.contents);
-
-    // Rifiuta chiamate che non hanno la forma attesa.
-    if (!d.nomeRagazzo || !d.cognomeRagazzo || !d.email) {
-      return ok();
-    }
-
-    const nome = `${d.nomeRagazzo} ${d.cognomeRagazzo}`;
-    const anni = calcolaEta(d.dataNascita);
-
-    const corpo =
-      'È arrivata una nuova richiesta di pre-iscrizione.\n\n' +
-      '── RAGAZZO/A ──\n' +
-      `Nome:            ${nome}\n` +
-      `Data di nascita: ${formattaData(d.dataNascita)} (${anni} anni)\n` +
-      `Branca:          ${brancaPerEta(anni)}\n\n` +
-      '── CONTATTI ──\n' +
-      `Genitore:        ${d.nomeGenitore}\n` +
-      `E-mail:          ${d.email}\n` +
-      `Telefono:        ${d.telefono || 'non indicato'}\n\n` +
-      (d.note ? `── NOTE DELLA FAMIGLIA ──\n${d.note}\n\n` : '') +
-      '───────────────────────────\n' +
-      'Apri il pannello per gestirla:\n' +
-      'https://pinotorinese1.github.io/admin.html\n\n' +
-      'Questa mail contiene dati personali di un minore: non inoltrarla\n' +
-      'fuori dalla Comunità Capi.';
-
-    MailApp.sendEmail({
-      to:      DESTINATARI,
-      subject: `[Pino 1] Pre-iscrizione: ${nome} (${anni} anni)`,
-      body:    corpo,
-      replyTo: d.email
-    });
-
+    if (d.tipo === 'contatto') inoltraMessaggio(d);
+    else                       notificaIscrizione(d);
   } catch (err) {
-    // Non rilanciamo: la richiesta è già salvata su Firebase,
-    // un errore qui non deve avere conseguenze visibili.
+    // Non rilanciamo: il dato è già salvato su Firebase e un
+    // errore qui non deve avere conseguenze visibili.
     console.error('Notifica fallita: ' + err);
   }
-
   return ok();
 }
+
+
+/* ─── Messaggi dal modulo contatti ─── */
+function inoltraMessaggio(d) {
+  if (!d.nome || !d.email || !d.testo) return;
+
+  // Gruppo + eventuali branche, senza doppioni e senza caselle vuote.
+  const destinatari = [GRUPPO]
+    .concat((INOLTRO[d.chiave] || []).map(b => BRANCHE[b]))
+    .filter((v, i, a) => v && a.indexOf(v) === i)
+    .join(',');
+
+  const corpo =
+    'Nuovo messaggio dal modulo contatti del sito.\n\n' +
+    '── ARGOMENTO ──\n' + (d.oggetto || 'Non indicato') + '\n\n' +
+    '── DA ──\n' +
+    'Nome:     ' + d.nome + '\n' +
+    'E-mail:   ' + d.email + '\n' +
+    'Telefono: ' + (d.telefono || 'non indicato') + '\n\n' +
+    '── MESSAGGIO ──\n' + d.testo + '\n\n' +
+    '───────────────────────────\n' +
+    'Rispondi pure a questa mail: la risposta va direttamente a chi ha scritto.\n' +
+    'Copia di sicurezza nel pannello:\n' +
+    'https://pinotorinese1.github.io/admin.html';
+
+  MailApp.sendEmail({
+    to:      destinatari,
+    subject: '[Pino 1] ' + (d.oggetto || 'Messaggio') + ' — ' + d.nome,
+    body:    corpo,
+    replyTo: d.email        // rispondere alla mail scrive a chi ha contattato
+  });
+}
+
+
+/* ─── Pre-iscrizioni ─── */
+function notificaIscrizione(d) {
+  if (!d.nomeRagazzo || !d.cognomeRagazzo || !d.email) return;
+
+  const nome = d.nomeRagazzo + ' ' + d.cognomeRagazzo;
+  const anni = calcolaEta(d.dataNascita);
+
+  const corpo =
+    'È arrivata una nuova richiesta di pre-iscrizione.\n\n' +
+    '── RAGAZZO/A ──\n' +
+    'Nome:            ' + nome + '\n' +
+    'Data di nascita: ' + formattaData(d.dataNascita) + ' (' + anni + ' anni)\n' +
+    'Branca:          ' + brancaPerEta(anni) + '\n\n' +
+    '── CONTATTI ──\n' +
+    'Genitore:        ' + d.nomeGenitore + '\n' +
+    'E-mail:          ' + d.email + '\n' +
+    'Telefono:        ' + (d.telefono || 'non indicato') + '\n\n' +
+    (d.note ? '── NOTE DELLA FAMIGLIA ──\n' + d.note + '\n\n' : '') +
+    '───────────────────────────\n' +
+    'Apri il pannello per gestirla:\n' +
+    'https://pinotorinese1.github.io/admin.html\n\n' +
+    'Questa mail contiene dati personali di un minore: non inoltrarla\n' +
+    'fuori dalla Comunità Capi.';
+
+  MailApp.sendEmail({
+    to:      GRUPPO,
+    subject: '[Pino 1] Pre-iscrizione: ' + nome + ' (' + anni + ' anni)',
+    body:    corpo,
+    replyTo: d.email
+  });
+}
+
 
 function ok() {
   return ContentService
@@ -109,7 +182,7 @@ function calcolaEta(iso) {
 function formattaData(iso) {
   if (!iso) return '?';
   const p = iso.split('-');
-  return `${p[2]}/${p[1]}/${p[0]}`;
+  return p[2] + '/' + p[1] + '/' + p[0];
 }
 
 function brancaPerEta(a) {
@@ -122,6 +195,13 @@ function brancaPerEta(a) {
   return 'fuori età, da valutare';
 }
 ```
+
+**Compila la tabella `BRANCHE`** con gli indirizzi reali. Se una casella
+non esiste ancora, lascia la stringa vuota: quel messaggio arriverà solo
+al gruppo, senza errori.
+
+Il campo `replyTo` fa sì che rispondendo alla notifica si scriva
+direttamente a chi ha contattato, senza copiare l'indirizzo a mano.
 
 Salva con l'icona del dischetto.
 

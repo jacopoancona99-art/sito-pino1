@@ -191,6 +191,8 @@ nav {
 .contact-item .label { font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fuoco); font-weight: 600; margin-bottom: 6px; }
 .contact-item .value { font-size: 0.95rem; color: var(--testo); font-weight: 500; }
 .contact-item a { color: var(--verde); text-decoration: none; }
+  .social-riga a { display: inline-flex; align-items: center; gap: 7px; margin-bottom: 6px; }
+  .social-riga svg { width: 17px; height: 17px; fill: currentColor; flex-shrink: 0; }
 .contact-item a:hover { color: var(--fuoco); }
 
 /* SECTION TEXT */
@@ -225,6 +227,7 @@ footer a:hover { color: var(--fuoco-chiaro); }
 .link-capi svg { width: 12px; height: 12px; fill: currentColor; }
 .social-links a { width: 32px; height: 32px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.6); font-size: 0.72rem; text-decoration: none; transition: all 0.2s; font-weight: 600; }
 .social-links a:hover { border-color: var(--fuoco); color: var(--fuoco); }
+.social-links svg { width: 15px; height: 15px; fill: currentColor; }
 
 /* TOTEM RIBBON top */
 .totem-ribbon { width: 100%; height: 4px; display: flex; position: relative; z-index: 200; }
@@ -739,10 +742,75 @@ footer a:hover { color: var(--fuoco-chiaro); }
         </div>
         <div class="contact-item">
           <div class="label">Social</div>
-          <div class="value">
-            <a href="https://www.instagram.com/clanzebru/" target="_blank">Instagram @clanzebru</a><br>
-            <a href="https://www.facebook.com/Gruppo-Scout-Pino-Torinese-1-150108985095296/" target="_blank">Facebook</a>
+          <div class="value social-riga">
+            <a href="https://www.instagram.com/clanzebru/" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41-.56-.22-.96-.48-1.38-.9-.42-.42-.68-.82-.9-1.38-.16-.42-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41 1.27-.06 1.65-.07 4.85-.07M12 0C8.74 0 8.33.01 7.05.07 5.78.13 4.9.33 4.14.63c-.79.3-1.46.72-2.13 1.38C1.35 2.68.93 3.35.63 4.14.33 4.9.13 5.78.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.27.26 2.15.56 2.91.3.79.72 1.46 1.38 2.13.67.66 1.34 1.08 2.13 1.38.76.3 1.64.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.27-.06 2.15-.26 2.91-.56.79-.3 1.46-.72 2.13-1.38.66-.67 1.08-1.34 1.38-2.13.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.27-.26-2.15-.56-2.91-.3-.79-.72-1.46-1.38-2.13C21.32 1.35 20.65.93 19.86.63c-.76-.3-1.64-.5-2.91-.56C15.67.01 15.26 0 12 0z"/><path d="M12 5.84a6.16 6.16 0 1 0 0 12.32 6.16 6.16 0 0 0 0-12.32zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8z"/><circle cx="18.41" cy="5.59" r="1.44"/></svg>
+              <span>@clanzebru</span>
+            </a>
+            <a href="https://www.facebook.com/Gruppo-Scout-Pino-Torinese-1-150108985095296/" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.09 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.96.93-1.96 1.89v2.25h3.33l-.53 3.49h-2.8V24C19.61 23.09 24 18.1 24 12.07z"/></svg>
+              <span>Facebook</span>
+            </a>
           </div>
+        </div>
+      </div>
+
+      <div class="section-label" style="margin-top:3rem;">
+        <h3>Scrivici</h3><div class="line"></div><div class="badge">Contattaci</div>
+      </div>
+
+      <div class="modulo" id="contatti-box">
+        <p class="intro">Scegli l'argomento e scrivici: il messaggio arriva alle persone giuste del gruppo. Rispondiamo di solito entro qualche giorno.</p>
+
+        <div class="campo-form" id="c-oggetto">
+          <label for="k-oggetto">Di cosa vuoi parlarci? <span class="req">*</span></label>
+          <select id="k-oggetto">
+            <option value="">— scegli un argomento —</option>
+            <option value="informazioni">Informazioni generali sul gruppo</option>
+            <option value="iscrizioni">Iscrizioni e inserimento nuovi ragazzi</option>
+            <option value="ospitalita">Richiesta di ospitalità in sede</option>
+            <option value="branco">Contattare i capi del Branco (7–11 anni)</option>
+            <option value="reparto">Contattare i capi del Reparto (11–16 anni)</option>
+            <option value="clan">Contattare i capi di Clan e Noviziato (16+)</option>
+            <option value="coca">Comunità Capi e questioni organizzative</option>
+            <option value="collaborazione">Proposta di collaborazione o servizio</option>
+            <option value="altro">Altro</option>
+          </select>
+        </div>
+
+        <div class="riga-form">
+          <div class="campo-form" id="c-knome">
+            <label for="k-nome">Il tuo nome <span class="req">*</span></label>
+            <input type="text" id="k-nome" autocomplete="name" maxlength="80">
+          </div>
+          <div class="campo-form" id="c-kemail">
+            <label for="k-email">La tua e-mail <span class="req">*</span></label>
+            <input type="email" id="k-email" autocomplete="email" maxlength="120">
+            <span class="aiuto-f">Ci serve per risponderti.</span>
+          </div>
+        </div>
+
+        <div class="campo-form" style="max-width:280px;">
+          <label for="k-tel">Telefono</label>
+          <input type="tel" id="k-tel" autocomplete="tel" maxlength="30">
+        </div>
+
+        <div class="campo-form" id="c-ktesto">
+          <label for="k-testo">Il tuo messaggio <span class="req">*</span></label>
+          <textarea id="k-testo" maxlength="3000" style="min-height:130px;" placeholder="Scrivi qui…"></textarea>
+        </div>
+
+        <!-- Campo trappola: invisibile agli umani, i robot lo compilano -->
+        <div class="trappola" aria-hidden="true">
+          <label for="k-web">Non compilare questo campo</label>
+          <input type="text" id="k-web" tabindex="-1" autocomplete="off">
+        </div>
+
+        <button class="btn-primary" id="k-invia" style="border:none;cursor:pointer;font-family:inherit;">Invia il messaggio</button>
+
+        <div class="informativa">
+          <h4>Trattamento dei dati</h4>
+          <p>Nome, e-mail ed eventuale telefono vengono usati solo per risponderti e non sono comunicati a terzi. Titolare: Gruppo Scout AGESCI Pino Torinese 1, Via Maria Cristina 13, Pino Torinese (TO). Puoi chiederne la cancellazione in qualsiasi momento scrivendo a pinotorinese1@piemonte.agesci.it.</p>
         </div>
       </div>
     </div>
@@ -772,8 +840,12 @@ footer a:hover { color: var(--fuoco-chiaro); }
       <p style="margin-top:4px;">Tel: 347 – 6374358</p>
       <p style="margin-top:12px;">Seguici sui social</p>
       <div class="social-links" style="margin-top:8px;">
-        <a href="https://www.instagram.com/clanzebru/" target="_blank" title="Instagram">IG</a>
-        <a href="https://www.facebook.com/Gruppo-Scout-Pino-Torinese-1-150108985095296/" target="_blank" title="Facebook">FB</a>
+        <a href="https://www.instagram.com/clanzebru/" target="_blank" rel="noopener" title="Instagram" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41-.56-.22-.96-.48-1.38-.9-.42-.42-.68-.82-.9-1.38-.16-.42-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41 1.27-.06 1.65-.07 4.85-.07M12 0C8.74 0 8.33.01 7.05.07 5.78.13 4.9.33 4.14.63c-.79.3-1.46.72-2.13 1.38C1.35 2.68.93 3.35.63 4.14.33 4.9.13 5.78.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.27.26 2.15.56 2.91.3.79.72 1.46 1.38 2.13.67.66 1.34 1.08 2.13 1.38.76.3 1.64.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.27-.06 2.15-.26 2.91-.56.79-.3 1.46-.72 2.13-1.38.66-.67 1.08-1.34 1.38-2.13.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.27-.26-2.15-.56-2.91-.3-.79-.72-1.46-1.38-2.13C21.32 1.35 20.65.93 19.86.63c-.76-.3-1.64-.5-2.91-.56C15.67.01 15.26 0 12 0z"/><path d="M12 5.84a6.16 6.16 0 1 0 0 12.32 6.16 6.16 0 0 0 0-12.32zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8z"/><circle cx="18.41" cy="5.59" r="1.44"/></svg>
+        </a>
+        <a href="https://www.facebook.com/Gruppo-Scout-Pino-Torinese-1-150108985095296/" target="_blank" rel="noopener" title="Facebook" aria-label="Facebook">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.09 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.96.93-1.96 1.89v2.25h3.33l-.53 3.49h-2.8V24C19.61 23.09 24 18.1 24 12.07z"/></svg>
+        </a>
       </div>
     </div>
   </div>
@@ -1289,6 +1361,134 @@ function mostraEsito(riuscito) {
   }
 }
 
+/* ═══════════════════════════════════════════════════════════
+   MODULO CONTATTI
+
+   Stesso principio del modulo iscrizioni: prima si salva su
+   Firebase, poi si prova a mandare la mail. Se la notifica
+   fallisce il messaggio è comunque nel pannello e nessuno
+   resta senza risposta per colpa di un servizio esterno.
+
+   Gli indirizzi delle branche NON stanno qui: vivono dentro
+   lo script Apps Script, che gira sui server Google. Se
+   fossero nel sorgente della pagina, i raccoglitori di
+   indirizzi per lo spam li troverebbero in un giorno.
+   Il sito manda solo la chiave dell'oggetto scelto.
+   ═══════════════════════════════════════════════════════════ */
+
+const URL_MESSAGGI = `${FIREBASE_CONFIG.databaseURL}/messaggi.json`;
+
+const OGGETTI = {
+  informazioni:  'Informazioni generali',
+  iscrizioni:    'Iscrizioni',
+  ospitalita:    'Richiesta di ospitalità',
+  branco:        'Branco Mirfak',
+  reparto:       'Reparto Everest',
+  clan:          'Clan e Noviziato',
+  coca:          'Comunità Capi',
+  collaborazione:'Proposta di collaborazione',
+  altro:         'Altro'
+};
+
+function collegaContatti() {
+  const b = document.getElementById('k-invia');
+  if (b) b.addEventListener('click', inviaMessaggio);
+}
+
+async function inviaMessaggio() {
+  pulisciErrori();
+
+  const v = id => (document.getElementById(id)?.value || '').trim();
+  const chiave = v('k-oggetto');
+
+  const dati = {
+    oggetto:    OGGETTI[chiave] || 'Altro',
+    chiave,                       // serve allo script per l'inoltro
+    nome:       v('k-nome'),
+    email:      v('k-email'),
+    telefono:   v('k-tel'),
+    testo:      v('k-testo'),
+    stato:      'nuovo',
+    ricevutoIl: Date.now()
+  };
+
+  // Campo trappola: fingiamo che sia andata bene e non salviamo nulla.
+  if (v('k-web')) { esitoContatti(true); return; }
+
+  let ok = true;
+  if (!chiave)       ok = segnala('c-oggetto', 'Scegli un argomento.');
+  if (!dati.nome)    ok = segnala('c-knome',   'Come ti chiami?');
+  if (!dati.email.includes('@') || dati.email.length < 5)
+                     ok = segnala('c-kemail',  'Controlla l\'indirizzo e-mail.');
+  if (dati.testo.length < 10)
+                     ok = segnala('c-ktesto',  'Scrivi qualche riga in più, così capiamo come aiutarti.');
+
+  if (!ok) {
+    document.querySelector('.campo-form.errore')
+      ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
+  const bottone = document.getElementById('k-invia');
+  bottone.disabled = true;
+  bottone.textContent = 'Invio in corso…';
+
+  try {
+    // "chiave" non fa parte dello schema del database: la togliamo
+    // prima di salvare, altrimenti le regole rifiutano il messaggio.
+    const { chiave: _, ...daSalvare } = dati;
+
+    const risposta = await fetch(URL_MESSAGGI, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(daSalvare)
+    });
+    if (!risposta.ok) throw new Error('HTTP ' + risposta.status);
+
+    esitoContatti(true);
+    notificaMessaggio(dati);     // non atteso: se fallisce, pazienza
+
+  } catch (errore) {
+    console.error('[PT] invio messaggio fallito:', errore);
+    bottone.disabled = false;
+    bottone.textContent = 'Invia il messaggio';
+    esitoContatti(false);
+  }
+}
+
+function notificaMessaggio(dati) {
+  if (!URL_NOTIFICA) return;
+  fetch(URL_NOTIFICA, {
+    method: 'POST',
+    mode:   'no-cors',
+    headers:{ 'Content-Type': 'text/plain;charset=utf-8' },
+    body:   JSON.stringify({ tipo: 'contatto', ...dati })
+  }).catch(e => console.warn('[PT] notifica non inviata:', e.message));
+}
+
+function esitoContatti(riuscito) {
+  const box = document.getElementById('contatti-box');
+  if (!box) return;
+
+  if (riuscito) {
+    box.innerHTML = `<div class="esito-invio esito-ok">
+      <h4>✓ Messaggio inviato</h4>
+      <p>Grazie, l'abbiamo ricevuto. Ti rispondiamo all'indirizzo che ci hai lasciato,
+      di solito entro qualche giorno.</p>
+    </div>`;
+    box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  } else {
+    const g = document.createElement('div');
+    g.className = 'esito-invio esito-ko';
+    g.style.marginTop = '1rem';
+    g.innerHTML = `<h4>Invio non riuscito</h4>
+      <p>Il messaggio non è stato inviato. Riprova tra poco, oppure scrivici
+      direttamente a <a href="mailto:pinotorinese1@piemonte.agesci.it" style="color:#721c24;font-weight:600;">pinotorinese1@piemonte.agesci.it</a>.</p>`;
+    box.querySelector('.esito-ko')?.remove();
+    box.insertBefore(g, box.querySelector('.informativa'));
+  }
+}
+
 /* ─── AVVIO ─── */
 async function avvia() {
   DATA.capi.length = 0;
@@ -1298,9 +1498,9 @@ async function avvia() {
   renderIscrizioni();
   renderAvvisi();
 
-  // Il modulo esiste solo se le iscrizioni sono aperte:
-  // va collegato dopo il render, non prima.
+  // I moduli esistono solo dopo il render: vanno collegati qui.
   collegaModulo();
+  collegaContatti();
 
   if (!DATA.online) {
     console.info('[PT] Pagina servita con i contenuti di riserva.');

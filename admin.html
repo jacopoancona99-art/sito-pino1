@@ -223,6 +223,7 @@ textarea{resize:vertical;min-height:80px;line-height:1.6;}
     <button class="tab" data-sez="iscrizioni">Iscrizioni</button>
     <button class="tab" data-sez="avvisi">Avvisi</button>
     <button class="tab" data-sez="richieste">Richieste<span class="badge-tab" id="badge-rich" hidden>0</span></button>
+    <button class="tab" data-sez="messaggi">Messaggi<span class="badge-tab" id="badge-msg" hidden>0</span></button>
   </div>
 
   <!-- ─── CAPI ─── -->
@@ -308,6 +309,15 @@ textarea{resize:vertical;min-height:80px;line-height:1.6;}
       <div class="chip" data-f="non-accolta">Non accolte</div>
     </div>
     <div id="lista-richieste"></div>
+  </div>
+
+  <!-- ─── MESSAGGI ─── -->
+  <div class="sezione" id="sez-messaggi">
+    <div class="sez-head">
+      <h2>Messaggi dal sito</h2>
+    </div>
+    <p class="aiuto" style="margin-bottom:1rem;">Arrivano dal modulo "Scrivici" nella pagina contatti. Sono anche inoltrati per e-mail, questa è la copia di sicurezza.</p>
+    <div id="lista-messaggi"></div>
   </div>
 
 </div>
@@ -416,6 +426,22 @@ textarea{resize:vertical;min-height:80px;line-height:1.6;}
   </div>
 </div>
 
+<!-- ══════════ MODALE MESSAGGIO ══════════ -->
+<div class="overlay" id="modale-msg">
+  <div class="modale">
+    <div class="modale-head">
+      <div><h3 id="msg-tit">Messaggio</h3><p id="msg-sub"></p></div>
+      <button class="chiudi" onclick="chiudiModale('modale-msg')">✕</button>
+    </div>
+    <div class="modale-body" id="msg-corpo"></div>
+    <div class="modale-foot">
+      <button class="btn btn-danger" id="btn-elimina-msg">Elimina</button>
+      <button class="btn btn-outline" onclick="chiudiModale('modale-msg')">Chiudi</button>
+      <button class="btn btn-verde" id="btn-rispondi-msg">✉ Rispondi</button>
+    </div>
+  </div>
+</div>
+
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut }
@@ -436,6 +462,7 @@ const DATA = {
   avvisi:     {},
   foto:       {},   // { idCapo: 'data:image/jpeg;base64,...' } — ramo separato
   richieste:  {},   // dati personali di minori — lettura protetta dalle regole
+  messaggi:   {},   // messaggi dal modulo contatti
   pronto:     false
 };
 
@@ -443,6 +470,7 @@ let capoInModifica   = null;   // chiave Firebase, oppure null se è nuovo
 let avvisoInModifica = null;
 let richInModifica   = null;
 let filtroStato      = '';
+let msgInModifica    = null;
 let fotoInAttesa     = undefined;   // undefined = invariata, null = da togliere, stringa = nuova
 
 const app  = initializeApp(FIREBASE_CONFIG);
@@ -544,6 +572,13 @@ function avviaAscolto() {
   }, errore => {
     console.error('[PT] lettura richieste fallita:', errore);
   });
+
+  onValue(ref(db, 'messaggi'), snap => {
+    DATA.messaggi = snap.val() || {};
+    renderMessaggi();
+  }, errore => {
+    console.error('[PT] lettura messaggi fallita:', errore);
+  });
 }
 
 function segnalaStato(tipo) {
@@ -566,6 +601,7 @@ function render() {
   renderIscrizioni();
   renderAvvisi();
   renderRichieste();
+  renderMessaggi();
 }
 
 function renderCapi() {
@@ -1167,6 +1203,108 @@ function dataIt(ms, conOra = false) {
   const data = d.toLocaleDateString('it-IT', { day:'2-digit', month:'2-digit', year:'numeric' });
   return conOra ? `${data} alle ${d.toLocaleTimeString('it-IT', { hour:'2-digit', minute:'2-digit' })}` : data;
 }
+
+
+/* ═══════════════════════════════════════════════════════
+   MESSAGGI DAL MODULO CONTATTI
+
+   Copia di sicurezza di quello che viene già inoltrato per
+   e-mail: se una notifica si perde, il messaggio è qui.
+   ═══════════════════════════════════════════════════════ */
+
+function renderMessaggi() {
+  const tutti = Object.entries(DATA.messaggi)
+    .map(([id, m]) => ({ id, ...m }))
+    .sort((a, b) => (b.ricevutoIl ?? 0) - (a.ricevutoIl ?? 0));
+
+  const nuovi = tutti.filter(m => m.stato === 'nuovo').length;
+  const badge = document.getElementById('badge-msg');
+  badge.textContent = nuovi;
+  badge.hidden = nuovi === 0;
+
+  const cont = document.getElementById('lista-messaggi');
+  if (!tutti.length) {
+    cont.innerHTML = `<div class="vuoto"><div class="ic">✉️</div>
+      <p>Nessun messaggio.<br>Compariranno qui quando qualcuno scrive dal sito.</p></div>`;
+    return;
+  }
+
+  cont.innerHTML = tutti.map(m => `
+    <div class="rich-riga ${m.stato === 'nuovo' ? 'nuova' : ''}" data-msg="${m.id}">
+      <div class="rich-info">
+        <div class="nome">${esc(m.oggetto)}</div>
+        <div class="meta">${esc(m.nome)} · ${esc(m.email)}</div>
+        <div class="meta" style="margin-top:3px;color:var(--testo);">${esc((m.testo || '').slice(0, 90))}${(m.testo || '').length > 90 ? '…' : ''}</div>
+      </div>
+      <div class="rich-dx">
+        <span class="st st-${m.stato === 'nuovo' ? 'nuova' : m.stato === 'letto' ? 'contattata' : 'accolta'}">${
+          { nuovo: 'Nuovo', letto: 'Letto', risposto: 'Risposto' }[m.stato] || m.stato}</span>
+        <span class="rich-data">${dataIt(m.ricevutoIl)}</span>
+      </div>
+    </div>`).join('');
+
+  cont.querySelectorAll('[data-msg]').forEach(el =>
+    el.onclick = () => apriMessaggio(el.dataset.msg));
+}
+
+async function apriMessaggio(id) {
+  msgInModifica = id;
+  const m = DATA.messaggi[id];
+
+  document.getElementById('msg-tit').textContent = m.oggetto;
+  document.getElementById('msg-sub').textContent =
+    `Da ${m.nome} · ${dataIt(m.ricevutoIl, true)}`;
+
+  document.getElementById('msg-corpo').innerHTML = `
+    <div class="riga due">
+      <div class="dett"><div class="et">E-mail</div>
+        <div class="vl"><a href="mailto:${esc(m.email)}">${esc(m.email)}</a></div></div>
+      <div class="dett"><div class="et">Telefono</div>
+        <div class="vl">${m.telefono ? `<a href="tel:${esc(m.telefono)}">${esc(m.telefono)}</a>` : '—'}</div></div>
+    </div>
+    <div class="dett"><div class="et">Messaggio</div>
+      <div class="vl" style="white-space:pre-wrap;line-height:1.65;">${esc(m.testo)}</div></div>
+    <div class="campo" style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);">
+      <label for="msg-stato">Stato</label>
+      <select id="msg-stato">
+        <option value="nuovo"${m.stato === 'nuovo' ? ' selected' : ''}>Nuovo</option>
+        <option value="letto"${m.stato === 'letto' ? ' selected' : ''}>Letto</option>
+        <option value="risposto"${m.stato === 'risposto' ? ' selected' : ''}>Risposto</option>
+      </select>
+    </div>`;
+
+  document.getElementById('msg-stato').onchange = e =>
+    update(ref(db, `messaggi/${id}`), { stato: e.target.value })
+      .catch(err => alert('Non riesco a salvare lo stato: ' + err.message));
+
+  apriModale('modale-msg');
+
+  // Aprirlo vale come averlo letto: il contatore serve a segnalare
+  // cosa non è stato ancora visto, non a essere aggiornato a mano.
+  if (m.stato === 'nuovo') {
+    try { await update(ref(db, `messaggi/${id}`), { stato: 'letto' }); } catch {}
+  }
+}
+
+document.getElementById('btn-rispondi-msg').addEventListener('click', async () => {
+  const m = DATA.messaggi[msgInModifica];
+  const oggetto = encodeURIComponent(`Re: ${m.oggetto} — Gruppo Scout Pino Torinese 1`);
+  const corpo   = encodeURIComponent(`\n\n———\nIl ${dataIt(m.ricevutoIl, true)} hai scritto:\n${m.testo}`);
+  window.open(`mailto:${m.email}?subject=${oggetto}&body=${corpo}`);
+
+  try { await update(ref(db, `messaggi/${msgInModifica}`), { stato: 'risposto' }); } catch {}
+});
+
+document.getElementById('btn-elimina-msg').addEventListener('click', async () => {
+  const m = DATA.messaggi[msgInModifica];
+  if (!confirm(`Eliminare il messaggio di ${m.nome}?\n\nNon è recuperabile.`)) return;
+  try {
+    await remove(ref(db, `messaggi/${msgInModifica}`));
+    chiudiModale('modale-msg');
+  } catch (e) {
+    alert('Eliminazione non riuscita: ' + e.message);
+  }
+});
 
 
 /* ═══════════════════════════════════════════════════════
