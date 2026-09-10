@@ -3,8 +3,8 @@
 Sito pubblico su GitHub Pages con i contenuti modificabili da un pannello
 protetto, senza toccare il codice.
 
-- **Sito:** https://jacopoancona99-art.github.io/sito-pino1/
-- **Pannello:** https://jacopoancona99-art.github.io/sito-pino1/admin.html
+- **Sito:** https://pinotorinese1.github.io/
+- **Pannello:** https://pinotorinese1.github.io/admin.html
 - **Firebase:** progetto `sito-pino1`, Realtime Database in `europe-west1`
 
 ---
@@ -14,14 +14,22 @@ protetto, senza toccare il codice.
 ```
 GitHub Pages  ──►  index.html      (pagine pubbliche, HTML statico)
                         │
-                        │  fetch REST, lettura aperta a tutti
+                        │  fetch REST
                         ▼
-             Realtime Database  /contenuti
+                Realtime Database
+                        │
+     /contenuti   capi, iscrizioni, avvisi   lettura: tutti
+     /foto        immagini compresse         lettura: tutti
+     /richieste   pre-iscrizioni (minori)    lettura: solo capi
                         ▲
                         │  scrittura solo con login
                         │
                    admin.html     (pannello capi)
 ```
+
+I tre rami hanno regole diverse. `/richieste` in particolare è **invertito**:
+chiunque può creare una richiesta dal modulo pubblico, ma solo un capo
+autenticato può leggerla. È il modello della cassetta delle lettere.
 
 I **testi descrittivi** delle branche stanno dentro `index.html`: cambiano
 una volta ogni cinque anni e così restano indicizzabili dai motori di
@@ -50,6 +58,7 @@ vuote. Nel caso peggiore i dati sono vecchi, ma il sito resta in piedi.
 | `admin.html` | Pannello di gestione: capi, iscrizioni, avvisi |
 | `pt-config.js` | Configurazione Firebase, elenco branche, contenuti di riserva |
 | `firebase-rules.json` | Regole di sicurezza del database (copia di servizio) |
+| `img/` | Foto delle sezioni. Quelle dei capi stanno nel database, non qui |
 
 I tre file `.html` e `.js` devono stare **nella stessa cartella**, altrimenti
 l'import del modulo fallisce.
@@ -62,8 +71,10 @@ Apri il pannello, accedi con la tua e-mail, modifica. Le pagine pubbliche
 si aggiornano al primo ricaricamento, senza pubblicare niente su GitHub.
 
 **Aggiungere un capo** → scheda Capi → *Aggiungi capo*. Nome, ruolo, branca.
-Il campo foto vuole l'indirizzo di un'immagine già online: se lo lasci
-vuoto compaiono le iniziali su sfondo verde, resa uniforme e dignitosa.
+Per la foto usa *Scegli una foto…*: viene rimpicciolita e compressa nel
+browser prima del salvataggio, quindi puoi caricare tranquillamente uno
+scatto dal telefono. Senza foto compaiono le iniziali su sfondo verde,
+che è una resa pulita e uniforme.
 
 **Ordine** → frecce ▲▼ dentro la stessa branca. Il capo titolare (bordo
 arancione) compare comunque per primo sul sito, anche se in elenco sta
@@ -117,7 +128,7 @@ nessun metodo di pagamento.
 ## Se qualcosa non va
 
 **Il login non passa** → Console Firebase → Authentication → Settings →
-*Domini autorizzati*: deve esserci `jacopoancona99-art.github.io`.
+*Domini autorizzati*: deve esserci `pinotorinese1.github.io`.
 
 **Il pannello dice `permission_denied`** → le regole del database non sono
 state pubblicate. Realtime Database → scheda Regole → incolla
