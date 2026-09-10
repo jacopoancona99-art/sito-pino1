@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="google-site-verification" content="XMkXjK8F8zmyFLKQONZ2yCu5LyhDMaFVuZuQIopx7hc" />
 <title>Gruppo Scout Pino Torinese 1 — AGESCI Pino Torinese</title>
 
 <!-- ── Come il sito appare nei risultati di ricerca ──
@@ -1106,9 +1107,22 @@ function renderAvvisi() {
    La mail è una comodità, non il registro delle iscrizioni.
    ═══════════════════════════════════════════════════════════ */
 
-/* Lasciare vuoto per disattivare la notifica via mail.
-   Si compila dopo aver pubblicato lo script (vedi NOTIFICHE-EMAIL.md). */
-const URL_NOTIFICA = '';
+/* Indirizzo dello script Apps Script che manda la mail ai capi.
+   Lasciare vuoto per disattivare la notifica.
+
+   ⚠ Deve finire con /exec, non con /dev:
+     /dev  = versione di prova, funziona solo se sei collegato con
+             l'account che ha creato lo script. Per un visitatore
+             qualunque fallisce.
+     /exec = versione pubblicata, quella che serve qui.
+   Si ottiene da: Esegui il deployment → Gestisci deployment →
+   copia l'URL dell'app web. Vedi NOTIFICHE-EMAIL.md */
+const URL_NOTIFICA = 'https://script.google.com/macros/s/AKfycbwat3T9Al4I4OGrz_4YuXilbHpkEk48mT0jMFp7_mPPe-5ydUONUomgiyJOG6REln4u/exec';
+
+if (URL_NOTIFICA && !URL_NOTIFICA.endsWith('/exec')) {
+  console.warn('[PT] URL_NOTIFICA non finisce con /exec: le notifiche ' +
+    'non arriveranno ai visitatori.');
+}
 
 const URL_RICHIESTE = `${FIREBASE_CONFIG.databaseURL}/richieste.json`;
 
