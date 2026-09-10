@@ -28,6 +28,8 @@ body{font-family:'Inter',sans-serif;background:var(--avorio);color:var(--testo);
 .topbar h1 span{display:block;font-family:'Inter',sans-serif;font-size:.68rem;font-weight:400;opacity:.6;text-transform:uppercase;letter-spacing:.08em;}
 .topbar .right{margin-left:auto;display:flex;align-items:center;gap:12px;}
 .utente{color:rgba(255,255,255,.7);font-size:.8rem;}
+.link-sito{color:rgba(255,255,255,.6);text-decoration:none;font-size:.78rem;padding:5px 10px;border:1px solid rgba(255,255,255,.15);border-radius:5px;transition:.15s;white-space:nowrap;}
+.link-sito:hover{color:#fff;border-color:rgba(255,255,255,.4);}
 .stato{display:flex;align-items:center;gap:6px;font-size:.72rem;color:rgba(255,255,255,.6);}
 .stato .pallino{width:8px;height:8px;border-radius:50%;background:#4caf50;}
 .stato.salvando .pallino{background:var(--giallo);animation:pulse 1s infinite;}
@@ -188,6 +190,7 @@ textarea{resize:vertical;min-height:80px;line-height:1.6;}
   <div class="right">
     <div class="stato" id="stato" hidden><span class="pallino"></span><span id="stato-testo">Salvato</span></div>
     <span class="utente" id="utente"></span>
+    <a href="index.html" class="link-sito" title="Apri il sito pubblico">↗ Vedi il sito</a>
     <button class="btn btn-outline btn-sm" id="btn-esci" hidden>Esci</button>
   </div>
 </div>

@@ -160,6 +160,13 @@ footer p, footer a { font-size: 0.85rem; line-height: 1.8; color: rgba(255,255,2
 footer a:hover { color: var(--fuoco-chiaro); }
 .footer-bottom { max-width: 960px; margin: 2rem auto 0; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; color: rgba(255,255,255,0.4); flex-wrap: wrap; gap: 8px; }
 .social-links { display: flex; gap: 10px; }
+
+/* Accesso al pannello: presente ma discreto. Non è un segreto
+   (la protezione è la password), però non deve invitare i
+   visitatori a cliccarci sopra. */
+.link-capi { display: inline-flex; align-items: center; gap: 6px; color: rgba(255,255,255,0.4); text-decoration: none; font-size: 0.78rem; padding: 4px 10px; border: 1px solid rgba(255,255,255,0.12); border-radius: 4px; transition: all 0.2s; }
+.link-capi:hover { color: var(--fuoco-chiaro); border-color: rgba(232,105,42,0.5); }
+.link-capi svg { width: 12px; height: 12px; fill: currentColor; }
 .social-links a { width: 32px; height: 32px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.6); font-size: 0.72rem; text-decoration: none; transition: all 0.2s; font-weight: 600; }
 .social-links a:hover { border-color: var(--fuoco); color: var(--fuoco); }
 
@@ -716,7 +723,10 @@ footer a:hover { color: var(--fuoco-chiaro); }
   </div>
   <div class="footer-bottom">
     <span>© 2026 Gruppo Scout Pino Torinese 1 · AGESCI</span>
-    <span>Costruito con ♥ per lo scautismo piemontese</span>
+    <a href="admin.html" class="link-capi" rel="nofollow">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2h-1V6a5 5 0 0 0-5-5zm0 2a3 3 0 0 1 3 3v3H9V6a3 3 0 0 1 3-3zm0 11a2 2 0 0 1 1 3.7V19a1 1 0 0 1-2 0v-1.3A2 2 0 0 1 12 14z"/></svg>
+      Area capi
+    </a>
   </div>
   <div class="tricolore-bar" aria-hidden="true" style="margin-top:2rem;opacity:0.45;"><span class="tr-verde"></span><span class="tr-bianco"></span><span class="tr-rosso"></span></div>
 </footer>
