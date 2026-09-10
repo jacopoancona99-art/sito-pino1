@@ -890,8 +890,8 @@ function bannerAperte(i) {
     <div class="step">
       <div class="step-num">1</div>
       <div>
-        <h4>Compila la pre-iscrizione online</h4>
-        <p>Vai al modulo su <a href="${esc(i.linkModulo)}" target="_blank" rel="noopener" style="color:var(--fuoco);font-weight:500">${esc(etichettaLink(i.linkModulo))}</a> e inserisci i dati del ragazzo o della ragazza. Verifica con cura i dati inseriti.</p>
+        <h4>Compila il modulo qui sotto</h4>
+        <p>Trovi il modulo di pre-iscrizione in fondo a questa pagina. Servono i dati del ragazzo o della ragazza e un contatto di un genitore. Verifica con cura quello che inserisci.</p>
       </div>
     </div>
     <div class="step">
@@ -1025,13 +1025,6 @@ function bannerChiuse(i) {
       <p><strong style="color:var(--verde)">Clan Zebrù</strong> — 16 / 21 anni</p>
     </div>
   </div>`;
-}
-
-/* Accorcia l'indirizzo per la visualizzazione, tenendo
-   l'href completo. */
-function etichettaLink(url) {
-  try { const u = new URL(url); return u.host + u.pathname; }
-  catch { return url; }
 }
 
 /* ─── RENDER AVVISI ─── */
