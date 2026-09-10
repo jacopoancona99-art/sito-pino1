@@ -3,7 +3,62 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gruppo Scout Pino Torinese 1 | Anno 2026-27</title>
+<title>Gruppo Scout Pino Torinese 1 — AGESCI Pino Torinese</title>
+
+<!-- ── Come il sito appare nei risultati di ricerca ──
+     La descrizione è quella riga di testo sotto al titolo su Google.
+     Sta sotto i 160 caratteri, altrimenti viene tagliata. -->
+<meta name="description" content="Gruppo Scout AGESCI Pino Torinese 1: attività, campi e servizio per ragazzi dai 7 ai 21 anni. Branco Mirfak, Reparto Everest, Clan Zebrù.">
+<meta name="author" content="Gruppo Scout AGESCI Pino Torinese 1">
+<link rel="canonical" href="https://pinotorinese1.github.io/">
+
+<!-- Anteprima quando il link viene condiviso su WhatsApp, Facebook, Telegram -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="it_IT">
+<meta property="og:site_name" content="Gruppo Scout Pino Torinese 1">
+<meta property="og:title" content="Gruppo Scout Pino Torinese 1 — AGESCI">
+<meta property="og:description" content="Scautismo a Pino Torinese dal 1972. Branco, Reparto, Noviziato e Clan per ragazzi dai 7 ai 21 anni.">
+<meta property="og:url" content="https://pinotorinese1.github.io/">
+<meta property="og:image" content="https://pinotorinese1.github.io/img/home-natura.jpg">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ── Dati strutturati ──
+     Servono a Google per capire che questo è un ente locale
+     con un indirizzo preciso, non un sito qualsiasi. Aiutano
+     a comparire nelle ricerche geografiche. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Gruppo Scout AGESCI Pino Torinese 1",
+  "alternateName": "Pino Torinese 1",
+  "url": "https://pinotorinese1.github.io/",
+  "logo": "https://pinotorinese1.github.io/img/agesci.png",
+  "foundingDate": "1972",
+  "description": "Gruppo scout dell'Associazione Guide e Scouts Cattolici Italiani attivo a Pino Torinese dal 1972.",
+  "email": "pinotorinese1@piemonte.agesci.it",
+  "telephone": "+39-347-6374358",
+  "taxID": "94082090013",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Via Maria Cristina 13",
+    "addressLocality": "Pino Torinese",
+    "addressRegion": "TO",
+    "postalCode": "10025",
+    "addressCountry": "IT"
+  },
+  "parentOrganization": {
+    "@type": "Organization",
+    "name": "AGESCI — Associazione Guide e Scouts Cattolici Italiani",
+    "url": "https://www.agesci.it"
+  },
+  "sameAs": [
+    "https://www.instagram.com/clanzebru/",
+    "https://www.facebook.com/Gruppo-Scout-Pino-Torinese-1-150108985095296/"
+  ]
+}
+</script>
+
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -1053,7 +1108,7 @@ function renderAvvisi() {
 
 /* Lasciare vuoto per disattivare la notifica via mail.
    Si compila dopo aver pubblicato lo script (vedi NOTIFICHE-EMAIL.md). */
-const URL_NOTIFICA = 'https://script.google.com/macros/s/AKfycbwat3T9Al4I4OGrz_4YuXilbHpkEk48mT0jMFp7_mPPe-5ydUONUomgiyJOG6REln4u/exec';
+const URL_NOTIFICA = '';
 
 const URL_RICHIESTE = `${FIREBASE_CONFIG.databaseURL}/richieste.json`;
 

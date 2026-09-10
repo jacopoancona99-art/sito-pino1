@@ -1,0 +1,9 @@
+# Gruppo Scout AGESCI Pino Torinese 1
+
+User-agent: *
+Allow: /
+
+# Il pannello di gestione non deve finire nei risultati di ricerca
+Disallow: /admin.html
+
+Sitemap: https://pinotorinese1.github.io/sitemap.xml
