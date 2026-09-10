@@ -76,10 +76,39 @@
   --bianco: #ffffff;
   --giallo-scout: #f5c800;
   --verde-scout: #2e7d32;
+
+  /* ── Materiali ──
+     iOS impila superfici traslucide che sfocano il livello
+     sottostante. Non è decorazione: comunica profondità. */
+  --vetro:        rgba(255,255,255,0.72);
+  --vetro-scuro:  rgba(26,58,42,0.55);
+  --vetro-bordo:  rgba(255,255,255,0.5);
+  --sfoca:        saturate(180%) blur(20px);
+
+  /* ── Raggi ── scala, non un valore unico per tutto */
+  --r-piccolo: 10px;
+  --r-medio:   16px;
+  --r-grande:  22px;
+  --r-pillola: 980px;
+
+  /* ── Ombre ── diffuse e appena percettibili */
+  --ombra-1: 0 1px 2px rgba(20,35,25,0.04), 0 4px 12px rgba(20,35,25,0.05);
+  --ombra-2: 0 2px 6px rgba(20,35,25,0.06), 0 12px 32px rgba(20,35,25,0.08);
+  --ombra-3: 0 8px 24px rgba(20,35,25,0.10), 0 24px 60px rgba(20,35,25,0.12);
+
+  /* ── Separatori ── il "hairline" di iOS */
+  --filo: rgba(26,58,42,0.10);
   --tricolore-rosso: #ce2b37;
 }
 html { scroll-behavior: smooth; }
-body { font-family: 'Inter', sans-serif; background: var(--avorio); color: var(--testo); line-height: 1.7; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, 'Inter', sans-serif;
+  background: var(--avorio);
+  color: var(--testo);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
 
 /* PAGE SYSTEM */
 .page { display: none; }
@@ -88,9 +117,12 @@ body { font-family: 'Inter', sans-serif; background: var(--avorio); color: var(-
 /* NAV */
 nav {
   position: sticky; top: 0; z-index: 100;
-  background: var(--verde); padding: 0 2rem;
   display: flex; align-items: center; justify-content: space-between;
-  height: 72px; border-bottom: 3px solid var(--fuoco);
+  height: 72px; padding: 0 1.5rem;
+  background: var(--vetro-scuro);
+  -webkit-backdrop-filter: var(--sfoca);
+  backdrop-filter: var(--sfoca);
+  border-bottom: 1px solid rgba(255,255,255,0.10);
 }
 .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; cursor: pointer; }
 .nav-logo { height: 42px; width: auto; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
@@ -117,49 +149,142 @@ nav {
 /* FAZZOLETTONE separatore hero (verde | bianco | giallo scout) */
 .fazzolettone { width: 100%; height: 8px; background: linear-gradient(90deg, var(--verde-scout) 0%, var(--verde-scout) 50%, var(--giallo-scout) 50%, var(--giallo-scout) 100%); }
 
+/* HERO — ogni sezione ha la sua immagine di fondo */
+.hero--home      { background-image: url('img/home-natura.jpg'); }
+.hero--gruppo    { background-image: url('img/home-coca.jpg'); }
+.hero--coca      { background-image: url('img/home-coca.jpg'); }
+.hero--branco    { background-image: url('img/branco.jpg'); }
+.hero--reparto   { background-image: url('img/reparto.jpg'); }
+.hero--clan      { background-image: url('img/clan.jpg'); }
+.hero--noviziato { background-image: url('img/noviziato.jpg'); }
+.hero--iscrizioni{ background-image: url('img/home-clan.jpg'); }
+.hero--dove      { background-image: url('img/home-natura.jpg'); }
+
 /* HERO */
-.hero { background: var(--verde); position: relative; overflow: hidden; padding: 5rem 2rem 4rem; text-align: center; }
-.hero::before { content: ''; position: absolute; inset: 0; background-image: repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.015) 40px, rgba(255,255,255,0.015) 80px); }
-.hero-eyebrow { display: inline-block; background: var(--fuoco); color: white; font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600; padding: 6px 16px; border-radius: 2px; margin-bottom: 1.5rem; position: relative; }
-.hero h1 { font-family: 'Playfair Display', serif; color: white; font-size: clamp(2.2rem, 5vw, 3.8rem); font-weight: 900; line-height: 1.1; margin-bottom: 1.25rem; position: relative; }
+.hero {
+  position: relative;
+  overflow: hidden;
+  padding: 5.5rem 2rem 4.5rem;
+  text-align: center;
+  background: var(--verde);       /* colore di riserva se la foto manca */
+  background-size: cover;
+  background-position: center;
+  isolation: isolate;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(rgba(26,58,42,0.78), rgba(26,58,42,0.86));
+  -webkit-backdrop-filter: blur(3px) saturate(115%);
+  backdrop-filter: blur(3px) saturate(115%);
+}
+.hero-eyebrow { display: inline-block; background: rgba(255,255,255,0.16); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.22); color: #fff; font-size: 0.8rem; font-weight: 530; letter-spacing: -0.005em; padding: 6px 16px; border-radius: var(--r-pillola); margin-bottom: 1.4rem; position: relative; }
+.hero h1 {
+  font-family: 'Playfair Display', Georgia, serif;
+  color: #fff;
+  font-size: clamp(2.3rem, 5.5vw, 3.9rem);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -0.022em;
+  margin-bottom: 1.1rem;
+  position: relative;
+  text-shadow: 0 2px 20px rgba(0,0,0,0.25);
+}
 .hero p { color: rgba(255,255,255,0.65); font-size: 1.05rem; max-width: 560px; margin: 0 auto 2rem; line-height: 1.75; position: relative; }
 .hero-stats { display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; position: relative; margin-top: 1rem; }
 .stat-box { text-align: center; }
 .stat-num { font-family: 'Playfair Display', serif; font-size: 2.8rem; font-weight: 900; color: var(--fuoco); line-height: 1; }
 .stat-label { font-size: 0.75rem; color: rgba(255,255,255,0.55); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 4px; }
 .hero-cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 2rem; position: relative; }
-.btn-primary { background: var(--fuoco); color: white; padding: 12px 28px; border-radius: 4px; text-decoration: none; font-weight: 600; font-size: 0.9rem; letter-spacing: 0.03em; transition: background 0.2s; cursor: pointer; border: none; }
-.btn-primary:hover { background: var(--fuoco-chiaro); }
-.btn-secondary { background: transparent; color: white; padding: 12px 28px; border-radius: 4px; border: 1.5px solid rgba(255,255,255,0.4); text-decoration: none; font-weight: 500; font-size: 0.9rem; transition: all 0.2s; cursor: pointer; }
-.btn-secondary:hover { border-color: white; background: rgba(255,255,255,0.08); }
+.btn-primary {
+  background: var(--fuoco); color: #fff;
+  padding: 13px 26px; border: none;
+  border-radius: var(--r-pillola);
+  font-family: inherit; font-size: 0.95rem; font-weight: 590;
+  letter-spacing: -0.01em; cursor: pointer;
+  box-shadow: 0 1px 3px rgba(200,80,25,0.3);
+  transition: transform 0.18s cubic-bezier(0.2,0.9,0.3,1), filter 0.18s;
+}
+.btn-primary:hover { filter: brightness(1.07); }
+  .btn-primary:active { transform: scale(0.96); }
+.btn-secondary {
+  background: rgba(255,255,255,0.14); color: #fff;
+  padding: 13px 26px;
+  border: 1px solid rgba(255,255,255,0.28);
+  border-radius: var(--r-pillola);
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  font-family: inherit; font-size: 0.95rem; font-weight: 510;
+  letter-spacing: -0.01em; cursor: pointer;
+  transition: transform 0.18s cubic-bezier(0.2,0.9,0.3,1), background 0.18s;
+}
+.btn-secondary:hover { background: rgba(255,255,255,0.22); }
+  .btn-secondary:active { transform: scale(0.96); }
 
 /* CONTENT */
 .container { max-width: 960px; margin: 0 auto; padding: 0 2rem; }
 .section { padding: 4rem 0; }
 .section-label { display: flex; align-items: center; gap: 16px; margin-bottom: 1.5rem; }
-.section-label h3 { font-family: 'Playfair Display', serif; font-size: 1.35rem; color: var(--verde); font-weight: 700; white-space: nowrap; }
-.section-label .line { flex: 1; height: 1px; background: var(--avorio-scuro); }
-.section-label .badge { background: var(--verde); color: white; font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600; padding: 4px 12px; border-radius: 2px; }
+.section-label h3 {
+  font-family: inherit;
+  font-size: 1.25rem;
+  font-weight: 680;
+  letter-spacing: -0.02em;
+  color: var(--verde);
+  white-space: nowrap;
+}
+.section-label .line { flex: 1; height: 1px; background: var(--filo); }
+.section-label .badge { background: rgba(26,58,42,0.08); color: var(--verde); font-size: 0.78rem; font-weight: 560; padding: 4px 13px; border-radius: var(--r-pillola); white-space: nowrap; }
 
 /* CARDS */
 .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; margin-bottom: 2.5rem; }
-.card { background: var(--bianco); border-radius: 10px; overflow: hidden; border: 1px solid var(--avorio-scuro); transition: transform 0.2s, box-shadow 0.2s; }
-.card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(26,58,42,0.12); }
+.card {
+  background: #fff;
+  border: 1px solid var(--filo);
+  border-radius: var(--r-medio);
+  overflow: hidden;
+  box-shadow: var(--ombra-1);
+  transition: transform 0.25s cubic-bezier(0.2,0.9,0.3,1), box-shadow 0.25s;
+}
+.card:hover { transform: translateY(-3px); box-shadow: var(--ombra-2); }
 .card.featured { border-color: var(--fuoco); border-width: 2px; }
 .card-photo { width: 100%; aspect-ratio: 3/2; background: var(--avorio-scuro); display: flex; align-items: center; justify-content: center; overflow: hidden; }
 .card-photo img { width: 100%; height: 100%; object-fit: cover; object-position: top; filter: grayscale(20%); }
 .card-photo .initials { width: 56px; height: 56px; border-radius: 50%; background: var(--verde-medio); color: white; font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; display: flex; align-items: center; justify-content: center; }
 .card-body { padding: 12px 14px 14px; }
 .card-role { font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600; color: var(--verde); margin-bottom: 4px; }
-.card-name { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; color: var(--verde); line-height: 1.2; }
+.card-name {
+  font-family: inherit;
+  font-size: 1.02rem;
+  font-weight: 620;
+  letter-spacing: -0.015em;
+  color: var(--verde);
+  line-height: 1.2;
+}
 
 /* BRANCHE CARDS (homepage + gruppo) */
 .branche-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
-.branca-card { background: var(--bianco); border-radius: 12px; border: 1px solid var(--avorio-scuro); overflow: hidden; cursor: pointer; transition: all 0.2s; }
-.branca-card:hover { transform: translateY(-5px); box-shadow: 0 16px 40px rgba(26,58,42,0.13); }
+.branca-card {
+  background: #fff;
+  border: 1px solid var(--filo);
+  border-radius: var(--r-grande);
+  overflow: hidden; cursor: pointer;
+  box-shadow: var(--ombra-1);
+  transition: transform 0.25s cubic-bezier(0.2,0.9,0.3,1), box-shadow 0.25s;
+}
+.branca-card:hover { transform: translateY(-4px); box-shadow: var(--ombra-3); }
 .branca-card-top { padding: 28px 24px 20px; }
 .branca-card-top .age-badge { display: inline-block; background: var(--avorio); color: var(--verde); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; padding: 4px 10px; border-radius: 2px; border: 1px solid var(--verde); margin-bottom: 14px; }
-.branca-card-top h3 { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700; color: var(--verde); line-height: 1.2; margin-bottom: 8px; }
+.branca-card-top h3 {
+  font-family: inherit;
+  font-size: 1.3rem;
+  font-weight: 680;
+  letter-spacing: -0.02em;
+  color: var(--verde);
+  line-height: 1.15;
+  margin-bottom: 8px;
+}
 .branca-card-top p { font-size: 0.88rem; color: var(--testo-muted); line-height: 1.65; }
 .branca-card-bottom { padding: 14px 24px; background: var(--verde); display: flex; align-items: center; justify-content: space-between; }
 .branca-card-bottom span { color: white; font-size: 0.82rem; font-weight: 500; }
@@ -167,27 +292,46 @@ nav {
 
 /* INFO BOXES */
 .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
-.info-box { background: var(--bianco); border-radius: 10px; border: 1px solid var(--avorio-scuro); padding: 28px; }
+.info-box {
+  background: #fff;
+  border: 1px solid var(--filo);
+  border-radius: var(--r-grande);
+  padding: 26px;
+  box-shadow: var(--ombra-1);
+}
 .info-box h4 { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--verde); font-weight: 700; margin-bottom: 12px; }
 .info-box p, .info-box a { font-size: 0.9rem; color: var(--testo-muted); line-height: 1.8; text-decoration: none; display: block; }
 .info-box a:hover { color: var(--fuoco); }
 .info-box .highlight { color: var(--fuoco); font-weight: 600; font-size: 0.85rem; letter-spacing: 0.04em; }
 
 /* ISCRIZIONI PAGE */
-.iscrizioni-banner { background: var(--verde); color: white; border-radius: 12px; padding: 32px 36px; margin-bottom: 2rem; }
+.iscrizioni-banner { background: var(--verde); color: #fff; border-radius: var(--r-grande); padding: 30px 34px; margin-bottom: 2rem; box-shadow: var(--ombra-2); }
 .iscrizioni-banner .open-badge { display: inline-block; background: var(--fuoco); color: white; font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; padding: 5px 14px; border-radius: 2px; margin-bottom: 16px; }
 .iscrizioni-banner h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 700; margin-bottom: 12px; }
 .iscrizioni-banner p { color: rgba(255,255,255,0.75); font-size: 0.95rem; line-height: 1.75; max-width: 600px; }
 .steps { display: flex; flex-direction: column; gap: 16px; margin: 2rem 0; }
-.step { display: flex; gap: 20px; align-items: flex-start; background: var(--bianco); border-radius: 10px; padding: 20px 24px; border: 1px solid var(--avorio-scuro); }
+.step {
+  display: flex; gap: 18px; align-items: flex-start;
+  background: #fff;
+  border: 1px solid var(--filo);
+  border-radius: var(--r-medio);
+  padding: 18px 22px;
+  box-shadow: var(--ombra-1);
+}
 .step-num { width: 36px; height: 36px; background: var(--fuoco); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; flex-shrink: 0; margin-top: 2px; }
 .step h4 { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--verde); font-weight: 700; margin-bottom: 4px; }
 .step p { font-size: 0.88rem; color: var(--testo-muted); line-height: 1.6; }
 
 /* DOVE SIAMO */
-.map-placeholder { background: var(--verde-medio); border-radius: 10px; aspect-ratio: 16/7; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: rgba(255,255,255,0.6); font-size: 0.9rem; margin-bottom: 2rem; }
+.map-placeholder { background: var(--verde-medio); border-radius: var(--r-grande); box-shadow: var(--ombra-2); aspect-ratio: 16/7; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: rgba(255,255,255,0.6); font-size: 0.9rem; margin-bottom: 2rem; }
 .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
-.contact-item { background: var(--bianco); border-radius: 10px; padding: 20px 24px; border: 1px solid var(--avorio-scuro); }
+.contact-item {
+  background: #fff;
+  border: 1px solid var(--filo);
+  border-radius: var(--r-medio);
+  padding: 18px 22px;
+  box-shadow: var(--ombra-1);
+}
 .contact-item .label { font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fuoco); font-weight: 600; margin-bottom: 6px; }
 .contact-item .value { font-size: 0.95rem; color: var(--testo); font-weight: 500; }
 .contact-item a { color: var(--verde); text-decoration: none; }
@@ -197,18 +341,26 @@ nav {
 
 /* SECTION TEXT */
 .section-text { max-width: 680px; }
-.section-text h2 { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--verde); font-weight: 700; margin-bottom: 1rem; line-height: 1.25; }
+.section-text h2 {
+  font-family: inherit;
+  font-size: clamp(1.6rem, 3vw, 2.1rem);
+  font-weight: 700;
+  letter-spacing: -0.022em;
+  color: var(--verde);
+  line-height: 1.15;
+  margin-bottom: 1rem;
+}
 .section-text h2 em { color: var(--fuoco); font-style: normal; }
 .section-text p { color: var(--testo-muted); font-size: 0.95rem; margin-bottom: 1rem; line-height: 1.75; }
 .section-text .quote { border-left: 3px solid var(--fuoco); padding-left: 20px; margin: 1.5rem 0; font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.05rem; color: var(--verde); line-height: 1.6; }
 
 /* HOME HERO IMAGE STRIP */
-.img-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; height: 220px; overflow: hidden; border-radius: 10px; margin: 2rem 0; }
+.img-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; height: 230px; overflow: hidden; border-radius: var(--r-grande); margin: 2rem 0; box-shadow: var(--ombra-2); }
 .img-strip-item { background: var(--verde-medio); display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.3); font-size: 0.8rem; }
 .img-strip-item img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.85); }
 
 /* DIVIDER */
-.divider { height: 1px; background: var(--avorio-scuro); margin: 1rem 0; }
+.divider { height: 1px; background: var(--filo); margin: 1rem 0; }
 
 /* FOOTER */
 footer { background: var(--verde); color: rgba(255,255,255,0.7); padding: 3rem 2rem; margin-top: 5rem; }
@@ -222,7 +374,7 @@ footer a:hover { color: var(--fuoco-chiaro); }
 /* Accesso al pannello: presente ma discreto. Non è un segreto
    (la protezione è la password), però non deve invitare i
    visitatori a cliccarci sopra. */
-.link-capi { display: inline-flex; align-items: center; gap: 6px; color: rgba(255,255,255,0.4); text-decoration: none; font-size: 0.78rem; padding: 4px 10px; border: 1px solid rgba(255,255,255,0.12); border-radius: 4px; transition: all 0.2s; }
+.link-capi { display: inline-flex; align-items: center; gap: 6px; color: rgba(255,255,255,0.45); text-decoration: none; font-size: 0.82rem; padding: 5px 13px; border: 1px solid rgba(255,255,255,0.14); border-radius: var(--r-pillola); transition: all 0.2s; }
 .link-capi:hover { color: var(--fuoco-chiaro); border-color: rgba(232,105,42,0.5); }
 .link-capi svg { width: 12px; height: 12px; fill: currentColor; }
 .social-links a { width: 32px; height: 32px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.6); font-size: 0.72rem; text-decoration: none; transition: all 0.2s; font-weight: 600; }
@@ -255,7 +407,7 @@ footer a:hover { color: var(--fuoco-chiaro); }
   .img-strip { height: 140px; }
 }
 /* ── AVVISI (home) ── */
-.avviso { background:#fff8e1; border:1px solid #ffe082; border-left:4px solid var(--fuoco); border-radius:8px; padding:16px 20px; margin-bottom:12px; }
+.avviso { background:rgba(255,244,214,0.85); -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px); border:1px solid rgba(240,190,60,0.35); border-radius:var(--r-medio); padding:16px 20px; margin-bottom:12px; box-shadow:var(--ombra-1); }
 .avviso h4 { font-family:'Playfair Display',serif; font-size:1rem; color:#5d4037; margin-bottom:4px; }
 .avviso p { font-size:0.88rem; color:#6d4c41; line-height:1.65; }
 
@@ -268,30 +420,59 @@ footer a:hover { color: var(--fuoco-chiaro); }
 .iscrizioni-banner .closed-badge { display:inline-block; background:rgba(255,255,255,0.2); color:#fff; font-size:0.7rem; letter-spacing:0.12em; text-transform:uppercase; font-weight:700; padding:5px 14px; border-radius:2px; margin-bottom:16px; }
 
 /* ── MODULO ISCRIZIONE ── */
-.modulo { background:#fff; border:1px solid var(--avorio-scuro); border-radius:12px; padding:28px; margin-top:2rem; }
+.modulo {
+  background: #fff;
+  border: 1px solid var(--filo);
+  border-radius: var(--r-grande);
+  padding: 30px;
+  margin-top: 2rem;
+  box-shadow: var(--ombra-2);
+}
 .modulo h3 { font-family:'Playfair Display',serif; font-size:1.25rem; color:var(--verde); margin-bottom:6px; }
 .modulo > p.intro { font-size:0.88rem; color:var(--testo-muted); margin-bottom:1.5rem; }
 .campo-form { display:flex; flex-direction:column; gap:5px; margin-bottom:16px; }
-.campo-form label { font-size:0.75rem; font-weight:600; color:var(--testo-muted); letter-spacing:0.04em; text-transform:uppercase; }
+.campo-form label {
+  font-size: 0.875rem;
+  font-weight: 550;
+  color: var(--testo);
+  letter-spacing: -0.01em;
+}
 .campo-form label .req { color:var(--fuoco); }
 .campo-form input, .campo-form textarea, .campo-form select {
-  padding:10px 12px; border:1px solid var(--avorio-scuro); border-radius:6px; font-size:0.92rem;
-  font-family:'Inter',sans-serif; color:var(--testo); background:#fff; outline:none; transition:border 0.15s; width:100%;
+  padding: 12px 14px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-family: inherit;
+  color: var(--testo);
+  background: rgba(120,140,125,0.09);
+  outline: none;
+  width: 100%;
+  transition: background 0.18s, border-color 0.18s, box-shadow 0.18s;
+  -webkit-appearance: none;
 }
 .campo-form input:focus, .campo-form textarea:focus, .campo-form select:focus {
-  border-color:var(--verde-medio); box-shadow:0 0 0 3px rgba(45,94,66,0.1);
+  background: #fff;
+  border-color: var(--verde-medio);
+  box-shadow: 0 0 0 4px rgba(45,94,66,0.13);
 }
 .campo-form textarea { resize:vertical; min-height:80px; line-height:1.6; }
 .campo-form .aiuto-f { font-size:0.75rem; color:var(--testo-muted); }
 .campo-form.errore input, .campo-form.errore textarea { border-color:#c0392b; }
 .campo-form .msg-errore-f { font-size:0.75rem; color:#c0392b; font-weight:500; }
 .riga-form { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
-.consenso-box { background:var(--avorio); border:1px solid var(--avorio-scuro); border-radius:8px; padding:14px 16px; margin:1.25rem 0; }
+.consenso-box {
+  background: rgba(120,140,125,0.07);
+  border: 1px solid var(--filo);
+  border-radius: 14px;
+  padding: 16px 18px;
+  margin: 1.4rem 0;
+}
 .consenso-box label { display:flex; gap:10px; align-items:flex-start; cursor:pointer; font-size:0.84rem; line-height:1.6; color:var(--testo); }
 .consenso-box input[type=checkbox] { width:auto; margin-top:3px; flex-shrink:0; }
 .consenso-box a { color:var(--fuoco); }
 .trappola { position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden; }
-.esito-invio { border-radius:8px; padding:16px 18px; font-size:0.9rem; line-height:1.6; }
+.esito-invio { border-radius:var(--r-medio); padding:18px 20px; font-size:0.94rem; line-height:1.6; }
 .esito-ok { background:#d4edda; border:1px solid #c3e6cb; color:#155724; }
 .esito-ko { background:#f8d7da; border:1px solid #f5c6cb; color:#721c24; }
 .esito-invio h4 { font-family:'Playfair Display',serif; font-size:1.05rem; margin-bottom:4px; }
@@ -307,7 +488,7 @@ footer a:hover { color: var(--fuoco-chiaro); }
 /* ── FASCIA "IN RISTRUTTURAZIONE" ──
    Temporanea: per toglierla basta eliminare questo blocco,
    il markup .fascia-lavori e la sua riga di script in fondo. */
-.fascia-lavori { background:#fff3cd; border-bottom:1px solid #ffe082; padding:9px 16px; display:flex; align-items:center; gap:10px; font-size:0.83rem; color:#6d4c41; }
+.fascia-lavori { background:rgba(255,243,205,0.92); -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px); border-bottom:1px solid rgba(240,190,60,0.3); padding:9px 16px; display:flex; align-items:center; gap:10px; font-size:0.83rem; color:#6d4c41; }
 .fascia-lavori .testo { flex:1; line-height:1.5; }
 .fascia-lavori strong { color:#e65100; }
 .fascia-lavori button { background:none; border:none; cursor:pointer; color:#8d6e63; font-size:1rem; padding:2px 6px; border-radius:4px; flex-shrink:0; line-height:1; }
@@ -315,6 +496,22 @@ footer a:hover { color: var(--fuoco-chiaro); }
 @media (max-width:640px){ .fascia-lavori { font-size:0.78rem; padding:8px 12px; } }
 
 /* ── MOBILE ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .card:hover, .branca-card:hover, .btn-primary:active, .btn-secondary:active { transform: none !important; }
+}
+
+/* Se il browser non supporta i materiali sfocati (Firefox più vecchi),
+   le superfici diventano opache invece di trasparenti e illeggibili. */
+@supports not (backdrop-filter: blur(1px)) {
+  nav { background: var(--verde); }
+  .fascia-lavori { background: #fff3cd; }
+  .hero-eyebrow { background: rgba(255,255,255,0.22); }
+}
 </style>
 </head>
 <body>
@@ -363,7 +560,7 @@ footer a:hover { color: var(--fuoco-chiaro); }
 <!-- ===================== HOME ===================== -->
 <div id="page-home" class="page active">
   <div class="fazzolettone"></div>
-  <div class="hero">
+  <div class="hero hero--home">
     <div class="hero-eyebrow">Dal 1972 · Pino Torinese · AGESCI</div>
     <h1>Gruppo Scout<br>Pino Torinese 1</h1>
     <p>Avventura, crescita e servizio nel cuore delle colline torinesi. Bambini, ragazzi e giovani che imparano a guardare il mondo con occhi aperti.</p>
@@ -462,7 +659,7 @@ footer a:hover { color: var(--fuoco-chiaro); }
 <!-- ===================== IL GRUPPO ===================== -->
 <div id="page-gruppo" class="page">
   <div class="fazzolettone"></div>
-  <div class="hero">
+  <div class="hero hero--gruppo">
     <div class="hero-eyebrow">Gruppo Scout · Pino Torinese 1</div>
     <h1>Il Nostro Gruppo</h1>
     <p>Un percorso educativo che accompagna i ragazzi dalla fanciullezza all'età adulta, attraverso quattro tappe di crescita progressiva.</p>
@@ -524,7 +721,7 @@ footer a:hover { color: var(--fuoco-chiaro); }
 <!-- ===================== COMUNITÀ CAPI ===================== -->
 <div id="page-coca" class="page">
   <div class="fazzolettone"></div>
-  <div class="hero">
+  <div class="hero hero--coca">
     <div class="hero-eyebrow">Gruppo Scout · Pino Torinese 1</div>
     <h1>Comunità Capi</h1>
     <p>Le persone che ogni giorno guidano, animano e si prendono cura del nostro gruppo scout. Capi formati, appassionati e dediti alla crescita dei ragazzi.</p>
@@ -546,7 +743,7 @@ footer a:hover { color: var(--fuoco-chiaro); }
 <!-- ===================== BRANCO ===================== -->
 <div id="page-branco" class="page">
   <div class="fazzolettone"></div>
-  <div class="hero">
+  <div class="hero hero--branco">
     <div class="hero-eyebrow">7–11 anni · Branca Lupetti e Coccinelle</div>
     <h1>Branco Mirfak</h1>
     <p>Nella giungla del Libro di Kipling, i cuccioli imparano a vivere in branco, a rispettare la legge della giungla e a scoprire la natura come casa grande e meravigliosa.</p>
@@ -576,7 +773,7 @@ footer a:hover { color: var(--fuoco-chiaro); }
 <!-- ===================== REPARTO ===================== -->
 <div id="page-reparto" class="page">
   <div class="fazzolettone"></div>
-  <div class="hero">
+  <div class="hero hero--reparto">
     <div class="hero-eyebrow">11–16 anni · Branca Esploratori e Guide</div>
     <h1>Reparto Everest</h1>
     <p>Ragazze e ragazzi che si misurano con sfide reali, costruiscono la propria identità e imparano il valore della squadriglia come cellula viva del gruppo.</p>
@@ -611,7 +808,7 @@ footer a:hover { color: var(--fuoco-chiaro); }
 <!-- ===================== CLAN ===================== -->
 <div id="page-clan" class="page">
   <div class="fazzolettone"></div>
-  <div class="hero">
+  <div class="hero hero--clan">
     <div class="hero-eyebrow">17–21 anni · Branca Rover e Scolte</div>
     <h1>Clan Zebrù</h1>
     <p>Giovani che scelgono di mettersi al servizio della comunità con autonomia, maturità e responsabilità. Lo scautismo vissuto come stile di vita adulto.</p>
@@ -646,7 +843,7 @@ footer a:hover { color: var(--fuoco-chiaro); }
 <!-- ===================== NOVIZIATO ===================== -->
 <div id="page-noviziato" class="page">
   <div class="fazzolettone"></div>
-  <div class="hero">
+  <div class="hero hero--noviziato">
     <div class="hero-eyebrow">16–17 anni · Transizione al Rover</div>
     <h1>Noviziato Silmaril</h1>
     <p>Un anno di soglia, in cui l'esploratore o la guida scopre il diverso modo di vivere lo scautismo e si prepara alle scelte fondamentali dell'età adulta.</p>
@@ -689,7 +886,7 @@ footer a:hover { color: var(--fuoco-chiaro); }
 <!-- ===================== ISCRIZIONI ===================== -->
 <div id="page-iscrizioni" class="page">
   <div class="fazzolettone"></div>
-  <div class="hero">
+  <div class="hero hero--iscrizioni">
     <div class="hero-eyebrow">Anno Scout 2026–2027</div>
     <h1>Iscrizioni</h1>
     <p>Vuoi far parte del Gruppo Scout Pino Torinese 1? Le pre-iscrizioni per il nuovo anno sono aperte. Scopri come unirti a noi.</p>
@@ -705,7 +902,7 @@ footer a:hover { color: var(--fuoco-chiaro); }
 <!-- ===================== DOVE SIAMO ===================== -->
 <div id="page-dove" class="page">
   <div class="fazzolettone"></div>
-  <div class="hero">
+  <div class="hero hero--dove">
     <div class="hero-eyebrow">Pino Torinese · Torino Est</div>
     <h1>Dove siamo</h1>
     <p>La nostra sede si trova nel cuore di Pino Torinese, sulle colline a est di Torino. Vieni a trovarci!</p>
