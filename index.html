@@ -100,7 +100,8 @@
   --filo: rgba(26,58,42,0.10);
   --tricolore-rosso: #ce2b37;
 }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+body { overflow-x: hidden; }
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, 'Inter', sans-serif;
   background: var(--avorio);
@@ -159,6 +160,7 @@ nav {
 .hero--noviziato { background-image: url('img/noviziato.jpg'); }
 .hero--iscrizioni{ background-image: url('img/home-clan.jpg'); }
 .hero--dove      { background-image: url('img/home-natura.jpg'); }
+.hero--contatti  { background-image: url('img/home-coca.jpg'); }
 
 /* HERO */
 .hero {
@@ -395,8 +397,29 @@ footer a:hover { color: var(--fuoco-chiaro); }
 .tricolore-bar .tr-bianco { background: #ffffff; }
 .tricolore-bar .tr-rosso { background: var(--tricolore-rosso); }
 
+/* La barra resta fissa in alto: senza questo i titoli finiscono
+   sotto di essa quando si salta a una sezione. */
+h1, h2, h3, .section-label { scroll-margin-top: 88px; }
+
+/* Testo accanto a immagine. Su schermo stretto due colonne
+   lascerebbero al testo ~40% della larghezza: si impilano. */
+.due-colonne {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: center;
+  margin-bottom: 3rem;
+}
+
 /* MOBILE */
 @media (max-width: 768px) {
+  .due-colonne { grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; }
+  .due-colonne > div:first-child { order: 2; }   /* il testo prima della foto */
+  .riga-form { grid-template-columns: 1fr; }
+  .modulo { padding: 22px 18px; }
+  .info-box { padding: 20px; }
+  .hero { padding: 3.5rem 1.25rem 3rem; }
+  .container { padding: 0 1.25rem; }
   .nav-links { display: none; }
   .nav-links.open { display: flex; flex-direction: column; position: absolute; top: 72px; left: 0; right: 0; background: var(--verde); padding: 1rem 0; z-index: 300; gap: 0; }
   .nav-links.open > li > a, .nav-links.open > li > span { height: auto; padding: 12px 24px; }
@@ -550,7 +573,13 @@ footer a:hover { color: var(--fuoco-chiaro); }
       </div>
     </li>
     <li><a onclick="showPage('iscrizioni')" data-page="iscrizioni">Iscrizioni</a></li>
-    <li><a onclick="showPage('dove')" data-page="dove">Dove siamo</a></li>
+    <li>
+      <span onclick="showPage('contatti')" data-page="contatti">Contatti ▾</span>
+      <div class="dropdown">
+        <a onclick="showPage('contatti')">Scrivici</a>
+        <a onclick="showPage('dove')">Dove siamo</a>
+      </div>
+    </li>
   </ul>
   <button class="hamburger" onclick="toggleMenu()" aria-label="Menu">
     <span></span><span></span><span></span>
@@ -751,7 +780,7 @@ footer a:hover { color: var(--fuoco-chiaro); }
   <div class="fazzolettone"></div>
   <div class="container">
     <div class="section">
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:3rem; align-items:center; margin-bottom:3rem;">
+      <div class="due-colonne">
         <div class="section-text">
           <h2>La <em>Giungla</em> di Mirfak</h2>
           <p>La branca Lupetti e Coccinelle si rivolge ai bambini e alle bambine compresi tra gli 8 e gli 11/12 anni e si propone di far vivere loro pienamente la fanciullezza come ricchezza in sé e come fondamento di una autentica vita adulta.</p>
@@ -781,7 +810,7 @@ footer a:hover { color: var(--fuoco-chiaro); }
   <div class="fazzolettone"></div>
   <div class="container">
     <div class="section">
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:3rem; align-items:center; margin-bottom:3rem;">
+      <div class="due-colonne">
         <div>
           <div style="background:var(--avorio-scuro); border-radius:10px; aspect-ratio:4/3; display:flex; align-items:center; justify-content:center; overflow:hidden;">
             <img src="img/reparto.jpg" alt="Reparto" style="width:100%;height:100%;object-fit:cover;border-radius:10px;" onerror="this.parentElement.innerHTML='<span style=color:var(--testo-muted)>Foto del Reparto</span>'">
@@ -816,7 +845,7 @@ footer a:hover { color: var(--fuoco-chiaro); }
   <div class="fazzolettone"></div>
   <div class="container">
     <div class="section">
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:3rem; align-items:center; margin-bottom:3rem;">
+      <div class="due-colonne">
         <div class="section-text">
           <h2>Servire con <em>libertà</em></h2>
           <p>La Branca Rover/Scolte si rivolge ai giovani e alle giovani di età compresa tra i 16 ed i 20/21 anni e si propone di accompagnarli, nell'impegno dell'autoeducazione, verso una vita adulta caratterizzata da autonomia, maturazione della capacità di scegliere, responsabilità verso se stessi e gli altri, disponibilità al servizio del prossimo.</p>
@@ -851,7 +880,7 @@ footer a:hover { color: var(--fuoco-chiaro); }
   <div class="fazzolettone"></div>
   <div class="container">
     <div class="section">
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:3rem; align-items:center; margin-bottom:3rem;">
+      <div class="due-colonne">
         <div>
           <div style="background:var(--avorio-scuro); border-radius:10px; aspect-ratio:4/3; display:flex; align-items:center; justify-content:center; overflow:hidden;">
             <img src="img/noviziato.jpg" alt="Noviziato" style="width:100%;height:100%;object-fit:cover;border-radius:10px;" onerror="this.parentElement.innerHTML='<span style=color:var(--testo-muted)>Foto del Noviziato</span>'">
@@ -876,7 +905,7 @@ footer a:hover { color: var(--fuoco-chiaro); }
         <div class="info-box">
           <h4>📋 Vuoi unirti?</h4>
           <p>Se stai per terminare il Reparto e vuoi continuare il cammino scout, contattaci per sapere come iniziare il Noviziato.</p>
-          <br><button class="btn-primary" style="font-size:0.82rem; padding:10px 20px;" onclick="showPage('dove')">Contattaci →</button>
+          <br><button class="btn-primary" style="font-size:0.82rem; padding:10px 20px;" onclick="showPage('contatti')">Contattaci →</button>
         </div>
       </div>
     </div>
@@ -952,7 +981,41 @@ footer a:hover { color: var(--fuoco-chiaro); }
         </div>
       </div>
 
-      <div class="section-label" style="margin-top:3rem;">
+    </div>
+  </div>
+</div>
+
+<!-- ===================== CONTATTI ===================== -->
+<div id="page-contatti" class="page">
+  <div class="fazzolettone"></div>
+  <div class="hero hero--contatti">
+    <div class="hero-eyebrow">Siamo qui per rispondere</div>
+    <h1>Contattaci</h1>
+    <p>Che tu voglia iscrivere tuo figlio, chiedere ospitalità in sede o proporci qualcosa, scrivici: il messaggio arriva alle persone giuste del gruppo.</p>
+  </div>
+  <div class="fazzolettone"></div>
+  <div class="container">
+    <div class="section">
+
+      <div class="info-grid" style="margin-bottom:2.5rem;">
+        <div class="info-box">
+          <h4>✉️ E-mail</h4>
+          <a href="mailto:pinotorinese1@piemonte.agesci.it" style="color:var(--fuoco);font-weight:500;">pinotorinese1@piemonte.agesci.it</a>
+          <p style="margin-top:8px;">Per qualsiasi cosa, se preferisci scrivere direttamente.</p>
+        </div>
+        <div class="info-box">
+          <h4>📞 Telefono</h4>
+          <a href="tel:+393476374358" style="color:var(--fuoco);font-weight:500;">347 – 6374358</a>
+          <p style="margin-top:8px;">Se non rispondiamo subito, richiamiamo noi.</p>
+        </div>
+        <div class="info-box">
+          <h4>📍 Dove siamo</h4>
+          <p>Via Maria Cristina, 13<br>10025 Pino Torinese (TO)</p>
+          <br><button class="btn-primary" style="font-size:0.85rem;padding:10px 20px;" onclick="showPage('dove')">Come raggiungerci →</button>
+        </div>
+      </div>
+
+      <div class="section-label">
         <h3>Scrivici</h3><div class="line"></div><div class="badge">Contattaci</div>
       </div>
 
@@ -1010,6 +1073,7 @@ footer a:hover { color: var(--fuoco-chiaro); }
           <p>Nome, e-mail ed eventuale telefono vengono usati solo per risponderti e non sono comunicati a terzi. Titolare: Gruppo Scout AGESCI Pino Torinese 1, Via Maria Cristina 13, Pino Torinese (TO). Puoi chiederne la cancellazione in qualsiasi momento scrivendo a pinotorinese1@piemonte.agesci.it.</p>
         </div>
       </div>
+
     </div>
   </div>
 </div>
@@ -1030,6 +1094,7 @@ footer a:hover { color: var(--fuoco-chiaro); }
       <a href="#" onclick="showPage('noviziato');return false;" style="display:block">Noviziato Silmaril</a>
       <a href="#" onclick="showPage('clan');return false;" style="display:block">Clan Zebrù</a>
       <a href="#" onclick="showPage('coca');return false;" style="display:block">Comunità Capi</a>
+      <a href="#" onclick="showPage('contatti');return false;" style="display:block">Contatti</a>
     </div>
     <div>
       <h4>Contatti</h4>
@@ -1057,7 +1122,7 @@ footer a:hover { color: var(--fuoco-chiaro); }
 </footer>
 
 <script>
-const pages = ['home','gruppo','coca','branco','reparto','clan','noviziato','iscrizioni','dove'];
+const pages = ['home','gruppo','coca','branco','reparto','clan','noviziato','iscrizioni','dove','contatti'];
 const footer = document.getElementById('shared-footer');
 
 function showPage(id) {
